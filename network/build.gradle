@@ -1,0 +1,15 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+}
+
+apply from: "$rootDir/gradle/java.gradle"
+
+dependencies {
+    compile project(':api')
+    compile 'com.flowpowered:flow-network:1.0.0'
+    compile 'io.netty:netty-all:4.0.33.Final'
+}

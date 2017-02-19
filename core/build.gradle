@@ -1,0 +1,14 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+}
+
+apply from: "$rootDir/gradle/java.gradle"
+
+dependencies {
+    compile project(':api')
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.7.Final'
+}

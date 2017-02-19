@@ -1,0 +1,22 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+}
+
+apply from: "$rootDir/gradle/java.gradle"
+
+dependencies {
+    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+    compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.1-api', version: '1.0.0.Final'
+}
+
+jar {
+    manifest {
+        attributes 'Specification-Title': 'Rainforest',
+                'Specification-Vendor': 'Oliver Brammer (Octobyte) <mail@octo.im>',
+                'Specification-Version': version
+    }
+}

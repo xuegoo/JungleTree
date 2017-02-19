@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
+    }
+}
+
+apply from: "$rootDir/gradle/java.gradle"
+apply plugin: 'com.github.johnrengelman.shadow'
+
+dependencies {
+    compile project(':api')
+    compile project(':events')
+    compile project(':core')
+}
+
+artifacts {
+    shadowJar
+}
+
+jar {
+    manifest {
+        attributes 'Specification-Title': 'Rainforest',
+                'Specification-Vendor': 'Oliver Brammer (Octobyte) <mail@octo.im>',
+                'Specification-Version': version,
+                'Implementation-Title': 'JungleTree',
+                'Implementation-Vendor': 'Oliver Brammer (Octobyte) <mail@octo.im>',
+                'Implementation-Version': version,
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'im.octo.jungletree.JungleServer'
+    }
+}
+
+build.dependsOn(shadowJar)
