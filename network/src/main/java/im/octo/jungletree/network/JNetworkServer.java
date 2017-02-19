@@ -12,8 +12,6 @@ import java.util.concurrent.CountDownLatch;
 @Singleton
 public class JNetworkServer implements NetworkServer {
 
-    private static final int PROTOCOL_VERSION = 316;
-
     private final Server server;
     private CountDownLatch latch;
 
@@ -21,10 +19,6 @@ public class JNetworkServer implements NetworkServer {
     public JNetworkServer(Server server, CountDownLatch latch) {
         this.server = server;
         this.latch = latch;
-    }
-
-    public static int getProtocolVersion() {
-        return PROTOCOL_VERSION;
     }
 
     public ChannelFuture bind(InetSocketAddress address) {
