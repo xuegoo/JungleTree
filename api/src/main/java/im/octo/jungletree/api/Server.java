@@ -3,6 +3,7 @@ package im.octo.jungletree.api;
 import com.google.inject.Injector;
 import im.octo.jungletree.api.entity.Player;
 
+import java.security.KeyPair;
 import java.util.Collection;
 
 public interface Server {
@@ -32,4 +33,8 @@ public interface Server {
     int getServerListSampleSize();
 
     Injector getGuice();
+
+    KeyPair getKeyPair();
+
+    boolean isOnlineMode();
 }

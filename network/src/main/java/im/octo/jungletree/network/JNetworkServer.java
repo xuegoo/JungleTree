@@ -2,6 +2,7 @@ package im.octo.jungletree.network;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import im.octo.jungletree.api.Rainforest;
 import im.octo.jungletree.api.Server;
 import im.octo.jungletree.api.network.NetworkServer;
 import io.netty.channel.ChannelFuture;
@@ -16,18 +17,14 @@ public class JNetworkServer implements NetworkServer {
     private CountDownLatch latch;
 
     @Inject
-    public JNetworkServer(Server server, CountDownLatch latch) {
-        this.server = server;
+    public JNetworkServer(CountDownLatch latch) {
+        this.server = Rainforest.getServer();
         this.latch = latch;
     }
 
     public ChannelFuture bind(InetSocketAddress address) {
         // TODO: Do something
         return null;
-    }
-
-    public Server getServer() {
-        return server;
     }
 
     public void onBindSuccess(InetSocketAddress address) {

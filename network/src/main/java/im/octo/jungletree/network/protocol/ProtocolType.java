@@ -4,7 +4,7 @@ public enum  ProtocolType {
 
     HANDSHAKE(new HandshakeProtocol()),
     STATUS(new StatusProtocol()),
-    // LOGIN(new LoginProtocol()),
+    LOGIN(new LoginProtocol()),
     // PLAY(new PlayProtocol())
     ;
 
