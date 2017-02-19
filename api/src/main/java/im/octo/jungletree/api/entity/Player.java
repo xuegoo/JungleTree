@@ -1,6 +1,6 @@
 package im.octo.jungletree.api.entity;
 
-import im.octo.jungletree.api.OfflinePlayer;
+import im.octo.jungletree.api.player.OnlinePlayer;
 
-public interface Player extends OfflinePlayer, Entity {
+public interface Player extends OnlinePlayer, Entity {
 }
