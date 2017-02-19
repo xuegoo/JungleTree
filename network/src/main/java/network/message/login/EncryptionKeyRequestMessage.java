@@ -4,18 +4,18 @@ import com.flowpowered.network.Message;
 
 public class EncryptionKeyRequestMessage implements Message {
 
-    private final String sessionId;
+    private final String serverId;
     private final byte[] publicKey;
     private final byte[] verifyToken;
 
-    public EncryptionKeyRequestMessage(String sessionId, byte[] publicKey, byte[] verifyToken) {
-        this.sessionId = sessionId;
+    public EncryptionKeyRequestMessage(String serverId, byte[] publicKey, byte[] verifyToken) {
+        this.serverId = serverId;
         this.publicKey = publicKey;
         this.verifyToken = verifyToken;
     }
 
-    public String getSessionId() {
-        return sessionId;
+    public String getServerId() {
+        return serverId;
     }
 
     public byte[] getPublicKey() {
