@@ -1,9 +1,15 @@
 package im.octo.jungletree.network.protocol;
 
+import im.octo.jungletree.network.codec.KickCodec;
+import im.octo.jungletree.network.codec.SetCompressionCodec;
 import im.octo.jungletree.network.codec.login.EncryptionKeyRequestCodec;
 import im.octo.jungletree.network.codec.login.EncryptionKeyResponseCodec;
 import im.octo.jungletree.network.codec.login.LoginStartCodec;
 import im.octo.jungletree.network.codec.login.LoginSuccessCodec;
+import im.octo.jungletree.network.handler.login.EncryptionKeyResponseHandler;
+import im.octo.jungletree.network.handler.login.LoginStartHandler;
+import im.octo.jungletree.network.message.KickMessage;
+import im.octo.jungletree.network.message.SetCompressionMessage;
 import im.octo.jungletree.network.message.login.EncryptionKeyRequestMessage;
 import im.octo.jungletree.network.message.login.EncryptionKeyResponseMessage;
 import im.octo.jungletree.network.message.login.LoginStartMessage;

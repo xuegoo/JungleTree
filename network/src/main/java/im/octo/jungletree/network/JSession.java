@@ -10,6 +10,9 @@ import javax.crypto.SecretKey;
 
 public class JSession extends BasicSession {
 
+    private String username;
+    private byte[] verifyToken;
+
     private Player player;
 
     public JSession(Channel channel, AbstractProtocol bootstrapProtocol) {
@@ -26,7 +29,32 @@ public class JSession extends BasicSession {
         }
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public byte[] getVerifyToken() {
+        return verifyToken;
+    }
+
+    public void setVerifyToken(byte[] verifyToken) {
+        this.verifyToken = verifyToken;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public ProxyData getProxyData() {
+        // TODO: Implement?
         return null;
     }
 
