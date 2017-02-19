@@ -77,6 +77,11 @@ public class JungleServer implements Server {
     }
 
     @Override
+    public int getServerListSampleSize() {
+        return 0;
+    }
+
+    @Override
     public Injector getGuice() {
         return guice;
     }
