@@ -12,7 +12,7 @@ import im.octo.jungletree.network.message.status.StatusRequestMessage;
 public class StatusProtocol extends JProtocol {
 
     public StatusProtocol() {
-        super(ProtocolType.STATUS.name(), 2);
+        super("STATUS", 2);
         inbound(0x00, StatusRequestMessage.class, StatusRequestCodec.class, StatusRequestHandler.class);
         inbound(0x01, StatusPingMessage.class, StatusPingCodec.class, StatusPingHandler.class);
 

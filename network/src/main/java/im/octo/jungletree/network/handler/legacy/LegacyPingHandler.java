@@ -58,7 +58,6 @@ public class LegacyPingHandler extends ChannelInboundHandlerAdapter {
                             int dataLength = bytebuf.readUnsignedShort();
                             short clientVersion = bytebuf.readUnsignedByte();
                             String hostname = bytebuf.readBytes(bytebuf.readShort() * 2).toString(Charsets.UTF_16BE);
-                            @SuppressWarnings("unused")
                             int port = bytebuf.readInt();
 
                             if (clientVersion >= 73 && 7 + (hostname.length() * 2) == dataLength && bytebuf.readableBytes() == 0) {
@@ -69,9 +68,9 @@ public class LegacyPingHandler extends ChannelInboundHandlerAdapter {
                         break;
                 }
             }
-        } catch (RuntimeException e) {
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
             // Silently catch the exception
-            ;
         } finally {
             // check if not successful, otherwise the connection has already been closed
             if (!legacyPingProtocol) {

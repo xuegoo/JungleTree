@@ -47,4 +47,6 @@ public interface Server {
     void setPort(int port);
 
     void broadcastMessage(String message);
+
+    boolean getProxySupport();
 }

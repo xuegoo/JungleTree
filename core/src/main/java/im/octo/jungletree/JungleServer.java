@@ -133,6 +133,11 @@ public class JungleServer implements Server {
     public void broadcastMessage(String message) {
     }
 
+    @Override
+    public boolean getProxySupport() {
+        return false;
+    }
+
     // TODO: Configuration
     private InetSocketAddress getBindAddress() {
         return new InetSocketAddress(getPort());

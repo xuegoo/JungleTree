@@ -18,7 +18,7 @@ import im.octo.jungletree.network.message.login.LoginSuccessMessage;
 public class LoginProtocol extends JProtocol {
 
     public LoginProtocol() {
-        super(ProtocolType.LOGIN.name(), 5);
+        super("LOGIN", 5);
 
         inbound(0x00, LoginStartMessage.class, LoginStartCodec.class, LoginStartHandler.class);
         inbound(0x01, EncryptionKeyResponseMessage.class, EncryptionKeyResponseCodec.class, EncryptionKeyResponseHandler.class);
