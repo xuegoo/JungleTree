@@ -11,4 +11,6 @@ public interface OnlinePlayer extends OfflinePlayer {
     String getName();
 
     UUID getUuid();
+
+    PlayerSession getSession();
 }

@@ -1,4 +1,4 @@
-package im.octo.jungletree.api.event.type;
+package im.octo.jungletree.api.event.type.player;
 
 import im.octo.jungletree.api.event.Event;
 import im.octo.jungletree.api.network.LoginResult;

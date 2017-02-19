@@ -3,14 +3,21 @@ package im.octo.jungletree;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import im.octo.jungletree.api.GameVersion;
+import im.octo.jungletree.api.Rainforest;
 import im.octo.jungletree.api.Server;
 import im.octo.jungletree.api.entity.Player;
 import im.octo.jungletree.api.scheduler.TaskScheduler;
+import im.octo.jungletree.network.JNetworkServer;
+import im.octo.jungletree.network.SecurityUtils;
+import io.netty.channel.epoll.Epoll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
+import java.security.KeyPair;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.CountDownLatch;
 
 public class JungleServer implements Server {
 
@@ -20,6 +27,12 @@ public class JungleServer implements Server {
 
     private final Injector guice;
     private final TaskScheduler scheduler;
+    private JNetworkServer networkServer;
+
+    private int port = 25565;
+
+    private KeyPair keyPair = SecurityUtils.generateKeyPair();
+    private String host;
 
     private JungleServer() {
         this.guice = Guice.createInjector(new JungleGuiceModule());
@@ -38,7 +51,7 @@ public class JungleServer implements Server {
     }
 
     public static void main(String[] args) {
-        new JungleServer();
+        new JungleServer().run();
     }
 
     @Override
@@ -63,7 +76,7 @@ public class JungleServer implements Server {
 
     @Override
     public String getDescription() {
-        return null;
+        return "YATTA!";
     }
 
     @Override
@@ -73,16 +86,79 @@ public class JungleServer implements Server {
 
     @Override
     public int getMaxOnlinePlayers() {
-        return 0;
+        return 20;
     }
 
     @Override
     public int getServerListSampleSize() {
+        return 5;
+    }
+
+    @Override
+    public int getCompressionThreshold() {
         return 0;
     }
 
     @Override
     public Injector getGuice() {
         return guice;
+    }
+
+    @Override
+    public KeyPair getKeyPair() {
+        return keyPair;
+    }
+
+    @Override
+    public boolean isOnlineMode() {
+        return true;
+    }
+
+    @Override
+    public void setIp(String host) {
+        this.host = host;
+    }
+
+    @Override
+    public int getPort() {
+        return port;
+    }
+
+    @Override
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    @Override
+    public void broadcastMessage(String message) {
+    }
+
+    // TODO: Configuration
+    private InetSocketAddress getBindAddress() {
+        return new InetSocketAddress(getPort());
+    }
+
+    private void bind() {
+        if (Epoll.isAvailable()) {
+            log.info("Native epoll transport is enabled.");
+        }
+
+        CountDownLatch latch = new CountDownLatch(3);
+        networkServer = new JNetworkServer(latch);
+        // TODO: Configuration
+        networkServer.bind(getBindAddress());
+
+        latch.countDown();
+        try {
+            latch.await();
+        } catch (InterruptedException ex) {
+            log.error("Bind interrupted!", ex);
+            System.exit(1);
+        }
+    }
+
+    private void run() {
+        Rainforest.setServer(this);
+        bind();
     }
 }

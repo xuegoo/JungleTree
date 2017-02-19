@@ -32,9 +32,19 @@ public interface Server {
 
     int getServerListSampleSize();
 
+    int getCompressionThreshold();
+
     Injector getGuice();
 
     KeyPair getKeyPair();
 
     boolean isOnlineMode();
+
+    void setIp(String host);
+
+    int getPort();
+
+    void setPort(int port);
+
+    void broadcastMessage(String message);
 }

@@ -69,26 +69,16 @@ public class JProtocol extends AbstractProtocol {
         return reg;
     }
 
-    // TODO: Check with GS/Flow to see what their plans are for these deprecated methods
     @Override
-    @Deprecated
     public Codec<?> readHeader(ByteBuf buf) throws UnknownPacketException {
-        int length = -1;
         int opcode = -1;
         try {
-            length = readVarInt(buf);
-
-            // mark point before opcode
-            buf.markReaderIndex();
-
             opcode = readVarInt(buf);
             return inbound.find(opcode);
         } catch (IOException ex) {
-            throw new UnknownPacketException("Failed to read packet data (corrupt?)", opcode, length);
+            throw new UnknownPacketException("Failed to read packet data (corrupt?)", opcode, 0);
         } catch (IllegalOpcodeException ex) {
-            // go back to before opcode, so that skipping length doesn't skip too much
-            buf.resetReaderIndex();
-            throw new UnknownPacketException("Opcode received is not a registered codec on the server!", opcode, length);
+            throw new UnknownPacketException("Opcode received is not a registered codec on the server!", opcode, 0);
         }
     }
 

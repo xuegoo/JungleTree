@@ -5,7 +5,7 @@ import com.google.inject.Injector;
 import im.octo.jungletree.api.Rainforest;
 import im.octo.jungletree.api.Server;
 import im.octo.jungletree.api.event.EventService;
-import im.octo.jungletree.api.event.type.AsyncPlayerPreLoginEvent;
+import im.octo.jungletree.api.event.type.player.AsyncPlayerPreLoginEvent;
 import im.octo.jungletree.api.network.LoginResult;
 import im.octo.jungletree.api.player.meta.PlayerProfile;
 import im.octo.jungletree.api.scheduler.TaskScheduler;
@@ -32,7 +32,7 @@ public class LoginStartHandler implements MessageHandler<JSession, LoginStartMes
             byte[] publicKey = SecurityUtils.generateX509Key(server.getKeyPair().getPublic()).getEncoded();
             byte[] verifyToken = SecurityUtils.generateVerifyToken();
 
-            session.setUsername(username);
+            session.setVerifyUsername(username);
             session.setVerifyToken(verifyToken);
             session.send(new EncryptionKeyRequestMessage(sessionId, publicKey, verifyToken));
         } else {

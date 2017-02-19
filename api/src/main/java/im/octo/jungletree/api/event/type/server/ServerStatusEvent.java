@@ -1,4 +1,4 @@
-package im.octo.jungletree.api.event.type;
+package im.octo.jungletree.api.event.type.server;
 
 import im.octo.jungletree.api.GameVersion;
 import im.octo.jungletree.api.entity.Player;

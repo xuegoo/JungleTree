@@ -5,7 +5,7 @@ import com.google.inject.Injector;
 import im.octo.jungletree.api.Rainforest;
 import im.octo.jungletree.api.Server;
 import im.octo.jungletree.api.event.EventService;
-import im.octo.jungletree.api.event.type.ServerStatusEvent;
+import im.octo.jungletree.api.event.type.server.ServerStatusEvent;
 import im.octo.jungletree.network.JSession;
 import im.octo.jungletree.network.codec.status.ServerListPingResponseObject;
 import im.octo.jungletree.network.codec.status.ServerListPingResponseObject.SLVersion;
