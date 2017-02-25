@@ -2,7 +2,7 @@ package im.octo.jungletree.scheduler;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.Singleton;
-import im.octo.jungletree.api.scheduler.DaemonTask;
+import im.octo.jungletree.api.scheduler.Task;
 import im.octo.jungletree.api.scheduler.TaskScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class JTaskScheduler implements TaskScheduler {
     }
 
     @Override
-    public void execute(DaemonTask task) {
+    public void execute(Task task) {
         executor.execute(task);
     }
 
