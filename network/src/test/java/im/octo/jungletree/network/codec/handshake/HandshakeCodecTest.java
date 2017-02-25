@@ -9,18 +9,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static com.flowpowered.network.util.ByteBufUtils.*;
-import static com.flowpowered.network.util.ByteBufUtils.writeVarInt;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class HandshakeCodecTest {
-
-    private static final Logger log = LoggerFactory.getLogger(HandshakeCodecTest.class);
 
     private static final GameVersion GAME_VERSION = GameVersion.MC_1_11_2;
     private static final String ADDRESS = "localhost";
@@ -32,7 +27,7 @@ public class HandshakeCodecTest {
 
     @Before
     public void setUp() throws Exception {
-        buf = ByteBufAllocator.DEFAULT.buffer();
+        this.buf = ByteBufAllocator.DEFAULT.buffer();
         this.subject = new HandshakeCodec();
     }
 
@@ -62,8 +57,16 @@ public class HandshakeCodecTest {
 
     @Test
     public void encode() throws Exception {
+        // Given
+        HandshakeMessage message = new HandshakeMessage(
+                GAME_VERSION.getProtocolVersion(),
+                ADDRESS,
+                PORT,
+                STATE.getId()
+        );
+
         // When
-        subject.encode(buf, new HandshakeMessage(GAME_VERSION.getProtocolVersion(), ADDRESS, PORT, STATE.getId()));
+        subject.encode(buf, message);
 
         // Then
         assertEquals(GAME_VERSION.getProtocolVersion(), readVarInt(buf));
