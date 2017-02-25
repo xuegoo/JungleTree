@@ -13,8 +13,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.flowpowered.network.util.ByteBufUtils.readUTF8;
-import static com.flowpowered.network.util.ByteBufUtils.readVarInt;
+import static com.flowpowered.network.util.ByteBufUtils.*;
+import static com.flowpowered.network.util.ByteBufUtils.writeVarInt;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(PowerMockRunner.class)
@@ -45,14 +45,19 @@ public class HandshakeCodecTest {
     @Test
     public void decode() throws Exception {
         // Given
-        HandshakeMessage message = new HandshakeMessage(GAME_VERSION.getProtocolVersion(), ADDRESS, PORT, STATE.getId());
-        subject.encode(buf, message);
+        writeVarInt(buf, GAME_VERSION.getProtocolVersion());
+        writeUTF8(buf, ADDRESS);
+        buf.writeShort(PORT);
+        writeVarInt(buf, STATE.getId());
 
         // When
         HandshakeMessage result = subject.decode(buf);
 
         // Then
-        assertEquals(message, result);
+        assertEquals(GAME_VERSION.getProtocolVersion(), result.getProtocolVersion());
+        assertEquals(ADDRESS, result.getAddress());
+        assertEquals(PORT, result.getPort());
+        assertEquals(STATE.getId(), result.getState());
     }
 
     @Test
