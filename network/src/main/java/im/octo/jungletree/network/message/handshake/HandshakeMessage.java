@@ -2,6 +2,8 @@ package im.octo.jungletree.network.message.handshake;
 
 import com.flowpowered.network.AsyncableMessage;
 
+import java.util.Objects;
+
 public class HandshakeMessage implements AsyncableMessage {
 
     private final int protocolVersion;
@@ -35,5 +37,21 @@ public class HandshakeMessage implements AsyncableMessage {
 
     public int getState() {
         return state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HandshakeMessage message = (HandshakeMessage) o;
+        return protocolVersion == message.protocolVersion &&
+                port == message.port &&
+                state == message.state &&
+                Objects.equals(address, message.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(protocolVersion, address, port, state);
     }
 }
