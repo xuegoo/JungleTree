@@ -37,6 +37,10 @@ public class JTaskScheduler implements TaskScheduler {
         this.executor.shutdown();
     }
 
+    public ThreadPoolExecutor getExecutor() {
+        return executor;
+    }
+
     class SchedulerExceptionHandler implements Thread.UncaughtExceptionHandler {
         @Override
         public void uncaughtException(Thread t, Throwable ex) {
