@@ -1,6 +1,7 @@
 package im.octo.jungletree.api.exception;
 
 public class IllegalOperationException extends RuntimeException {
+
     public IllegalOperationException() {
     }
 
