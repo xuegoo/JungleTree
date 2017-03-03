@@ -26,6 +26,7 @@ public class JListenerRegistry implements ListenerRegistry {
         addListener(listener, eventClass);
     }
 
+    @Override
     public <E extends Event> void unregister(Listener<E> listener, Class<E> eventClass) {
         if (!isRegistered(listener, eventClass)) {
             return;
