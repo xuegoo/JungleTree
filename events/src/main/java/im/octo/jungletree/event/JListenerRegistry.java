@@ -15,6 +15,11 @@ public class JListenerRegistry implements ListenerRegistry {
     private final Map<Class<? extends Event>, Set<Listener<? extends Event>>> registry = new ConcurrentHashMap<>();
 
     @Override
+    public <E extends Event> Set<Listener<? extends Event>> getListeners(Class<E> eventClass) {
+        return Collections.unmodifiableSet(registry.getOrDefault(eventClass, new HashSet<>()));
+    }
+
+    @Override
     public <E extends Event> void register(Listener<E> listener, Class<E> eventClass) {
         if (isRegistered(listener, eventClass)) {
             throw new ListenerAlreadyRegisteredException(String.format(

@@ -2,5 +2,5 @@ package im.octo.jungletree.api.event;
 
 public interface EventService {
 
-    void call(Event event);
+    <E extends Event> void call(E event);
 }
