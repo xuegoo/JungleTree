@@ -3,4 +3,5 @@ include 'api'
 include 'events'
 include 'core'
 include 'network'
+include 'flow-network'
 
