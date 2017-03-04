@@ -2,7 +2,7 @@ package im.octo.jungletree.network.message.play.inventory;
 
 import com.flowpowered.network.Message;
 
-public class PlayerDiggingMessage implements Message {
+public class DiggingMessage implements Message {
 
     private final int status;
     private final int blockX;
@@ -10,7 +10,7 @@ public class PlayerDiggingMessage implements Message {
     private final int blockZ;
     private final int blockFace;
 
-    public PlayerDiggingMessage(int status, int blockX, int blockY, int blockZ, int blockFace) {
+    public DiggingMessage(int status, int blockX, int blockY, int blockZ, int blockFace) {
         this.status = status;
         this.blockX = blockX;
         this.blockY = blockY;

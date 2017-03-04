@@ -1,4 +1,4 @@
-package im.octo.jungletree.network.message.play.player;
+package im.octo.jungletree.network.message.play.game;
 
 import com.flowpowered.network.Message;
 
