@@ -5,8 +5,7 @@ public enum  ProtocolType {
     HANDSHAKE(new HandshakeProtocol()),
     STATUS(new StatusProtocol()),
     LOGIN(new LoginProtocol()),
-    // PLAY(new PlayProtocol())
-    ;
+    PLAY(new PlayProtocol());
 
     private final JProtocol protocol;
 

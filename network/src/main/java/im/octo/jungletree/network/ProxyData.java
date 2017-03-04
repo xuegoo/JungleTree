@@ -7,6 +7,10 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @deprecated Remove because this is BungeeCord stuff, which won't be supported
+ */
+@Deprecated
 public class ProxyData {
 
     private String securityKey;
