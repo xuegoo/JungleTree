@@ -2,20 +2,18 @@ package im.octo.jungletree.network.message.play.entity;
 
 import com.flowpowered.network.Message;
 
-public class UpdateBlockEntityMessage implements Message {
+public class BlockChangeMessage implements Message {
 
     private final int x;
     private final int y;
     private final int z;
-    private final int actionId;
-    // TODO: NBT
-    // private final NbtTag tag;
+    private final int blockId;
 
-    public UpdateBlockEntityMessage(int x, int y, int z, int actionId) {
+    public BlockChangeMessage(int x, int y, int z, int blockId) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.actionId = actionId;
+        this.blockId = blockId;
     }
 
     public int getX() {
@@ -30,7 +28,7 @@ public class UpdateBlockEntityMessage implements Message {
         return z;
     }
 
-    public int getActionId() {
-        return actionId;
+    public int getBlockId() {
+        return blockId;
     }
 }
