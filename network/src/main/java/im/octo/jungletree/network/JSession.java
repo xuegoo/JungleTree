@@ -257,7 +257,7 @@ public class JSession extends BasicSession implements PlayerSession {
         }
 
         send(new LoginSuccessMessage(profile.getUuid().toString(), profile.getUsername()));
-        // setProtocol(ProtocolType.PLAY);
+        setProtocol(ProtocolType.PLAY);
     }
 
     public void setProtocol(ProtocolType protocolType) {
@@ -325,6 +325,7 @@ public class JSession extends BasicSession implements PlayerSession {
     @Override
     public void onHandlerThrowable(Message message, MessageHandler<?, ?> handle, Throwable throwable) {
         log.error("Error whilst handling {} (handler: {})", message, handle.getClass().getSimpleName());
+        throwable.printStackTrace();
     }
 
     @Override

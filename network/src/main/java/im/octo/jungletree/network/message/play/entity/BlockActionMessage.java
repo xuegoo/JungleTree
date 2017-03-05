@@ -1,35 +1,24 @@
 package im.octo.jungletree.network.message.play.entity;
 
 import com.flowpowered.network.Message;
+import im.octo.jungletree.api.util.Vector;
 
 public class BlockActionMessage implements Message {
 
-    private final int x;
-    private final int y;
-    private final int z;
+    private final Vector location;
     private final int actionId;
     private final int actionParam;
     private final int blockType;
 
-    public BlockActionMessage(int x, int y, int z, int actionId, int actionParam, int blockType) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public BlockActionMessage(Vector location, int actionId, int actionParam, int blockType) {
+        this.location = location;
         this.actionId = actionId;
         this.actionParam = actionParam;
         this.blockType = blockType;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getZ() {
-        return z;
+    public Vector getLocation() {
+        return location;
     }
 
     public int getActionId() {

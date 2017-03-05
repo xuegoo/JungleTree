@@ -7,24 +7,22 @@ import im.octo.jungletree.api.scheduler.TaskScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Singleton
 public class JTaskScheduler implements TaskScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(JTaskScheduler.class);
 
-    private final ThreadPoolExecutor executor;
+    private final ScheduledExecutorService executor;
 
     public JTaskScheduler() {
-        this.executor = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
-                new ThreadFactoryBuilder()
-                        .setNameFormat("scheduler-%d")
-                        .setUncaughtExceptionHandler(new SchedulerExceptionHandler())
-                        .build()
-        );
-        Runtime.getRuntime().addShutdownHook(new Thread(executor::shutdown));
+        executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors(), new ThreadFactoryBuilder()
+                .setNameFormat("scheduler-%d")
+                .setUncaughtExceptionHandler(new SchedulerExceptionHandler())
+                .build());
+        // Runtime.getRuntime().addShutdownHook(new Thread(executor::shutdown));
     }
 
     @Override
@@ -37,7 +35,7 @@ public class JTaskScheduler implements TaskScheduler {
         this.executor.shutdown();
     }
 
-    public ThreadPoolExecutor getExecutor() {
+    public ScheduledExecutorService getExecutor() {
         return executor;
     }
 

@@ -16,6 +16,7 @@ import im.octo.jungletree.api.scheduler.TaskScheduler;
 import im.octo.jungletree.api.util.UuidUtils;
 import im.octo.jungletree.network.JSession;
 import im.octo.jungletree.network.http.HttpCallback;
+import im.octo.jungletree.network.http.HttpClient;
 import im.octo.jungletree.network.message.login.EncryptionKeyResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,8 +58,9 @@ public class EncryptionKeyResponseHandler implements MessageHandler<JSession, En
 
         SecretKey sharedSecret;
         try {
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
             sharedSecret = new SecretKeySpec(cipher.doFinal(message.getSharedSecret()), CIPHER_ALGORITHM);
-        } catch (IllegalBlockSizeException | BadPaddingException ex) {
+        } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
             log.warn("Could not decrypt shared secret:", ex);
             session.disconnect("Unable to decrypt shared secret");
             return;
@@ -96,6 +98,7 @@ public class EncryptionKeyResponseHandler implements MessageHandler<JSession, En
 
         hash = new BigInteger(digest.digest()).toString(16);
         String url = getSessionServerUrl(session.getVerifyUsername(), hash);
+        HttpClient.connect(url, session.getChannel().eventLoop(), new ClientAuthCallback(session));
     }
 
     private String getSessionServerUrl(String verifyUsername, String hash) {

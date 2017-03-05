@@ -39,7 +39,7 @@ public class JungleServer implements Server {
         this.scheduler = guice.getInstance(TaskScheduler.class);
 
         scheduler.execute(this::logStartMessage);
-        scheduler.shutdown();
+        // scheduler.shutdown();
     }
 
     private void logStartMessage() {
@@ -86,7 +86,7 @@ public class JungleServer implements Server {
 
     @Override
     public int getMaxOnlinePlayers() {
-        return 20;
+        return 10000;
     }
 
     @Override
