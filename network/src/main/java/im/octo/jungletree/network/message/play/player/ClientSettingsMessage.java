@@ -2,7 +2,7 @@ package im.octo.jungletree.network.message.play.player;
 
 import com.flowpowered.network.Message;
 
-public class ClientSettingsMessage implements Message {
+public class    ClientSettingsMessage implements Message {
 
     private final String locale;
     private final int renderDistance;

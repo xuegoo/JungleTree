@@ -2,11 +2,11 @@ package im.octo.jungletree.network.message.play.player;
 
 import com.flowpowered.network.Message;
 
-public class ClientKeepAliveMessage implements Message {
+public class KeepAliveRequestMessage implements Message {
 
     private final int keepAliveId;
 
-    public ClientKeepAliveMessage(int keepAliveId) {
+    public KeepAliveRequestMessage(int keepAliveId) {
         this.keepAliveId = keepAliveId;
     }
 

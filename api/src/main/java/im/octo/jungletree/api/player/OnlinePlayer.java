@@ -1,5 +1,7 @@
 package im.octo.jungletree.api.player;
 
+import im.octo.jungletree.api.metadata.ClientSettings;
+
 import java.util.UUID;
 
 public interface OnlinePlayer extends OfflinePlayer {
@@ -13,4 +15,8 @@ public interface OnlinePlayer extends OfflinePlayer {
     UUID getUuid();
 
     PlayerSession getSession();
+
+    ClientSettings getClientSettings();
+
+    void setClientSettings(ClientSettings clientSettings);
 }

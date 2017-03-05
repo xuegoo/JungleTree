@@ -7,6 +7,7 @@ import im.octo.jungletree.api.player.PlayerDataService;
 import im.octo.jungletree.api.scheduler.TaskScheduler;
 import im.octo.jungletree.event.JEventService;
 import im.octo.jungletree.event.JListenerRegistry;
+import im.octo.jungletree.player.JPlayerDataService;
 import im.octo.jungletree.scheduler.JTaskScheduler;
 
 public class JungleGuiceModule extends AbstractModule {

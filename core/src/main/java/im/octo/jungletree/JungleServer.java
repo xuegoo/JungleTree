@@ -131,6 +131,7 @@ public class JungleServer implements Server {
 
     @Override
     public void broadcastMessage(String message) {
+        log.info(message);
     }
 
     @Override

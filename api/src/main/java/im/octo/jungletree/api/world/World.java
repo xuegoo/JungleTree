@@ -8,9 +8,13 @@ public interface World {
 
     String getName();
 
+    Dimension getDimension();
+
     Chunk getChunkAt(Location location);
 
     Block getBlockAt(Location location);
 
     Collection<Player> getPlayers();
+
+    Location getSpawnLocation();
 }

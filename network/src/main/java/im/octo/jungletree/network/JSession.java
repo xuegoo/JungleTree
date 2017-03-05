@@ -125,10 +125,12 @@ public class JSession extends BasicSession implements PlayerSession {
         return address;
     }
 
+    @Override
     public boolean isOnline() {
         return online;
     }
 
+    @Override
     public Player getPlayer() {
         return player;
     }
@@ -158,7 +160,7 @@ public class JSession extends BasicSession implements PlayerSession {
             if (other != player && other.getUuid().equals(player.getUuid())) {
                 PlayerSession playerSession = other.getSession();
                 if (playerSession instanceof JSession) {
-                    JSession session = (JSession)playerSession;
+                    JSession session = (JSession) playerSession;
                     session.disconnect("You logged in from another location.", true);
                     break;
                 } else {

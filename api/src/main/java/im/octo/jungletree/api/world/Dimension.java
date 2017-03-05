@@ -15,4 +15,8 @@ public enum Dimension {
     public int getId() {
         return id;
     }
+
+    public String getName() {
+        return name();
+    }
 }
