@@ -11,6 +11,6 @@ apply from: "$rootDir/gradle/java.gradle"
 dependencies {
     compile project(':api')
     compile project(':flow-network')
-    compile 'io.netty:netty-all:4.0.33.Final'
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.8.Final'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
 }
