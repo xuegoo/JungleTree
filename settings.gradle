@@ -5,3 +5,5 @@ include 'core'
 include 'network'
 include 'flow-network'
 include 'nbt'
+include 'world'
+
