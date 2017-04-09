@@ -1,4 +1,4 @@
-package world;
+package im.octo.jungletree.world;
 
 import im.octo.jungletree.api.entity.Player;
 import im.octo.jungletree.api.world.*;

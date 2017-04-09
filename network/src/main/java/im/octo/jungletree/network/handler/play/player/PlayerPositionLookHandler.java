@@ -1,33 +1,24 @@
-package im.octo.jungletree.network.handler.play;
+package im.octo.jungletree.network.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
 import im.octo.jungletree.api.entity.Player;
 import im.octo.jungletree.api.world.Location;
 import im.octo.jungletree.network.JSession;
-import im.octo.jungletree.network.message.play.player.PlayerUpdateMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import im.octo.jungletree.network.message.play.player.PlayerPositionLookMessage;
 
-public class PlayerUpdateHandler implements MessageHandler<JSession, PlayerUpdateMessage> {
-
-    private static final Logger log = LoggerFactory.getLogger(PlayerUpdateHandler.class);
+public class PlayerPositionLookHandler implements MessageHandler<JSession, PlayerPositionLookMessage> {
 
     @Override
-    public void handle(JSession session, PlayerUpdateMessage message) {
-
+    public void handle(JSession session, PlayerPositionLookMessage message) {
         Player player = session.getPlayer();
+        Location oldLoc = player.getLocation();
+        Location newLoc = oldLoc.clone();
+        message.update(newLoc);
 
-        Location oldLocation = player.getLocation();
-        Location newLocation = oldLocation.clone();
-        message.update(newLocation);
-
-        // Don't let players reach an illegal position
-        if (Math.abs(newLocation.getBlockX()) > 32000000 || Math.abs(newLocation.getBlockZ()) > 32000000) {
+        if (Math.abs(newLoc.getBlockX()) > 32000000 || Math.abs(newLoc.getBlockZ()) > 32000000) {
             session.getPlayer().kick("Illegal position");
             return;
         }
-
-        /*
 
         /*
           don't let players move more than 100 blocks in a single packet

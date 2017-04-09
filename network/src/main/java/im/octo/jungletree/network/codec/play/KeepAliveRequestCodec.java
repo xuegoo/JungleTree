@@ -1,4 +1,4 @@
-package im.octo.jungletree.network.handler.play;
+package im.octo.jungletree.network.codec.play;
 
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;

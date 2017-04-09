@@ -5,6 +5,7 @@ import im.octo.jungletree.api.world.Location;
 
 public class PlayerPositionLookMessage implements Message {
 
+    private final boolean grounded;
     private final double playerX;
     private final double playerFeetY;
     private final double playerZ;
@@ -13,7 +14,8 @@ public class PlayerPositionLookMessage implements Message {
     private final int flags;
     private final int teleportId;
 
-    public PlayerPositionLookMessage(double playerX, double playerFeetY, double playerZ, float yaw, float pitch, int flags, int teleportId) {
+    public PlayerPositionLookMessage(boolean grounded, double playerX, double playerFeetY, double playerZ, float yaw, float pitch, int flags, int teleportId) {
+        this.grounded = grounded;
         this.playerX = playerX;
         this.playerFeetY = playerFeetY;
         this.playerZ = playerZ;
@@ -23,12 +25,16 @@ public class PlayerPositionLookMessage implements Message {
         this.teleportId = teleportId;
     }
 
-    public PlayerPositionLookMessage(double playerX, double playerFeetY, double playerZ, float pitch, float yaw) {
-        this(playerX, playerFeetY, playerZ, pitch, yaw, 0, 0);
+    public PlayerPositionLookMessage(boolean grounded, double playerX, double playerFeetY, double playerZ, float pitch, float yaw) {
+        this(grounded, playerX, playerFeetY, playerZ, pitch, yaw, 0, 0);
     }
 
-    public PlayerPositionLookMessage(Location location) {
-        this(location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw());
+    public PlayerPositionLookMessage(boolean grounded, Location location) {
+        this(grounded, location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw());
+    }
+
+    public boolean isGrounded() {
+        return grounded;
     }
 
     public double getPlayerX() {
@@ -57,5 +63,13 @@ public class PlayerPositionLookMessage implements Message {
 
     public int getTeleportId() {
         return teleportId;
+    }
+
+    public void update(Location location) {
+        location.setX(playerX);
+        location.setY(playerFeetY);
+        location.setZ(playerZ);
+        location.setYaw(yaw);
+        location.setPitch(pitch);
     }
 }

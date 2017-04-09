@@ -1,4 +1,4 @@
-package im.octo.jungletree.network.handler.play;
+package im.octo.jungletree.network.codec.play;
 
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
@@ -16,9 +16,9 @@ public class PlayerPositionLookCodec implements Codec<PlayerPositionLookMessage>
         double z = buffer.readDouble();
         float yaw = buffer.readFloat();
         float pitch = buffer.readFloat();
-        int flags = buffer.readUnsignedByte();
-        int teleportID = ByteBufUtils.readVarInt(buffer);
-        return new PlayerPositionLookMessage(x, y, z, yaw, pitch, flags, teleportID);
+        boolean onGround = buffer.readBoolean();
+
+        return new PlayerPositionLookMessage(onGround, x, y, z, yaw, pitch);
     }
 
     @Override
@@ -28,8 +28,7 @@ public class PlayerPositionLookCodec implements Codec<PlayerPositionLookMessage>
         buf.writeDouble(message.getPlayerZ());
         buf.writeFloat(message.getYaw());
         buf.writeFloat(message.getPitch());
-        buf.writeByte(message.getFlags());
-        ByteBufUtils.writeVarInt(buf, message.getTeleportId());
+        buf.writeBoolean(message.isGrounded());
         return buf;
     }
 }

@@ -1,14 +1,18 @@
 package im.octo.jungletree.network.protocol;
 
 import im.octo.jungletree.network.codec.KickCodec;
-import im.octo.jungletree.network.codec.play.ClientSettingsCodec;
-import im.octo.jungletree.network.codec.play.JoinGameCodec;
-import im.octo.jungletree.network.codec.play.PlayerAbilitiesCodec;
-import im.octo.jungletree.network.codec.play.SpawnPositionCodec;
+import im.octo.jungletree.network.codec.game.IncomingChatCodec;
+import im.octo.jungletree.network.codec.game.PluginMessageCodec;
+import im.octo.jungletree.network.codec.play.*;
 import im.octo.jungletree.network.codec.play.entity.BlockActionCodec;
 import im.octo.jungletree.network.handler.play.*;
+import im.octo.jungletree.network.handler.play.game.IncomingChatHandler;
+import im.octo.jungletree.network.handler.play.game.PluginMessageHandler;
+import im.octo.jungletree.network.handler.play.player.PlayerPositionLookHandler;
 import im.octo.jungletree.network.message.KickMessage;
+import im.octo.jungletree.network.message.play.PositionRotationMessage;
 import im.octo.jungletree.network.message.play.entity.BlockActionMessage;
+import im.octo.jungletree.network.message.play.game.PluginMessage;
 import im.octo.jungletree.network.message.play.player.*;
 
 public class PlayProtocol extends JProtocol {
@@ -16,20 +20,21 @@ public class PlayProtocol extends JProtocol {
     public PlayProtocol() {
         super("PLAY", 0x4B);
 
-//        inbound(0x00, TeleportConfirmMessage.class, TeleportConfirmCodec.class, TeleportConfirmHandler.class);
+        inbound(0x00, TeleportConfirmMessage.class, TeleportConfirmCodec.class, TeleportConfirmHandler.class);
+
 //        inbound(0x01, TabCompleteMessage.class, TabCompleteCodec.class, TabCompleteHandler.class);
-//        inbound(0x02, InboundChatMessage.class, IncomingChatCodec.class, IncomingChatHandler.class);
+        inbound(0x02, IncomingChatMessage.class, IncomingChatCodec.class, IncomingChatHandler.class);
 //        inbound(0x03, ClientStatusMessage.class, ClientStatusCodec.class, ClientStatusHandler.class);
         inbound(0x04, ClientSettingsMessage.class, ClientSettingsCodec.class, ClientSettingsHandler.class);
 //        inbound(0x05, TransactionMessage.class, TransactionCodec.class, TransactionHandler.class);
 //        inbound(0x06, EnchantItemMessage.class, EnchantItemCodec.class, EnchantItemHandler.class);
 //        inbound(0x07, WindowClickMessage.class, WindowClickCodec.class, WindowClickHandler.class);
 //        inbound(0x08, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);
-//        inbound(0x09, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
+        inbound(0x09, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
 //        inbound(0x0A, InteractEntityMessage.class, InteractEntityCodec.class, InteractEntityHandler.class);
         inbound(0x0B, KeepAliveRequestMessage.class, KeepAliveRequestCodec.class, KeepAliveRequestHandler.class);
 //         inbound(0x0C, PlayerPositionMessage.class, PlayerPositionCodec.class, PlayerUpdateHandler.class);
-//        inbound(0x0D, PlayerPositionLookMessage.class, PlayerPositionLookCodec.class, PlayerUpdateHandler.class);
+        inbound(0x0D, PlayerPositionLookMessage.class, PlayerPositionLookCodec.class, PlayerPositionLookHandler.class);
 //        inbound(0x0E, PlayerLookMessage.class, PlayerLookCodec.class, PlayerUpdateHandler.class);
 //        inbound(0x0F, PlayerUpdateMessage.class, PlayerUpdateCodec.class, PlayerUpdateHandler.class);
 //        inbound(0x10, VehicleMoveMessage.class, VehicleMoveCodec.class, VehicleMoveHandler.class);
@@ -93,7 +98,7 @@ public class PlayProtocol extends JProtocol {
         outbound(0x2B, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class);
 //        outbound(0x2C, CombatEventMessage.class, CombatEventCodec.class);
 //        outbound(0x2D, UserListItemMessage.class, UserListItemCodec.class);
-        outbound(0x2E, PlayerPositionLookMessage.class, PlayerPositionLookCodec.class);
+        outbound(0x2E, PositionRotationMessage.class, PositionRotationCodec.class);
 //        outbound(0x2F, UseBedMessage.class, UseBedCodec.class);
 //        outbound(0x30, DestroyEntitiesMessage.class, DestroyEntitiesCodec.class);
 //        outbound(0x31, EntityRemoveEffectMessage.class, EntityRemoveEffectCodec.class);

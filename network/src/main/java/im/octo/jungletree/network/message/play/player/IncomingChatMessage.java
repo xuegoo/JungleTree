@@ -2,11 +2,11 @@ package im.octo.jungletree.network.message.play.player;
 
 import com.flowpowered.network.AsyncableMessage;
 
-public class InboundChatMessage implements AsyncableMessage {
+public class IncomingChatMessage implements AsyncableMessage {
 
     private final String message;
 
-    public InboundChatMessage(String message) {
+    public IncomingChatMessage(String message) {
         this.message = message;
     }
 
