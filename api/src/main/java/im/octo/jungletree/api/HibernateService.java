@@ -1,24 +1,14 @@
 package im.octo.jungletree.api;
 
-import com.google.inject.Singleton;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.util.Properties;
 
-@Singleton
-public final class HibernateService {
+public interface HibernateService {
 
-    public EntityManager getEntityManager() {
-        return getDefaultFactory().createEntityManager();
-    }
+    EntityManager getEntityManager(String name);
 
-    public EntityManager getEntityManager(Properties properties) {
-        return getDefaultFactory().createEntityManager(properties);
-    }
+    EntityManager getEntityManager(String name, Properties properties);
 
-    private EntityManagerFactory getDefaultFactory() {
-        return Persistence.createEntityManagerFactory("PersistenceUnit");
-    }
+    EntityManagerFactory getFactory(String name);
 }

@@ -1,34 +1,49 @@
 package im.octo.jungletree.world;
 
-import com.google.gson.annotations.Expose;
 import im.octo.jungletree.api.entity.Player;
 import im.octo.jungletree.api.world.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Entity
-@Table(name = "td_component")
+@Table(name = "worlds", indexes = {
+        @Index(name = "idx_uuid_name", columnList = "uuid,name"),
+})
 public class JungleWorld implements World {
 
     @Id
-    @Expose
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "uuid", columnDefinition = "BINARY(16)", unique = true, nullable = false)
     private UUID uuid;
 
-    @Expose
     @Column
     private String name;
 
-    @Expose
     @Column
     @Enumerated(EnumType.ORDINAL)
     private Dimension dimension;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "world_chunks",
+            joinColumns = {@JoinColumn(name="world_uuid")},
+            inverseJoinColumns = {@JoinColumn(name="chunk_uuid")} )
+    @MapKey(name = "uuid")
+    private final Map<UUID, JungleChunk> chunks = new ConcurrentHashMap<>();
+
     private transient final Set<Player> players = Collections.synchronizedSet(new HashSet<>());
+
+    @Override
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
 
     @Override
     public String getName() {
@@ -41,7 +56,7 @@ public class JungleWorld implements World {
 
     @Override
     public Dimension getDimension() {
-        return Dimension.OVERWORLD;
+        return dimension;
     }
 
     public void setDimension(Dimension dimension) {

@@ -1,5 +1,6 @@
 package im.octo.jungletree.player;
 
+import com.google.inject.Singleton;
 import im.octo.jungletree.api.entity.Player;
 import im.octo.jungletree.api.player.OfflinePlayer;
 import im.octo.jungletree.api.player.PlayerDataService;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Singleton
 public class JPlayerDataService implements PlayerDataService {
 
     private final Map<String, UUID> uuidCache = new ConcurrentHashMap<>();

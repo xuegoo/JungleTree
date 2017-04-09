@@ -3,16 +3,22 @@ package im.octo.jungletree;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import im.octo.jungletree.api.GameVersion;
+import im.octo.jungletree.api.HibernateService;
 import im.octo.jungletree.api.Rainforest;
 import im.octo.jungletree.api.Server;
 import im.octo.jungletree.api.entity.Player;
 import im.octo.jungletree.api.scheduler.TaskScheduler;
+import im.octo.jungletree.api.world.Dimension;
+import im.octo.jungletree.api.world.WorldService;
 import im.octo.jungletree.network.JNetworkServer;
 import im.octo.jungletree.network.SecurityUtils;
+import im.octo.jungletree.world.JungleWorld;
 import io.netty.channel.epoll.Epoll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.util.Collection;
@@ -38,7 +44,22 @@ public class JungleServer implements Server {
         this.guice = Guice.createInjector(new JungleGuiceModule());
         this.scheduler = guice.getInstance(TaskScheduler.class);
 
+        HibernateService hibernate = guice.getInstance(HibernateService.class);
+        EntityManager manager = hibernate.getEntityManager("world");
+
+        EntityTransaction transaction = manager.getTransaction();
+        transaction.begin();
+
+        JungleWorld world = new JungleWorld();
+        world.setDimension(Dimension.THE_END);
+        world.setName("test");
+
+        manager.persist(world);
+
+        transaction.commit();
+
         scheduler.execute(this::logStartMessage);
+
         // scheduler.shutdown();
     }
 
