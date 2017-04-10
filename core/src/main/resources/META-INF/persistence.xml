@@ -9,6 +9,7 @@
 
         <class>im.octo.jungletree.world.JungleWorld</class>
         <class>im.octo.jungletree.world.JungleChunk</class>
+        <class>im.octo.jungletree.world.JungleBlock</class>
 
         <properties>
             <property name="connection.driver_class" value="com.mysql.jdbc.Driver"/>
@@ -22,16 +23,16 @@
             <property name="hibernate.connection.username" value="root"/>
             <property name="hibernate.connection.password" value="changeme"/>
 
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="false"/>
 
             <property name="hibernate.jdbc.batch_size" value="10"/>
 
-            <property name="hibernate.c3p0.min_size" value="2"/>
-            <property name="hibernate.c3p0.max_size" value="8"/>
+            <property name="hibernate.c3p0.min_size" value="16"/>
+            <property name="hibernate.c3p0.max_size" value="16"/>
             <property name="hibernate.c3p0.timeout" value="300"/>
-            <property name="hibernate.c3p0.max_statements" value="128"/>
-            <property name="hibernate.c3p0.idle_test_period" value="3000"/>
+            <property name="hibernate.c3p0.max_statements" value="65535"/>
+            <property name="hibernate.c3p0.idle_test_period" value="50"/>
         </properties>
     </persistence-unit>
 </persistence>

@@ -2,6 +2,7 @@ package im.octo.jungletree.api.world;
 
 import im.octo.jungletree.api.util.NumberConversions;
 import im.octo.jungletree.api.util.Vector;
+import im.octo.jungletree.api.world.block.Block;
 
 public class Location implements Cloneable {
     private World world;

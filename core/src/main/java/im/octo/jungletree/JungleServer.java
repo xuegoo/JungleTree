@@ -9,9 +9,13 @@ import im.octo.jungletree.api.Server;
 import im.octo.jungletree.api.entity.Player;
 import im.octo.jungletree.api.scheduler.TaskScheduler;
 import im.octo.jungletree.api.world.Dimension;
+import im.octo.jungletree.api.world.World;
 import im.octo.jungletree.api.world.WorldService;
+import im.octo.jungletree.api.world.generator.WorldGenerator;
+import im.octo.jungletree.api.world.generator.WorldGeneratorService;
 import im.octo.jungletree.network.JNetworkServer;
 import im.octo.jungletree.network.SecurityUtils;
+import im.octo.jungletree.world.JungleChunk;
 import im.octo.jungletree.world.JungleWorld;
 import io.netty.channel.epoll.Epoll;
 import org.slf4j.Logger;
@@ -23,6 +27,7 @@ import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 public class JungleServer implements Server {
@@ -43,23 +48,25 @@ public class JungleServer implements Server {
     private JungleServer() {
         this.guice = Guice.createInjector(new JungleGuiceModule());
         this.scheduler = guice.getInstance(TaskScheduler.class);
+        Rainforest.setServer(this);
 
-        HibernateService hibernate = guice.getInstance(HibernateService.class);
-        EntityManager manager = hibernate.getEntityManager("world");
+        WorldGeneratorService worldGeneratorService = getGuice().getInstance(WorldGeneratorService.class);
 
-        EntityTransaction transaction = manager.getTransaction();
+        World world = worldGeneratorService.createWorld("test", Dimension.OVERWORLD);
+        WorldGenerator generator = worldGeneratorService.getGenerator(Dimension.OVERWORLD);
+        generator.generate(world);
+
+
+        HibernateService hibernate = Rainforest.getServer().getGuice().getInstance(HibernateService.class);
+        EntityManager entityManager = hibernate.getEntityManager("world");
+
+        EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
-
-        JungleWorld world = new JungleWorld();
-        world.setDimension(Dimension.THE_END);
-        world.setName("test");
-
-        manager.persist(world);
-
+        entityManager.merge(world);
         transaction.commit();
 
-        scheduler.execute(this::logStartMessage);
 
+        scheduler.execute(this::logStartMessage);
         // scheduler.shutdown();
     }
 
@@ -185,7 +192,6 @@ public class JungleServer implements Server {
     }
 
     private void run() {
-        Rainforest.setServer(this);
         bind();
     }
 }

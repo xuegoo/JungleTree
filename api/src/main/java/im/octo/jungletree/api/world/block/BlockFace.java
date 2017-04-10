@@ -1,4 +1,4 @@
-package im.octo.jungletree.api.world;
+package im.octo.jungletree.api.world.block;
 
 public enum BlockFace {
 
