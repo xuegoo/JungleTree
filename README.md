@@ -12,3 +12,10 @@ The project's overall goals are:
 * Scalable
 * Minimal hardware requirements
 * Ability to be load balanced
+
+## Special Thanks
+
+* [Flow NBT](https://github.com/flow/nbt)
+* [Flow Network](https://github.com/flow/network)
+* [The Glowstone Project](https://github.com/GlowstoneMC/Glowstone) - Network Protocol used as a reference implementation
+* [wiki.vg](http://wiki.vg) - Network Protocol documentation
