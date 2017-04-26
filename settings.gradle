@@ -6,4 +6,6 @@ include 'network'
 include 'flow-network'
 include 'nbt'
 include 'world'
+include 'storage'
+include 'messaging'
 

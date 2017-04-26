@@ -1,0 +1,15 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+}
+
+apply from: "$rootDir/gradle/java.gradle"
+
+dependencies {
+    compile project(':api')
+    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+    compile group: 'org.apache.activemq', name: 'activemq-all', version: '5.14.5'
+}
