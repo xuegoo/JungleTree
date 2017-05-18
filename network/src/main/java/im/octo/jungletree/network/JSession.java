@@ -41,15 +41,12 @@ import javax.crypto.SecretKey;
 import java.net.InetSocketAddress;
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class JSession extends BasicSession implements PlayerSession {
 
     private static final Logger log = LoggerFactory.getLogger(JSession.class);
 
     private final Server server;
-    private final Random random = ThreadLocalRandom.current();
     private final Queue<Message> messageQueue = new ArrayDeque<>();
 
     private ConnectionManager connectionManager;
@@ -179,7 +176,8 @@ public class JSession extends BasicSession implements PlayerSession {
         }
 
         playerDataService.join(this, reader, player);
-        player.getWorld().getPlayers().add(player);
+        // TODO: Implement currently online players in a given world
+        // player.getWorld().getPlayers().add(player);
         online = true;
         log.info("{} [{}] connected, UUID: {}", player.getName(), address, player.getUuid());
 

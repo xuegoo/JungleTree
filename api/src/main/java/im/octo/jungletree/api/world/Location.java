@@ -2,9 +2,8 @@ package im.octo.jungletree.api.world;
 
 import im.octo.jungletree.api.util.NumberConversions;
 import im.octo.jungletree.api.util.Vector;
-import im.octo.jungletree.api.world.block.Block;
 
-public class Location implements Cloneable {
+public final class Location implements Cloneable {
     private World world;
     private double x;
     private double y;
@@ -31,14 +30,6 @@ public class Location implements Cloneable {
 
     public World getWorld() {
         return world;
-    }
-
-    public Chunk getChunk() {
-        return world.getChunkAt(this);
-    }
-
-    public Block getBlock() {
-        return world.getBlockAt(this);
     }
 
     public void setX(double x) {

@@ -1,17 +1,13 @@
 package im.octo.jungletree;
 
 import com.google.inject.AbstractModule;
-import im.octo.jungletree.api.HibernateService;
 import im.octo.jungletree.api.event.EventService;
 import im.octo.jungletree.api.event.ListenerRegistry;
 import im.octo.jungletree.api.player.PlayerDataService;
 import im.octo.jungletree.api.scheduler.TaskScheduler;
-import im.octo.jungletree.api.world.World;
 import im.octo.jungletree.api.world.WorldService;
 import im.octo.jungletree.api.world.generator.NormalWorldGenerator;
-import im.octo.jungletree.api.world.generator.WorldGenerator;
 import im.octo.jungletree.api.world.generator.WorldGeneratorService;
-import im.octo.jungletree.db.JHibernateService;
 import im.octo.jungletree.event.JEventService;
 import im.octo.jungletree.event.JListenerRegistry;
 import im.octo.jungletree.player.JPlayerDataService;
@@ -29,7 +25,6 @@ public class JungleGuiceModule extends AbstractModule {
         bind(EventService.class).to(JEventService.class);
         bind(ListenerRegistry.class).to(JListenerRegistry.class);
         bind(PlayerDataService.class).to(JPlayerDataService.class);
-        bind(HibernateService.class).to(JHibernateService.class);
 
         // World
         bind(WorldService.class).to(JWorldService.class);

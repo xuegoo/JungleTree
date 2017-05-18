@@ -10,21 +10,29 @@ public interface Block {
 
     UUID getUuid();
 
+    void setUuid(UUID uuid);
+
     Material getMaterial();
 
     void setMaterial(Material material);
 
     int getX();
 
+    void setX(int x);
+
     int getY();
+
+    void setY(int y);
 
     int getZ();
 
+    void setZ(int z);
+
     Chunk getChunk();
 
-    World getWorld();
+    void setChunk(Chunk chunk);
 
     default Location getLocation() {
-        return new Location(getWorld(), getX(), getY(), getZ());
+        return new Location(getChunk().getWorld(), getX(), getY(), getZ());
     }
 }

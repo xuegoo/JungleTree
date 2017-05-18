@@ -12,7 +12,6 @@ import im.octo.jungletree.network.JSession;
 import im.octo.jungletree.network.message.play.PositionRotationMessage;
 import im.octo.jungletree.network.message.play.player.JoinGameMessage;
 import im.octo.jungletree.network.message.play.player.PlayerAbilitiesMessage;
-import im.octo.jungletree.network.message.play.player.PlayerPositionLookMessage;
 
 import java.util.Collection;
 import java.util.Map;
@@ -66,7 +65,8 @@ public class JPlayerDataService implements PlayerDataService {
                 false
         ));
 
-        player.setCompassTarget(player.getWorld().getSpawnLocation());
+        // TODO: Implement world spawn location
+        // player.setCompassTarget(player.getWorld().getSpawnLocation());
 
         Location location = player.getLocation();
         session.send(new PositionRotationMessage(location));

@@ -16,5 +16,5 @@ public interface Chunk {
 
     int getZ();
 
-    Block getBlock(int chunkX, int chunkY, int chunkZ);
+Block getBlock(int chunkX, int chunkY, int chunkZ);
 }

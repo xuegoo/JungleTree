@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
+import javax.jms.Queue;
 import javax.jms.Session;
 
 public class MessagingServiceImpl implements MessagingService {
@@ -31,5 +32,10 @@ public class MessagingServiceImpl implements MessagingService {
 
     @Override
     public void close() {
+    }
+
+    @Override
+    public Queue createQueue(String name) {
+        return null;
     }
 }

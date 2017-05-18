@@ -1,45 +1,17 @@
 package im.octo.jungletree.world;
 
-import im.octo.jungletree.api.exception.IllegalOperationException;
-import im.octo.jungletree.api.world.block.Block;
 import im.octo.jungletree.api.world.Chunk;
-import org.hibernate.annotations.GenericGenerator;
+import im.octo.jungletree.api.world.World;
+import im.octo.jungletree.api.world.block.Block;
 
-import javax.persistence.*;
-import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
-import static im.octo.jungletree.world.JungleBlock.HASH_CODE_PREFIX;
-import static im.octo.jungletree.world.JungleBlock.HASH_CODE_SEPARATOR;
-
-@Entity
-@Table(name = "chunks", indexes = {
-        @Index(name = "idx_uuid_coords", columnList = "uuid,x,z"),
-})
 public class JungleChunk implements Chunk {
 
-    @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "uuid", columnDefinition = "BINARY(16)", unique = true, nullable = false)
     private UUID uuid;
-
-    @Column(unique = true, nullable = false)
-    private int mapKey;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private JungleWorld world;
-
-    @Column
+    private World world;
     private int x;
-
-    @Column
     private int z;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Map<Integer, JungleBlock> blockMap = new ConcurrentHashMap<>();
 
     @Override
     public UUID getUuid() {
@@ -50,24 +22,12 @@ public class JungleChunk implements Chunk {
         this.uuid = uuid;
     }
 
-    public int getMapKey() {
-        return mapKey;
-    }
-
-    public void setMapKey(int blockMapKey) {
-        this.mapKey = blockMapKey;
-    }
-
-    public void updateMapKey() {
-        this.mapKey = Objects.hash(HASH_CODE_PREFIX, getX(), HASH_CODE_SEPARATOR, getZ());
-    }
-
     @Override
-    public JungleWorld getWorld() {
+    public World getWorld() {
         return world;
     }
 
-    public void setWorld(JungleWorld world) {
+    public void setWorld(World world) {
         this.world = world;
     }
 
@@ -90,19 +50,7 @@ public class JungleChunk implements Chunk {
     }
 
     @Override
-    public Block getBlock(int blockChunkX, int blockChunkY, int blockChunkZ) {
-        int coodinateHashCode = Objects.hash(HASH_CODE_PREFIX, HASH_CODE_SEPARATOR, blockChunkX, HASH_CODE_SEPARATOR, blockChunkY, HASH_CODE_SEPARATOR, blockChunkZ);
-        if (!blockMap.containsKey(coodinateHashCode)) {
-            return null;
-        }
-        return blockMap.get(coodinateHashCode);
-    }
-
-    public void setBlock(Block block) {
-        if (!(block instanceof JungleBlock)) {
-            throw new IllegalOperationException("Block is not of type " + JungleBlock.class.getSimpleName() + ". What on Earth are you doing?");
-        }
-        JungleBlock jungleBlock = (JungleBlock) block;
-        blockMap.put(jungleBlock.getMapKey(), jungleBlock);
+    public Block getBlock(int chunkX, int chunkY, int chunkZ) {
+        return null;
     }
 }
