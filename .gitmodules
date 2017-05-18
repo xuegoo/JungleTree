@@ -1,9 +1,12 @@
 [submodule "events"]
 		path = events
 		url = https://github.com/JungleTree/jungletree-events.git
+		branch = master
 [submodule "network"]
 		path = network
 		url = https://github.com/JungleTree/jungletree-network.git
+		branch = master
 [submodule "storage"]
 		path = storage
 		url = https://github.com/JungleTree/jungletree-storage.git
+		branch = master
