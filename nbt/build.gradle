@@ -1,9 +1,0 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        mavenLocal()
-        jcenter()
-    }
-}
-
-apply from: "$rootDir/gradle/java.gradle"

@@ -1,4 +1,3 @@
 rootProject.name = 'jungletree'
 include 'api'
-include 'nbt'
 include 'world'
