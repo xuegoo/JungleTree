@@ -3,5 +3,3 @@ include 'api'
 include 'events'
 include 'nbt'
 include 'world'
-include 'messaging'
-
