@@ -1,3 +1,0 @@
-rootProject.name = 'jungletree'
-include 'api'
-include 'world'
