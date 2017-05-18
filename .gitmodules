@@ -1,3 +1,6 @@
+[submodule "api"]
+		path = api
+		url = https://github.com/JungleTree/jungletree-api.git
 [submodule "flow-network"]
-	path = flow-network
-	url = https://github.com/JungleTree/network.git
+		path = flow-network
+		url = https://github.com/JungleTree/flow-network.git
