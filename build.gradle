@@ -17,7 +17,6 @@ dependencies {
     compile project(':events')
     compile project(':world')
     compile project(':nbt')
-    compile project(':network')
 }
 
 artifacts {
