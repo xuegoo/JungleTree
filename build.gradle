@@ -14,7 +14,6 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 dependencies {
     compile project(':api')
-    compile project(':events')
     compile project(':world')
     compile project(':nbt')
 }
