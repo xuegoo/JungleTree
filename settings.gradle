@@ -1,0 +1,6 @@
+rootProject.name = 'JungleTree'
+include 'api'
+include 'events'
+include 'network'
+include 'network/flow-network'
+include 'storage'
