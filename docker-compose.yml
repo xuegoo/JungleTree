@@ -7,8 +7,8 @@ services:
      - '61613:61613'
      - '61616:61616'
     volumes:
-     - '/data/activemq:/data/activemq'
-     - '/data/log/activemq:/var/log/activemq'
+     - 'activemq:/data/activemq'
+     - 'activemq:/var/log/activemq'
     environment:
       ACTIVEMQ_NAME: 'jungletree_mq'
       ACTIVEMQ_REMOVE_DEFAULT_ACCOUNT: 'true'
@@ -25,3 +25,5 @@ services:
       ACTIVEMQ_ENABLED_SCHEDULER: 'true'
       ACTIVEMQ_STATIC_TOPICS: ''
       ACTIVEMQ_STATIC_QUEUES: ''
+volumes:
+  activemq:
