@@ -2,6 +2,10 @@
 		path = api
 		url = git@github.com:JungleTree/jungletree-api.git
 		branch = master
+[submodule "jms"]
+		path = jms
+		url = git@github.com:JungleTree/jungletree-jms.git
+		branch = master
 [submodule "events"]
 		path = events
 		url = git@github.com:JungleTree/jungletree-events.git
