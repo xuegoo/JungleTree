@@ -1,24 +1,52 @@
 version: '2.1'
 services:
-  activemq:
+  jungletree:
+    image: 'jungletree/jungletree'
+    depends:
+     - jms
+     - storage
+    link:
+     - jms
+    environment:
+      MESSAGE_BROKER_URL: 'nio://10.8.0.1:61616'
+      MESSAGE_TIMEOUT: '1000'
+
+  storage:
+    image: 'jungletree/jungletree'
+    depends:
+     - jms
+     - db
+    link:
+     - jms
+     - db
+
+  db:
+    restart: always
+    image: 'library/postgres'
+    environment:
+      POSTGRES_PASSWORD: 'changeme'
+    volumes:
+      - 'db:/var/lib/postgresql'
+
+  jms:
     image: 'webcenter/activemq'
     ports:
      - '8161:8161'
      - '61613:61613'
      - '61616:61616'
     volumes:
-     - 'activemq:/data/activemq'
-     - 'activemq:/var/log/activemq'
+     - 'jms:/data/activemq'
+     - 'jms:/var/log/activemq'
     environment:
       ACTIVEMQ_NAME: 'jungletree_mq'
       ACTIVEMQ_REMOVE_DEFAULT_ACCOUNT: 'true'
       ACTIVEMQ_ADMIN_LOGIN: 'admin'
-      ACTIVEMQ_ADMIN_PASSWORD: 'changeme'
-      ACTIVEMQ_WRITE_LOGIN: 'producer'
+      ACTIVEMQ_ADMIN_PASSWORD: 'admin'
+      ACTIVEMQ_WRITE_LOGIN: 'jungletree'
       ACTIVEMQ_WRITE_PASSWORD: 'changeme'
-      ACTIVEMQ_READ_LOGIN: 'consumer'
+      ACTIVEMQ_READ_LOGIN: 'jungletree'
       ACTIVEMQ_READ_PASSWORD: 'changeme'
-      ACTIVEMQ_JMX_LOGIN: 'jmx'
+      ACTIVEMQ_JMX_LOGIN: 'jungletree'
       ACTIVEMQ_JMX_PASSWORD: 'changeme'
       ACTIVEMQ_MIN_MEMORY: 16
       ACTIVEMQ_MAX_MEMORY: 2048
@@ -26,4 +54,5 @@ services:
       ACTIVEMQ_STATIC_TOPICS: ''
       ACTIVEMQ_STATIC_QUEUES: ''
 volumes:
-  activemq:
+  db:
+  jms:
