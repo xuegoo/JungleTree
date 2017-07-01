@@ -1,8 +1,10 @@
 package im.octo.jungletree.rainforest.storage;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface StorageService {
 
-    Container open(String container);
+    CompletableFuture<Container> open(String container);
 
     void close(Container container);
 }

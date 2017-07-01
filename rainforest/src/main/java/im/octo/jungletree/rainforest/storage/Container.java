@@ -2,6 +2,8 @@ package im.octo.jungletree.rainforest.storage;
 
 public interface Container {
 
+    String getName();
+
     boolean isEmpty();
 
     void clear();
