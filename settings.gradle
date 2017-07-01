@@ -1,5 +1,6 @@
 rootProject.name = 'JungleTree'
-include 'api'
+include 'rainforest'
+include 'rainforest/minecraft'
 include 'jms'
 include 'events'
 include 'network'
