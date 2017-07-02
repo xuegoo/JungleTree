@@ -18,8 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 public class JungleMessagingService implements MessagingService {
 
-    private static final String BROKER_URL = System.getenv("MESSAGE_BROKER_URL");
-    private static final long TIMEOUT = Long.parseLong(System.getenv("MESSAGE_TIMEOUT"));
+    private static final String BROKER_URL = System.getenv("MESSAGE_BROKER_URL") != null ? System.getenv("MESSAGE_BROKER_URL") : "vm://localhost";
+    private static final long TIMEOUT = Long.parseLong(System.getenv("MESSAGE_TIMEOUT") != null ? System.getenv("MESSAGE_TIMEOUT") : "1000");
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> HANDLERS = new ConcurrentHashMap<>();
