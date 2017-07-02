@@ -8,6 +8,7 @@ public class Application {
 
     public static void main(String[] args) {
         JungleMessagingService messagingService = new JungleMessagingService();
+        messagingService.initJms();
 
         ContainerMessage message = new ContainerMessage();
         message.setName("dummy");

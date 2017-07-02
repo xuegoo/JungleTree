@@ -27,10 +27,6 @@ public class JungleMessagingService implements MessagingService {
     private Connection connection;
     private Session session;
 
-    public JungleMessagingService() {
-        initJms();
-    }
-
     public Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> getHandlers() {
         return HANDLERS;
     }
@@ -84,17 +80,17 @@ public class JungleMessagingService implements MessagingService {
             session.close();
             connection.close();
         } catch (JMSException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         }
     }
 
-    private void initJms() {
+    public void initJms() {
         try {
             ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(BROKER_URL);
             this.connection = factory.createConnection();
             this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         } catch (JMSException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         }
     }
 }
