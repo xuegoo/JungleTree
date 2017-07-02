@@ -29,6 +29,12 @@ jacocoTestReport {
     reports {
         xml.enabled true
     }
+
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['im/octo/jungletree/rainforest/**'])
+        })
+    }
 }
 
 check.dependsOn jacocoTestReport
