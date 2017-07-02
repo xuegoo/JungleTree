@@ -1,9 +1,36 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+group 'im.octo'
+version '0.0.1-SNAPSHOT'
+
 apply plugin: 'java'
+apply plugin: 'maven'
 
 repositories {
     jcenter()
+    maven {
+        name "Nexus Snapshots"
+        url "https://nexus.octo.im/repository/maven-snapshots/"
+    }
 }
 
 dependencies {
     compile project(':rainforest')
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://nexus.octo.im/repository/maven-snapshots/") {
+                authentication(userName: mavenUser, password: mavenPassword)
+            }
+            pom.version = project.version
+            pom.artifactId = 'rainforest-minecraft'
+            pom.groupId = "im.octo.jungletree"
+        }
+    }
 }

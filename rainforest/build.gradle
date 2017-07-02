@@ -1,7 +1,5 @@
 buildscript {
     repositories {
-        mavenCentral()
-        mavenLocal()
         jcenter()
     }
 }
@@ -11,12 +9,17 @@ version '0.0.1-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
     jcenter()
+    maven {
+        name "Nexus Snapshots"
+        url "https://nexus.octo.im/repository/maven-snapshots/"
+    }
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -47,5 +50,18 @@ jar {
         attributes 'Specification-Title': 'Rainforest',
                 'Specification-Vendor': 'Oliver Brammer (Octobyte) <mail@octo.im>',
                 'Specification-Version': version
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://nexus.octo.im/repository/maven-snapshots/") {
+                authentication(userName: mavenUser, password: mavenPassword)
+            }
+            pom.version = project.version
+            pom.artifactId = 'rainforest'
+            pom.groupId = "im.octo.jungletree"
+        }
     }
 }
