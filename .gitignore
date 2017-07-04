@@ -173,3 +173,5 @@ proguard/
 
 # Log Files
 *.log
+
+activemq-data/*
