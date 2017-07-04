@@ -4,7 +4,6 @@ version '0.0.1-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'idea'
-apply plugin: 'jacoco'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -27,49 +26,9 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
 }
 
+
 dependencies {
     compile project(':jungletree-auth')
     compile project(':jungletree-messenger')
     compile project(':jungletree-storage')
 }
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
-}
-
-project.ext.jacocoOfflineSourceSets = [ 'main' ]
-task doJacocoOfflineInstrumentation(dependsOn: [ classes, project.configurations.jacocoAnt ]) {
-    inputs.files classes.outputs.files
-    File outputDir = new File(project.buildDir, 'instrumentedClasses')
-    outputs.dir outputDir
-    doFirst {
-        project.delete(outputDir)
-        ant.taskdef(
-                resource: 'org/jacoco/ant/antlib.xml',
-                classpath: project.configurations.jacocoAnt.asPath,
-                uri: 'jacoco'
-        )
-        def instrumented = false
-        jacocoOfflineSourceSets.each { sourceSetName ->
-            if (file(sourceSets[sourceSetName].output.classesDir).exists()) {
-                def instrumentedClassedDir = "${outputDir}/${sourceSetName}"
-                ant.'jacoco:instrument'(destdir: instrumentedClassedDir) {
-                    fileset(dir: sourceSets[sourceSetName].output.classesDir, includes: '**/*.class')
-                }
-                //Replace the classes dir in the test classpath with the instrumented one
-                sourceSets.test.runtimeClasspath -= files(sourceSets[sourceSetName].output.classesDir)
-                sourceSets.test.runtimeClasspath += files(instrumentedClassedDir)
-                instrumented = true
-            }
-        }
-        if (instrumented) {
-            //Disable class verification based on https://github.com/jayway/powermock/issues/375
-            test.jvmArgs += '-noverify'
-        }
-    }
-}
-
-check.dependsOn jacocoTestReport
-test.dependsOn doJacocoOfflineInstrumentation
