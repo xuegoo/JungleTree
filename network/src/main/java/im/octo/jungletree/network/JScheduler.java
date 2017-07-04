@@ -2,8 +2,8 @@ package im.octo.jungletree.network;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.Singleton;
-import im.octo.jungletree.rainforest.scheduler.Task;
-import im.octo.jungletree.rainforest.scheduler.Scheduler;
+import scheduler.Task;
+import scheduler.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

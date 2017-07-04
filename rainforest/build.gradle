@@ -1,21 +1,20 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-}
-
-group 'im.octo'
-version '0.0.1-SNAPSHOT'
-
 apply plugin: 'java'
-apply plugin: 'idea'
 apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+group = 'org.jungletree'
+version '0.0.1-SNAPSHOT'
+
 repositories {
     jcenter()
+    mavenCentral()
+    mavenLocal()
+    maven {
+        name "Nexus Releases"
+        url "https://nexus.octo.im/repository/maven-releases/"
+    }
     maven {
         name "Nexus Snapshots"
         url "https://nexus.octo.im/repository/maven-snapshots/"
@@ -31,25 +30,20 @@ if (JavaVersion.current().isJava8Compatible()) {
 }
 
 dependencies {
-    compile group: 'javax.jms', name: 'jms', version: '1.1'
-    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
-
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.23'
-    compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.23'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
-
-    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
-    testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '1.6.6'
-    testCompile group: 'org.powermock', name: 'powermock-api-mockito', version: '1.6.6'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile project(':rainforest/entity')
+    compile project(':rainforest/logging')
+    compile project(':rainforest/messaging')
+    compile project(':rainforest/plugin')
+    compile project(':rainforest/scheduler')
+    compile project(':rainforest/storage')
+    compile project(':rainforest/world')
 }
 
 jar {
     manifest {
         attributes 'Specification-Title': 'Rainforest',
-                'Specification-Vendor': 'Oliver Brammer (Octobyte) <mail@octo.im>',
-                'Specification-Version': version
+                'Specification-Vendor': 'jungletree.org',
+                'Specification-Version': project.version
     }
 }
 
@@ -60,8 +54,8 @@ uploadArchives {
                 authentication(userName: mavenUser, password: mavenPassword)
             }
             pom.version = project.version
-            pom.artifactId = 'rainforest'
-            pom.groupId = "im.octo.jungletree"
+            pom.artifactId = 'rainforest-all'
+            pom.groupId = "org.jungletree"
         }
     }
 }

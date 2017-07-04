@@ -6,7 +6,7 @@ import im.octo.jungletree.api.GameVersion;
 import im.octo.jungletree.api.Rainforest;
 import im.octo.jungletree.api.Server;
 import im.octo.jungletree.rainforest.minecraft.entity.Player;
-import im.octo.jungletree.rainforest.scheduler.Scheduler;
+import scheduler.Scheduler;
 import io.netty.channel.epoll.Epoll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

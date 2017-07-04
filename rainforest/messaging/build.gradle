@@ -1,0 +1,43 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+group = 'org.jungletree'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    jcenter()
+    mavenCentral()
+    mavenLocal()
+    maven {
+        name "Nexus Releases"
+        url "https://nexus.jungletree.org/repository/maven-releases/"
+    }
+    maven {
+        name "Nexus Snapshots"
+        url "https://nexus.jungletree.org/repository/maven-snapshots/"
+    }
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://nexus.jungletree.org/repository/maven-snapshots/") {
+                authentication(userName: mavenUser, password: mavenPassword)
+            }
+            pom.version = project.version
+            pom.artifactId = 'rainforest-messaging'
+            pom.groupId = "org.jungletree"
+        }
+    }
+}

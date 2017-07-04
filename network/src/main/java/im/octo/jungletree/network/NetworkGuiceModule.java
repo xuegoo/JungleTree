@@ -1,7 +1,7 @@
 package im.octo.jungletree.network;
 
 import com.google.inject.AbstractModule;
-import im.octo.jungletree.rainforest.scheduler.Scheduler;
+import scheduler.Scheduler;
 
 public class NetworkGuiceModule extends AbstractModule {
 

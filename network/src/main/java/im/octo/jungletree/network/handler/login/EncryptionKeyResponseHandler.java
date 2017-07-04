@@ -12,7 +12,7 @@ import im.octo.jungletree.api.event.type.player.AsyncPlayerPreLoginEvent;
 import im.octo.jungletree.rainforest.network.LoginResult;
 import im.octo.jungletree.api.player.meta.PlayerProfile;
 import im.octo.jungletree.api.player.meta.PlayerProperty;
-import im.octo.jungletree.rainforest.scheduler.Scheduler;
+import scheduler.Scheduler;
 import im.octo.jungletree.api.util.UuidUtils;
 import im.octo.jungletree.network.JSession;
 import im.octo.jungletree.network.http.HttpCallback;
