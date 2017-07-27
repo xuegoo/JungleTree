@@ -1,24 +1,24 @@
-version: '2.1'
+version: "3"
 services:
-  jungletree:
-    image: 'jungletree/jungletree'
-    depends:
-     - jms
-     - storage
-    link:
-     - jms
-    environment:
-      MESSAGE_BROKER_URL: 'nio://10.8.0.1:61616'
-      MESSAGE_TIMEOUT: '1000'
+#  jungletree:
+#    image: 'jungletree/jungletree'
+#    depends_on:
+#     - jms
+#     - storage
+#    links:
+#     - jms
+#    environment:
+#      MESSAGE_BROKER_URL: 'nio://localhost:61616'
+#      MESSAGE_TIMEOUT: '1000'
 
-  storage:
-    image: 'jungletree/jungletree'
-    depends:
-     - jms
-     - db
-    link:
-     - jms
-     - db
+#  storage:
+#    image: 'jungletree/jungletree'
+#    depends_on:
+#     - jms
+#     - db
+#    links:
+#     - jms
+#     - db
 
   db:
     restart: always

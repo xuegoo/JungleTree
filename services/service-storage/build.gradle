@@ -1,4 +1,17 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.1"
+    }
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'maven'
 
 sourceCompatibility = 1.8
@@ -6,6 +19,8 @@ targetCompatibility = 1.8
 
 group = 'org.jungletree'
 version '0.0.1-SNAPSHOT'
+
+mainClassName = 'org.jungletree.service.storage.StorageServiceApplication'
 
 repositories {
     jcenter()
@@ -29,11 +44,17 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
 dependencies {
     compile project(':jungletree-messenger')
     compile project(':jungletree-storage')
 
-    compile group: 'org.redisson', name: 'redisson', version: '3.4.3'
+    compile group: 'org.redisson', name: 'redisson', version: '3.4.4'
 
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'

@@ -22,13 +22,31 @@ public class JungleMessagingService implements MessagingService {
     private static final long TIMEOUT = Long.parseLong(System.getenv("MESSAGE_TIMEOUT") != null ? System.getenv("MESSAGE_TIMEOUT") : "1000");
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> HANDLERS = new ConcurrentHashMap<>();
 
     private Connection connection;
     private Session session;
 
+    private final Map<String, Queue> requestQueues = new ConcurrentHashMap<>();
+    private final Map<String, Queue> responseQueues = new ConcurrentHashMap<>();
+    private final Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> handlers = new ConcurrentHashMap<>();
+
     public Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> getHandlers() {
-        return HANDLERS;
+        return handlers;
+    }
+
+    @Override
+    public void start() {
+        initJms();
+    }
+
+    @Override
+    public void shutdownGracefully() {
+        shutdown();
+    }
+
+    @Override
+    public void shutdownForcefully() {
+
     }
 
     @Override
@@ -36,8 +54,8 @@ public class JungleMessagingService implements MessagingService {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 // TODO: Cache connections
-                Destination producerDestination = session.createQueue(message.getClass().getSimpleName() + "Request");
-                Destination consumerDestination = session.createQueue(message.getClass().getSimpleName() + "Response");
+                Destination producerDestination = requestQueues.get(message.getClass().getSimpleName() + "Request");
+                Destination consumerDestination = responseQueues.get(message.getClass().getSimpleName() + "Response");
                 MessageProducer producer = session.createProducer(producerDestination);
                 MessageConsumer consumer = session.createConsumer(consumerDestination);
                 producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
@@ -57,25 +75,58 @@ public class JungleMessagingService implements MessagingService {
 
     @Override
     public <M extends Message> void registerMessage(Class<M> messageClass) {
-        HANDLERS.put(messageClass, new ArrayList<>());
+        String requestQueueName = messageClass.getSimpleName() + "Request";
+        String responseQueueName = messageClass.getSimpleName() + "Response";
+
+        try {
+            if (!requestQueues.containsKey(requestQueueName)) {
+                Queue requestQueue = session.createQueue(requestQueueName);
+                this.requestQueues.put(requestQueueName, requestQueue);
+            }
+
+            if (!responseQueues.containsKey(responseQueueName)) {
+                Queue responseQueue = session.createQueue(requestQueueName);
+                this.requestQueues.put(requestQueueName, responseQueue);
+            }
+        } catch (JMSException ex) {
+            throw new RuntimeException(ex);
+        }
+        handlers.put(messageClass, new ArrayList<>());
     }
 
     @Override
     public <M extends Message> void unregisterMessage(Class<M> messageClass) {
-        HANDLERS.remove(messageClass);
+        handlers.remove(messageClass);
     }
 
     @Override
     public <M extends Message> void registerHandler(Class<M> messageClass, MessageHandler<M> handler) {
-        HANDLERS.get(messageClass).add(handler);
+        Queue queue = requestQueues.get(messageClass.getSimpleName() + "Request");
+        try {
+            MessageConsumer consumer = session.createConsumer(queue);
+            consumer.setMessageListener(message -> {
+                if (message instanceof TextMessage) {
+                    TextMessage textMessage = (TextMessage)message;
+                    try {
+                        M result = GSON.fromJson(textMessage.getText(), messageClass);
+                        handler.handle(result);
+                    } catch (JMSException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+        } catch (JMSException ex) {
+            throw new RuntimeException(ex);
+        }
+        handlers.get(messageClass).add(handler);
     }
 
     @Override
     public <M extends Message> void unregisterHandler(Class<M> messageClass, MessageHandler<M> handler) {
-        HANDLERS.get(messageClass).remove(handler);
+        handlers.get(messageClass).remove(handler);
     }
 
-    public void shutdown() {
+    void shutdown() {
         try {
             session.close();
             connection.close();
@@ -84,11 +135,12 @@ public class JungleMessagingService implements MessagingService {
         }
     }
 
-    public void initJms() {
+    void initJms() {
         try {
             ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(BROKER_URL);
             this.connection = factory.createConnection();
             this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            connection.start();
         } catch (JMSException ex) {
             throw new RuntimeException(ex);
         }

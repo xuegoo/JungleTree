@@ -1,5 +1,7 @@
 package org.jungletree.rainforest.storage;
 
+import java.util.Map;
+
 public interface Container {
 
     String getName();
@@ -8,7 +10,7 @@ public interface Container {
 
     void clear();
 
-    <K, V> void get(Store<K, V> store);
+    <K, V> Map<K, V> get(String name);
 
-    <K, V> void save(Store<K, V> store);
+    <K, V> void save(String name, Map<K, V> store);
 }
