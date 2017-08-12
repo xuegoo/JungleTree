@@ -11,4 +11,5 @@ include 'jungletree-auth'
 include 'jungletree-messenger'
 include 'jungletree-storage'
 include 'jungletree-scheduler'
+include 'jungletree-world'
 

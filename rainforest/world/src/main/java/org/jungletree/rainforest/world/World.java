@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public interface World {
 
-    UUID getUuid();
+    UUID getUniqueId();
 
     String getName();
 
