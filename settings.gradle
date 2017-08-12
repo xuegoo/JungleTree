@@ -10,4 +10,5 @@ include 'rainforest'
 include 'jungletree-auth'
 include 'jungletree-messenger'
 include 'jungletree-storage'
+include 'jungletree-scheduler'
 

@@ -1,6 +1,6 @@
 package org.jungletree.rainforest.scheduler;
 
-public interface Scheduler {
+public interface SchedulerService {
 
     void execute(Runnable task);
 
