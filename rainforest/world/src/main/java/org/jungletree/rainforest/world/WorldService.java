@@ -1,10 +1,12 @@
 package org.jungletree.rainforest.world;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface WorldService {
 
     World getWorld(String name);
 
-    Chunk getChunk(World world, int chunkX, int chunkZ);
+    CompletableFuture<Chunk> getChunk(World world, int chunkX, int chunkZ);
 
-    Block getBlock(World world, int blockX, int blockY, int blockZ);
+    CompletableFuture<Block> getBlock(World world, int blockX, int blockY, int blockZ);
 }

@@ -13,6 +13,7 @@ public class JungleWorld implements World {
     private long seed;
     private Dimension dimension;
     private int maxHeight;
+    private int spawnRadius;
 
     private Set<ChunkReference> chunkReferences;
 
@@ -63,6 +64,16 @@ public class JungleWorld implements World {
     @Override
     public void setMaxHeight(int maxHeight) {
         this.maxHeight = maxHeight;
+    }
+
+    @Override
+    public int getSpawnRadius() {
+        return spawnRadius;
+    }
+
+    @Override
+    public void setSpawnRadius(int spawnRadius) {
+        this.spawnRadius = spawnRadius;
     }
 
     public Set<ChunkReference> getChunkReferences() {

@@ -1,73 +1,111 @@
 package org.jungletree.world;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.jungletree.rainforest.scheduler.SchedulerService;
 import org.jungletree.rainforest.storage.StorageService;
-import org.jungletree.rainforest.world.Chunk;
-import org.jungletree.rainforest.world.World;
-import org.jungletree.rainforest.world.WorldLoader;
-import org.jungletree.world.exception.WorldNotPresentException;
+import org.jungletree.rainforest.world.*;
 import org.redisson.api.RBucket;
+import org.redisson.api.RLock;
+import org.redisson.api.RMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 @Singleton
 public class JungleWorldLoader implements WorldLoader {
 
-    private StorageService storage;
+    private static final Logger log = LoggerFactory.getLogger(JungleWorldLoader.class);
+    private static final Gson GSON = new GsonBuilder().create();
+
+    private final StorageService storage;
+    private final SchedulerService scheduler;
 
     @Inject
-    public JungleWorldLoader(StorageService storage) {
+    public JungleWorldLoader(StorageService storage, SchedulerService scheduler) {
         this.storage = storage;
+        this.scheduler = scheduler;
     }
 
     @Override
     public World getWorld(String name) {
-        RBucket<World> bucket = storage.getStorage().getBucket("world-" + name);
-        if (!bucket.isExists()) {
-            throw new WorldNotPresentException(name);
-        }
-        return bucket.get();
+        Map<String, World> worlds = storage.getStorage().getMap("worlds");
+        return worlds.getOrDefault(name, temporaryCreateWorld());
     }
 
     @Override
-    public Chunk getChunk(World world, int chunkX, int chunkZ) {
-        Map<ChunkReference, JungleChunk> chunks = storage.getStorage().getMap("chunks-" + world.getName());
-        ChunkReference reference = new ChunkReference(chunkX, chunkZ);
-        if (chunks.containsKey(reference)) {
-            JungleChunk chunk = chunks.get(reference);
-            initBlocksForChunk(world, chunk);
-            return chunk;
-        }
-        // TODO: Don't return null
+    public void loadChunk(World world, int chunkX, int chunkZ) {
+        RMap<Integer, JungleChunk> chunks = storage.getStorage().getMap(String.format("world-%s_chunks", world.getName()));
+
+        scheduler.execute(() -> {
+            int code = Objects.hash(chunkX, chunkZ);
+            if (chunks.containsKey(code)) {
+                log.info("Loading chunk: x={}, z={}", chunkX, chunkZ);
+                JungleChunk chunk = chunks.get(code);
+                chunk.setBlocks(initBlocksForChunk(world, chunk));
+            } else {
+                log.info("Generating chunk: x={}, z={}", chunkX, chunkZ);
+                RLock lock = chunks.getLock(code);
+                JungleChunk chunk = temporaryCreateEmptyChunk(new ChunkReference(chunkX, chunkZ));
+                chunk.setBlocks(initBlocksForChunk(world, chunk));
+                lock.unlock();
+                chunks.fastPut(code, chunk);
+            }
+
+        });
+    }
+
+    private World temporaryCreateWorld() {
+        JungleWorld world = new JungleWorld();
+        world.setUniqueId(UUID.randomUUID());
+        world.setName("test");
+        world.setDimension(Dimension.OVERWORLD);
+        world.setSeed(ThreadLocalRandom.current().nextLong());
+        world.setMaxHeight(256);
+        world.setSpawnRadius(16);
+        return world;
+    }
+
+    @Override
+    public CompletableFuture<Chunk> getChunk(World world, int chunkX, int chunkZ) {
         return null;
     }
 
+    private JungleChunk temporaryCreateEmptyChunk(ChunkReference chunkReference) {
+        JungleChunk chunk = new JungleChunk();
+        chunk.setX(chunkReference.getChunkX());
+        chunk.setZ(chunkReference.getChunkZ());
+        return chunk;
+    }
+
     private JungleBlock[][][] initBlocksForChunk(World world, Chunk chunk) {
+        RBucket<String> bucket = storage.getStorage().getBucket(String.format("world-%s_chunk-%d-%d_blocks", world.getName(), chunk.getX(), chunk.getZ()));
+
+        if (bucket.isExists()) {
+            return GSON.fromJson(bucket.get(), JungleBlock[][][].class);
+        }
+
         int maxWorldHeight = world.getMaxHeight();
         JungleBlock[][][] blocks = new JungleBlock[maxWorldHeight][16][16];
-        Map<BlockReference, JungleBlock> blockReferences = storage.getStorage().getMap(String.format("chunk-%s-%s", chunk.getX(), chunk.getZ()));
-        initBlocksCoordY(blocks, blockReferences);
-        return blocks;
-    }
 
-    private void initBlocksCoordY(JungleBlock[][][] blocks, Map<BlockReference, JungleBlock> blockReferences) {
-        IntStream.range(0, blocks.length).parallel().forEach(y -> {
+        IntStream.range(0, 16).parallel().forEach(y -> {
             blocks[y] = new JungleBlock[16][16];
-
-            initBlocksCoordX(blocks, blockReferences, y);
+            IntStream.range(0, 16).forEach(x -> {
+                blocks[y][x] = new JungleBlock[16];
+                IntStream.range(0, 16).forEach(z -> blocks[y][x][z] = new JungleBlock(y < 32 ? BlockType.STONE : BlockType.AIR));
+            });
         });
-    }
 
-    private void initBlocksCoordX(JungleBlock[][][] blocks, Map<BlockReference, JungleBlock> blockReferences, int y) {
-        IntStream.range(0, blocks.length).parallel().forEach(x -> {
-            blocks[y][x] = new JungleBlock[16];
-            initBlocksCoordZ(blocks, blockReferences, y, x);
-        });
-    }
-
-    private void initBlocksCoordZ(JungleBlock[][][] blocks, Map<BlockReference, JungleBlock> blockReferences, int y, int x) {
-        IntStream.range(0, blocks.length).parallel().forEach(z -> blocks[y][x][z] = blockReferences.getOrDefault(new BlockReference(x, y, z), new JungleBlock()));
+        log.info("toJson");
+        scheduler.execute(() -> bucket.set(GSON.toJson(blocks)));
+        return blocks;
     }
 }

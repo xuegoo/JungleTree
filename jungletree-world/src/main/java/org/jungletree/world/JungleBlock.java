@@ -7,6 +7,10 @@ public class JungleBlock implements Block {
 
     private BlockType type;
 
+    public JungleBlock(BlockType type) {
+        this.type = type;
+    }
+
     @Override
     public BlockType getType() {
         return type;

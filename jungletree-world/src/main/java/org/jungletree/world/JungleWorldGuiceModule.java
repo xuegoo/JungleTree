@@ -1,0 +1,23 @@
+package org.jungletree.world;
+
+import com.google.inject.AbstractModule;
+import org.jungletree.messenger.JungleMessagingService;
+import org.jungletree.rainforest.messaging.MessagingService;
+import org.jungletree.rainforest.scheduler.SchedulerService;
+import org.jungletree.rainforest.storage.StorageService;
+import org.jungletree.rainforest.world.WorldLoader;
+import org.jungletree.rainforest.world.WorldService;
+import org.jungletree.scheduler.JungleSchedulerService;
+import org.jungletree.storage.storage.JungleStorageService;
+
+public class JungleWorldGuiceModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+        bind(MessagingService.class).to(JungleMessagingService.class);
+        bind(StorageService.class).to(JungleStorageService.class);
+        bind(SchedulerService.class).to(JungleSchedulerService.class);
+        bind(WorldService.class).to(JungleWorldService.class);
+        bind(WorldLoader.class).to(JungleWorldLoader.class);
+    }
+}

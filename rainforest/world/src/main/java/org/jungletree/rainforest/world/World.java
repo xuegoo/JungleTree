@@ -21,4 +21,8 @@ public interface World {
     int getMaxHeight();
 
     void setMaxHeight(int maxHeight);
+
+    int getSpawnRadius();
+
+    void setSpawnRadius(int spawnRadius);
 }

@@ -1,6 +1,7 @@
 package org.jungletree.rainforest.world;
 
-public interface BlockType {
+public enum  BlockType {
 
-    String getName();
+    AIR,
+    STONE
 }
