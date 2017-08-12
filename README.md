@@ -7,15 +7,10 @@ JungleTree is an event-driven, modern Minecraft Server. The goal is to produce a
 The project's overall goals are:
 
 * Enterprise friendly
-* World data stored in a SQL Database
-* Built-in logging and rollback
-* Scalable
-* Minimal hardware requirements
-* Ability to be load balanced
-
-## Special Thanks
-
-* [Flow NBT](https://github.com/flow/nbt)
-* [Flow Network](https://github.com/flow/network)
-* [The Glowstone Project](https://github.com/GlowstoneMC/Glowstone) - Network Protocol used as a reference implementation
-* [wiki.vg](http://wiki.vg) - Network Protocol documentation
+* Containerized by design
+* Flexible framework for data storage, backed by NoSQL and memory caching
+* Scalable, with load balancing on multiple levels
+* Native support for GeoLocation-based distribution, without the use of BungeeCord
+* Java and Pocket Edition Support
+* Modular API for developers
+* Hotswap plugins on-the-fly
