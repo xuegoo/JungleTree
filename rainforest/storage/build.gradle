@@ -28,3 +28,7 @@ if (JavaVersion.current().isJava8Compatible()) {
         }
     }
 }
+
+dependencies {
+    compile 'org.redisson:redisson:3.5.0'
+}

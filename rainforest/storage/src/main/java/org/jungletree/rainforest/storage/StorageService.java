@@ -1,10 +1,8 @@
 package org.jungletree.rainforest.storage;
 
-import java.util.concurrent.CompletableFuture;
+import org.redisson.api.RedissonClient;
 
 public interface StorageService {
 
-    CompletableFuture<Container> open(String container);
-
-    void close(Container container);
+    RedissonClient getStorage();
 }
