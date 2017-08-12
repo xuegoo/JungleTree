@@ -11,14 +11,6 @@ repositories {
     jcenter()
     mavenCentral()
     mavenLocal()
-    maven {
-        name "Nexus Releases"
-        url "https://nexus.octo.im/repository/maven-releases/"
-    }
-    maven {
-        name "Nexus Snapshots"
-        url "https://nexus.octo.im/repository/maven-snapshots/"
-    }
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -44,18 +36,5 @@ jar {
         attributes 'Specification-Title': 'Rainforest',
                 'Specification-Vendor': 'jungletree.org',
                 'Specification-Version': project.version
-    }
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "https://nexus.octo.im/repository/maven-snapshots/") {
-                authentication(userName: mavenUser, password: mavenPassword)
-            }
-            pom.version = project.version
-            pom.artifactId = 'rainforest-all'
-            pom.groupId = "org.jungletree"
-        }
     }
 }

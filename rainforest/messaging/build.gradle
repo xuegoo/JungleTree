@@ -28,16 +28,3 @@ if (JavaVersion.current().isJava8Compatible()) {
         }
     }
 }
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "https://nexus.jungletree.org/repository/maven-snapshots/") {
-                authentication(userName: mavenUser, password: mavenPassword)
-            }
-            pom.version = project.version
-            pom.artifactId = 'rainforest-messaging'
-            pom.groupId = "org.jungletree"
-        }
-    }
-}

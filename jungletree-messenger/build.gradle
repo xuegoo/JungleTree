@@ -11,14 +11,6 @@ repositories {
     jcenter()
     mavenCentral()
     mavenLocal()
-    maven {
-        name "Nexus Releases"
-        url "https://nexus.jungletree.org/repository/maven-releases/"
-    }
-    maven {
-        name "Nexus Snapshots"
-        url "https://nexus.jungletree.org/repository/maven-snapshots/"
-    }
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -39,20 +31,5 @@ dependencies {
     compile group: 'com.google.code.gson', name: 'gson', version: '2.8.1'
 
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
-    testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '1.6.6'
-    testCompile group: 'org.powermock', name: 'powermock-api-mockito', version: '1.6.6'
     testCompile group: 'junit', name: 'junit', version: '4.12'
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "https://nexus.jungletree.org/repository/maven-snapshots/") {
-                authentication(userName: mavenUser, password: mavenPassword)
-            }
-            pom.version = project.version
-            pom.artifactId = 'jungletree-messenger'
-            pom.groupId = "org.jungletree"
-        }
-    }
 }

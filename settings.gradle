@@ -10,7 +10,4 @@ include 'rainforest'
 include 'jungletree-auth'
 include 'jungletree-messenger'
 include 'jungletree-storage'
-include 'services'
-include 'services:service-storage'
-findProject(':services:service-storage')?.name = 'service-storage'
 

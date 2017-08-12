@@ -12,10 +12,6 @@ repositories {
     jcenter()
     mavenCentral()
     mavenLocal()
-    maven {
-        name "Nexus Snapshots"
-        url "https://nexus.octo.im/repository/maven-snapshots/"
-    }
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
