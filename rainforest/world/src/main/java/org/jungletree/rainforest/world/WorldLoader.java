@@ -4,5 +4,5 @@ public interface WorldLoader {
 
     World getWorld(String name);
 
-    Chunk getChunk(String worldName, int chunkX, int chunkZ);
+    Chunk getChunk(World world, int chunkX, int chunkZ);
 }

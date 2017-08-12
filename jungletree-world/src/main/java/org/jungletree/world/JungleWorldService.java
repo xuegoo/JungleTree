@@ -22,7 +22,7 @@ public class JungleWorldService implements WorldService {
 
     @Override
     public Chunk getChunk(World world, int chunkX, int chunkZ) {
-        return worldLoader.getChunk(world.getName(), chunkX, chunkZ);
+        return worldLoader.getChunk(world, chunkX, chunkZ);
     }
 
     @Override

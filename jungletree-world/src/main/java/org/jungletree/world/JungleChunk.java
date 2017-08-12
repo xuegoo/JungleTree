@@ -8,7 +8,7 @@ public class JungleChunk implements Chunk {
     private int x;
     private int z;
 
-    private JungleBlock[][][] blocks;
+    private transient JungleBlock[][][] blocks;
 
     @Override
     public int getX() {
@@ -31,5 +31,9 @@ public class JungleChunk implements Chunk {
     @Override
     public Block getBlock(int blockX, int blockY, int blockZ) {
         return blocks[blockY][blockX][blockZ];
+    }
+
+    public void setBlocks(JungleBlock[][][] blocks) {
+        this.blocks = blocks;
     }
 }

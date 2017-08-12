@@ -6,9 +6,6 @@ import org.jungletree.rainforest.world.BlockType;
 public class JungleBlock implements Block {
 
     private BlockType type;
-    private int x;
-    private int y;
-    private int z;
 
     @Override
     public BlockType getType() {
