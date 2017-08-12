@@ -30,6 +30,9 @@ public class JungleMessagingService implements MessagingService {
     private final Map<String, Queue> responseQueues = new ConcurrentHashMap<>();
     private final Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> handlers = new ConcurrentHashMap<>();
 
+    public JungleMessagingService() {
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+    }
     public Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> getHandlers() {
         return handlers;
     }
@@ -37,16 +40,6 @@ public class JungleMessagingService implements MessagingService {
     @Override
     public void start() {
         initJms();
-    }
-
-    @Override
-    public void shutdownGracefully() {
-        shutdown();
-    }
-
-    @Override
-    public void shutdownForcefully() {
-
     }
 
     @Override
@@ -126,7 +119,8 @@ public class JungleMessagingService implements MessagingService {
         handlers.get(messageClass).remove(handler);
     }
 
-    void shutdown() {
+    @Override
+    public void shutdown() {
         try {
             session.close();
             connection.close();
@@ -135,7 +129,7 @@ public class JungleMessagingService implements MessagingService {
         }
     }
 
-    void initJms() {
+    private void initJms() {
         try {
             ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(BROKER_URL);
             this.connection = factory.createConnection();

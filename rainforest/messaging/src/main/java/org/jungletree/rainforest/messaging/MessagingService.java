@@ -6,9 +6,7 @@ public interface MessagingService {
 
     void start();
 
-    void shutdownGracefully();
-
-    void shutdownForcefully();
+    void shutdown();
 
     CompletableFuture<Message> sendMessage(Message message);
 

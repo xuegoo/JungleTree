@@ -3,7 +3,6 @@ package org.jungletree.world;
 import org.jungletree.rainforest.world.Dimension;
 import org.jungletree.rainforest.world.World;
 
-import java.util.Set;
 import java.util.UUID;
 
 public class JungleWorld implements World {
@@ -14,8 +13,6 @@ public class JungleWorld implements World {
     private Dimension dimension;
     private int maxHeight;
     private int spawnRadius;
-
-    private Set<ChunkReference> chunkReferences;
 
     @Override
     public UUID getUniqueId() {
@@ -74,13 +71,5 @@ public class JungleWorld implements World {
     @Override
     public void setSpawnRadius(int spawnRadius) {
         this.spawnRadius = spawnRadius;
-    }
-
-    public Set<ChunkReference> getChunkReferences() {
-        return chunkReferences;
-    }
-
-    public void setChunkReferences(Set<ChunkReference> chunkReferences) {
-        this.chunkReferences = chunkReferences;
     }
 }
