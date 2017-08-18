@@ -34,9 +34,9 @@ public class JungleWorldApplication {
     }
 
     private void registerMessageHandlers() {
+        messaging.start();
         messaging.registerMessage(WorldRequestMessage.class);
         messaging.registerHandler(WorldRequestMessage.class, worldRequestHandler);
-        messaging.start();
     }
 
     private void initDummyData() {
