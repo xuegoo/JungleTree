@@ -1,11 +1,13 @@
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 group = 'org.jungletree'
 version '0.0.1-SNAPSHOT'
+mainClassName = 'org.jungletree.world.JungleWorldApplication'
 
 repositories {
     jcenter()
@@ -18,6 +20,17 @@ if (JavaVersion.current().isJava8Compatible()) {
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none', '-quiet')
         }
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+    from {
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
