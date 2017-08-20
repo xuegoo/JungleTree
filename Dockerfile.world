@@ -1,0 +1,14 @@
+FROM gradle:4.0-jdk8-alpine
+MAINTAINER Oliver Brammer
+
+USER root
+RUN mkdir /build/
+COPY / /build/
+RUN ls -lA /build/
+RUN cd /build/ && gradle clean build
+
+FROM openjdk:8-jre-alpine
+MAINTAINER Oliver Brammer
+COPY --from=0 /build/jungletree-world/build/libs/jungletree-world-*.jar /world.jar
+
+CMD ["/usr/bin/java", "-jar", "/world.jar"]
