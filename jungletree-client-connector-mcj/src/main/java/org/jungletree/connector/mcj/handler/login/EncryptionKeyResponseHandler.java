@@ -3,11 +3,14 @@ package org.jungletree.connector.mcj.handler.login;
 import com.flowpowered.network.MessageHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import org.jungletree.connector.mcj.JSession;
+import org.jungletree.connector.mcj.handler.login.model.AuthPlayerModel;
+import org.jungletree.connector.mcj.handler.login.model.PlayerProfile;
 import org.jungletree.connector.mcj.http.HttpCallback;
 import org.jungletree.connector.mcj.http.HttpClient;
 import org.jungletree.connector.mcj.message.login.EncryptionKeyResponseMessage;
-import org.jungletree.network.ClientConnectorResourceService;
+import org.jungletree.rainforest.connector.ClientConnectorResourceService;
 import org.jungletree.rainforest.scheduler.SchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.math.BigInteger;
 import java.security.*;
 import java.util.Arrays;
+import java.util.UUID;
 
 public class EncryptionKeyResponseHandler implements MessageHandler<JSession, EncryptionKeyResponseMessage> {
 
@@ -34,15 +38,9 @@ public class EncryptionKeyResponseHandler implements MessageHandler<JSession, En
     private final ClientConnectorResourceService resource;
     private SchedulerService scheduler;
 
-    public EncryptionKeyResponseHandler(ClientConnectorResourceService resource) {
+    public EncryptionKeyResponseHandler(ClientConnectorResourceService resource, SchedulerService scheduler) {
         this.gson = new GsonBuilder().create();
         this.resource = resource;
-    }
-
-    public void setScheduler(SchedulerService scheduler) {
-        if (this.scheduler != null) {
-            throw new IllegalStateException("Scheduler already declared");
-        }
         this.scheduler = scheduler;
     }
 
@@ -122,27 +120,37 @@ public class EncryptionKeyResponseHandler implements MessageHandler<JSession, En
                 session.disconnect("Failed to verify username!");
             }
 
-            /* AuthPlayer player;
-            try {
-                player = gson.fromJson(response, AuthPlayer.class);
-            } catch (JsonSyntaxException ex) {
-                log.warn("Username \"{}\" failed to authenticate!", session.getVerifyUsername());
-                session.disconnect("Failed to verify username!");
+            log.info(response);
+
+            AuthPlayerModel player = parseAuthPlayerModel(response);
+            if (player == null) {
                 return;
             }
 
+            handleAuthentication(player);
+        }
+
+        private AuthPlayerModel parseAuthPlayerModel(String response) {
+            try {
+                return gson.fromJson(response, AuthPlayerModel.class);
+            } catch (JsonSyntaxException ex) {
+                log.warn("Username \"{}\" failed to authenticate!", session.getVerifyUsername());
+                session.disconnect("Failed to verify username!");
+                return null;
+            }
+        }
+
+        private void handleAuthentication(AuthPlayerModel player) {
             String username = player.getName();
             UUID uuid;
             try {
                 uuid = player.getUuid();
             } catch (IllegalArgumentException ex) {
                 log.error("The returned authentication UUID was invalid: " + player.getId(), ex);
-                session.disconnect("Invalud UUID.");
+                session.disconnect(ex.getMessage());
                 return;
             }
-
             scheduler.execute(() -> session.setPlayer(new PlayerProfile(uuid, username, player.getProperties())));
-            */
         }
 
         @Override

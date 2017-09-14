@@ -10,12 +10,16 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.CodecException;
+import org.jungletree.connector.mcj.handler.login.model.PlayerProfile;
 import org.jungletree.connector.mcj.message.SetCompressionMessage;
+import org.jungletree.connector.mcj.message.login.LoginSuccessMessage;
 import org.jungletree.connector.mcj.pipeline.CodecsHandler;
 import org.jungletree.connector.mcj.pipeline.CompressionHandler;
 import org.jungletree.connector.mcj.pipeline.EncryptionHandler;
+import org.jungletree.connector.mcj.player.JunglePlayer;
 import org.jungletree.connector.mcj.protocol.JProtocol;
 import org.jungletree.connector.mcj.protocol.ProtocolType;
+import org.jungletree.rainforest.connector.ClientConnectorResourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +34,8 @@ public class JSession extends BasicSession {
 
     private final Queue<Message> messageQueue = new ArrayDeque<>();
 
+    private final ClientConnectorResourceService resource;
+
     private ConnectionManager connectionManager;
     private InetSocketAddress address;
     private boolean online;
@@ -42,11 +48,14 @@ public class JSession extends BasicSession {
     private boolean disconnected;
     private boolean compressionSent;
 
+    private JunglePlayer player;
+
     // private BlockPlacementMessage previousPlacement;
     // private int previousPlacementTicks;
 
-    public JSession(Channel channel, ConnectionManager connectionManager) {
+    public JSession(Channel channel, ClientConnectorResourceService resource, ConnectionManager connectionManager) {
         super(channel, ProtocolType.HANDSHAKE.getProtocol());
+        this.resource = resource;
         this.connectionManager = connectionManager;
         this.address = super.getAddress();
     }
@@ -135,6 +144,32 @@ public class JSession extends BasicSession {
             updatePipeline("compression", new CompressionHandler(threshold));
             compressionSent = true;
         }
+    }
+
+    public void setPlayer(PlayerProfile profile) {
+        if (player != null) {
+            throw new IllegalStateException("Player already defined");
+        }
+
+        this.player = new JunglePlayer(this, profile);
+        finalizeLogin(profile);
+
+        if (!isActive()) {
+            onDisconnect();
+            return;
+        }
+
+        log.info("{} [{}] connected, UUID: {}", player.getName(), address, player.getUniqueId());
+    }
+
+    private void finalizeLogin(PlayerProfile profile) {
+        int threshold = resource.getCompressionThreshold();
+        if (threshold > 0) {
+            enableCompression(threshold);
+        }
+
+        send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
+        setProtocol(ProtocolType.PLAY);
     }
 
     private void updatePipeline(String key, ChannelHandler handler) {

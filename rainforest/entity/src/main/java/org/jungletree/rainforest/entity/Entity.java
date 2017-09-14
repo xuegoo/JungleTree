@@ -4,5 +4,5 @@ import java.util.UUID;
 
 public interface Entity {
 
-    UUID getUuid();
+    UUID getUniqueId();
 }

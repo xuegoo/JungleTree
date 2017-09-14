@@ -4,7 +4,7 @@ import com.flowpowered.network.MessageHandler;
 import org.jungletree.connector.mcj.JSession;
 import org.jungletree.connector.mcj.message.handshake.HandshakeMessage;
 import org.jungletree.connector.mcj.protocol.ProtocolType;
-import org.jungletree.network.ClientConnectorResourceService;
+import org.jungletree.rainforest.connector.ClientConnectorResourceService;
 
 import javax.inject.Singleton;
 

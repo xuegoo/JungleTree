@@ -4,7 +4,7 @@ import com.flowpowered.network.ConnectionManager;
 import com.google.inject.AbstractModule;
 import org.jungletree.connector.mcj.config.JClientConnectorResourceService;
 import org.jungletree.messenger.JungleMessagingService;
-import org.jungletree.network.ClientConnectorResourceService;
+import org.jungletree.rainforest.connector.ClientConnectorResourceService;
 import org.jungletree.rainforest.connector.ClientConnector;
 import org.jungletree.rainforest.messaging.MessagingService;
 import org.jungletree.rainforest.scheduler.SchedulerService;

@@ -7,7 +7,7 @@ import org.jungletree.connector.mcj.codec.status.ServerListPingResponseObject.SL
 import org.jungletree.connector.mcj.config.JClientConnectorResourceService;
 import org.jungletree.connector.mcj.message.status.StatusRequestMessage;
 import org.jungletree.connector.mcj.message.status.StatusResponseMessage;
-import org.jungletree.network.ClientConnectorResourceService;
+import org.jungletree.rainforest.connector.ClientConnectorResourceService;
 
 import java.util.Collections;
 

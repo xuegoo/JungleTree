@@ -14,15 +14,16 @@ import org.jungletree.connector.mcj.message.login.EncryptionKeyRequestMessage;
 import org.jungletree.connector.mcj.message.login.EncryptionKeyResponseMessage;
 import org.jungletree.connector.mcj.message.login.LoginStartMessage;
 import org.jungletree.connector.mcj.message.login.LoginSuccessMessage;
-import org.jungletree.network.ClientConnectorResourceService;
+import org.jungletree.rainforest.connector.ClientConnectorResourceService;
+import org.jungletree.rainforest.scheduler.SchedulerService;
 
 import javax.inject.Inject;
 
 public class LoginProtocol extends JProtocol {
 
     @Inject
-    public LoginProtocol(ClientConnectorResourceService resource) {
-        super("LOGIN", 5, resource);
+    public LoginProtocol(ClientConnectorResourceService resource, SchedulerService scheduler) {
+        super("LOGIN", 5, resource, scheduler);
 
         inbound(0x00, LoginStartMessage.class, LoginStartCodec.class, LoginStartHandler.class);
         inbound(0x01, EncryptionKeyResponseMessage.class, EncryptionKeyResponseCodec.class, EncryptionKeyResponseHandler.class);

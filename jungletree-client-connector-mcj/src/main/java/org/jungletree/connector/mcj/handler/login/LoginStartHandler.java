@@ -5,7 +5,7 @@ import org.jungletree.connector.mcj.JSession;
 import org.jungletree.connector.mcj.SecurityUtils;
 import org.jungletree.connector.mcj.message.login.EncryptionKeyRequestMessage;
 import org.jungletree.connector.mcj.message.login.LoginStartMessage;
-import org.jungletree.network.ClientConnectorResourceService;
+import org.jungletree.rainforest.connector.ClientConnectorResourceService;
 
 public class LoginStartHandler implements MessageHandler<JSession, LoginStartMessage> {
 

@@ -157,7 +157,7 @@ public final class ServerListPingResponseObject implements Serializable {
 
         private static SLPlayer create(Player player) {
             SLPlayer result = new SLPlayer();
-            result.setUuid(player.getUuid());
+            result.setUuid(player.getUniqueId());
             // result.setName(player.getName());
             return result;
         }

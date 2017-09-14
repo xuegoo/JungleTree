@@ -10,7 +10,8 @@ import com.flowpowered.network.service.CodecLookupService;
 import com.flowpowered.network.service.HandlerLookupService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import org.jungletree.network.ClientConnectorResourceService;
+import org.jungletree.rainforest.connector.ClientConnectorResourceService;
+import org.jungletree.rainforest.scheduler.SchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,14 +28,18 @@ public class JProtocol extends AbstractProtocol {
     private final CodecLookupService inbound;
     private final CodecLookupService outbound;
     private final ClientConnectorResourceService resource;
+    private final SchedulerService scheduler;
     private final HandlerLookupService handlers;
 
-    public JProtocol(String name, int highestOpcode, ClientConnectorResourceService resource) {
+    public JProtocol(String name, int highestOpcode, ClientConnectorResourceService resource, SchedulerService scheduler) {
         super(name);
+
+        this.resource = resource;
+        this.scheduler = scheduler;
+
         this.inbound = new CodecLookupService(highestOpcode + 1);
         this.outbound = new CodecLookupService(highestOpcode + 1);
-        this.resource = resource;
-        this.handlers = new HandlerLookupService(resource);
+        this.handlers = new HandlerLookupService(resource, scheduler);
     }
 
     protected <M extends Message, C extends Codec<? super M>, H extends MessageHandler<?, ? super M>> void inbound(int opcode, Class<M> message, Class<C> codec, Class<H> handler) {

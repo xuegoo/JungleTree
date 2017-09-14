@@ -1,7 +1,7 @@
 package org.jungletree.connector.mcj.config;
 
 import org.jungletree.connector.mcj.SecurityUtils;
-import org.jungletree.network.ClientConnectorResourceService;
+import org.jungletree.rainforest.connector.ClientConnectorResourceService;
 
 import javax.inject.Singleton;
 import java.security.KeyPair;
@@ -16,7 +16,9 @@ public class JClientConnectorResourceService implements ClientConnectorResourceS
 
     private final int maxPlayers = 1000;
     private final String serverDescription = "Hello, world.";
+    private final int compressionThreshold = 1400;
 
+    @Override
     public int getPort() {
         return port;
     }
@@ -25,19 +27,28 @@ public class JClientConnectorResourceService implements ClientConnectorResourceS
         return gameVersion;
     }
 
+    @Override
     public int getProtocolVersion() {
         return gameVersion.getProtocolVersion();
     }
 
+    @Override
     public KeyPair getKeyPair() {
         return keyPair;
     }
 
+    @Override
     public int getMaxPlayers() {
         return maxPlayers;
     }
 
+    @Override
     public String getServerDescription() {
         return serverDescription;
+    }
+
+    @Override
+    public int getCompressionThreshold() {
+        return compressionThreshold;
     }
 }

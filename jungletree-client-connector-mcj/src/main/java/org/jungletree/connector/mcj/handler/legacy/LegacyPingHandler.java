@@ -7,7 +7,7 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jungletree.connector.mcj.config.JClientConnectorResourceService;
-import org.jungletree.network.ClientConnectorResourceService;
+import org.jungletree.rainforest.connector.ClientConnectorResourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
