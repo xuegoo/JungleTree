@@ -1,8 +1,5 @@
 git:
-  submodules: false
-before_install:
- - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
- - git submodule update --init --recursive
+  submodules: true
 language: java
 jdk:
   - oraclejdk8
