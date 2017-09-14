@@ -14,4 +14,4 @@ include 'jungletree-storage'
 include 'jungletree-scheduler'
 include 'jungletree-world'
 include 'jungletree-client-connector-mcj'
-
+include 'flow-network'

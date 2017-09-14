@@ -1,4 +1,4 @@
 [submodule "flow-network"]
-    path = network/flow-network
+    path = flow-network
     url = git@github.com:JungleTree/flow-network.git
 		branch = master
