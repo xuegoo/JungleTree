@@ -20,7 +20,3 @@ if (JavaVersion.current().isJava8Compatible()) {
         }
     }
 }
-
-dependencies {
-    compile group: 'io.netty', name: 'netty-all', version: '4.0.33.Final'
-}
