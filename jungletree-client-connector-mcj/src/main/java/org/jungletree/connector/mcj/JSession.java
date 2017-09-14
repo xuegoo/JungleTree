@@ -8,9 +8,11 @@ import com.flowpowered.network.exception.ChannelClosedException;
 import com.flowpowered.network.session.BasicSession;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.CodecException;
 import org.jungletree.connector.mcj.handler.login.model.PlayerProfile;
+import org.jungletree.connector.mcj.message.KickMessage;
 import org.jungletree.connector.mcj.message.SetCompressionMessage;
 import org.jungletree.connector.mcj.message.login.LoginSuccessMessage;
 import org.jungletree.connector.mcj.pipeline.CodecsHandler;
@@ -18,8 +20,11 @@ import org.jungletree.connector.mcj.pipeline.CompressionHandler;
 import org.jungletree.connector.mcj.pipeline.EncryptionHandler;
 import org.jungletree.connector.mcj.player.JunglePlayer;
 import org.jungletree.connector.mcj.protocol.JProtocol;
+import org.jungletree.connector.mcj.protocol.LoginProtocol;
+import org.jungletree.connector.mcj.protocol.PlayProtocol;
 import org.jungletree.connector.mcj.protocol.ProtocolType;
 import org.jungletree.rainforest.connector.ClientConnectorResourceService;
+import org.jungletree.rainforest.util.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,11 +120,36 @@ public class JSession extends BasicSession {
         disconnect("No reason specified.");
     }
 
+    public void disconnect(Text reason) {
+        disconnect(reason, false);
+    }
+
     public void disconnect(String reason) {
         disconnect(reason, false);
     }
 
     public void disconnect(String reason, boolean overrideKick) {
+        if (player != null) {
+            log.info("{} kicked. Reason: {}", player.getName(), reason);
+        }
+
+        if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof PlayProtocol)) {
+            sendWithFuture(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
+        } else {
+            getChannel().close();
+        }
+    }
+
+    public void disconnect(Text reason, boolean overrideKick) {
+        if (player != null) {
+            log.info("{} kicked. Reason: {}", player.getName(), reason);
+        }
+
+        if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof PlayProtocol)) {
+            sendWithFuture(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
+        } else {
+            getChannel().close();
+        }
     }
 
     void pulse() {

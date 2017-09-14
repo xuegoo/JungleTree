@@ -16,7 +16,7 @@ public class JClientConnectorResourceService implements ClientConnectorResourceS
 
     private final int maxPlayers = 1000;
     private final String serverDescription = "Hello, world.";
-    private final int compressionThreshold = 1400;
+    private final int compressionThreshold = 0;
 
     @Override
     public int getPort() {

@@ -95,7 +95,6 @@ public class JungleClientConnectorMcj implements ClientConnector, ConnectionMana
 
     @Override
     public void sessionInactivated(Session session) {
-
     }
 
     @Override
