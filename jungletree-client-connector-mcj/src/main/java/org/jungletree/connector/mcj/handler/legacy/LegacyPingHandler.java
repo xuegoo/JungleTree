@@ -59,7 +59,7 @@ public class LegacyPingHandler extends ChannelInboundHandlerAdapter {
                                     String.format(
                                             "\u00a71\u0000%d\u0000%s\u0000%s\u0000%d\u0000%d",
                                             resource.getProtocolVersion(),
-                                            resource.getGameVersion().getVersionName(),
+                                            resource.getGameVersion(),
                                             resource.getServerDescription(),
                                             0,
                                             resource.getMaxPlayers()
@@ -82,7 +82,7 @@ public class LegacyPingHandler extends ChannelInboundHandlerAdapter {
                                         String.format(
                                                 "\u00a71\u0000%d\u0000%s\u0000%s\u0000%d\u0000%d",
                                                 resource.getProtocolVersion(),
-                                                resource.getGameVersion().getVersionName(),
+                                                resource.getGameVersion(),
                                                 resource.getServerDescription(),
                                                 0,
                                                 resource.getMaxPlayers()

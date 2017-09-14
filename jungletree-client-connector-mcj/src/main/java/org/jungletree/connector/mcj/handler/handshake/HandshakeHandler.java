@@ -37,9 +37,9 @@ public class HandshakeHandler implements MessageHandler<JSession, HandshakeMessa
         if (protocol == ProtocolType.LOGIN) {
             int protocolVersion = resource.getProtocolVersion();
             if (message.getProtocolVersion() < protocolVersion) {
-                session.disconnect("Outdated client! I'm running " + protocolVersion);
+                session.disconnect("Outdated client! I'm running " + resource.getGameVersion());
             } else if (message.getProtocolVersion() > protocolVersion) {
-                session.disconnect("Outdated server! I'm running " + protocolVersion);
+                session.disconnect("Outdated server! I'm running " + resource.getGameVersion());
             }
         }
     }

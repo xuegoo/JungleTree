@@ -1,6 +1,5 @@
 package org.jungletree.connector.mcj.codec.status;
 
-import org.jungletree.connector.mcj.config.GameVersion;
 import org.jungletree.rainforest.entity.Player;
 
 import java.io.Serializable;
@@ -75,10 +74,10 @@ public final class ServerListPingResponseObject implements Serializable {
             this.protocol = protocol;
         }
 
-        public static SLVersion create(GameVersion gameVersion) {
+        public static SLVersion create(String gameVersion, int protocolVersion) {
             SLVersion result = new SLVersion();
-            result.setName(gameVersion.getVersionName());
-            result.setProtocol(gameVersion.getProtocolVersion());
+            result.setName(gameVersion);
+            result.setProtocol(protocolVersion);
             return result;
         }
     }

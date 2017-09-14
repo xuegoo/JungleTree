@@ -6,6 +6,8 @@ public interface ClientConnectorResourceService {
 
     int getPort();
 
+    String getGameVersion();
+
     int getProtocolVersion();
 
     KeyPair getKeyPair();

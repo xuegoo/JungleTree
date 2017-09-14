@@ -4,7 +4,6 @@ import com.flowpowered.network.MessageHandler;
 import org.jungletree.connector.mcj.JSession;
 import org.jungletree.connector.mcj.codec.status.ServerListPingResponseObject;
 import org.jungletree.connector.mcj.codec.status.ServerListPingResponseObject.SLVersion;
-import org.jungletree.connector.mcj.config.JClientConnectorResourceService;
 import org.jungletree.connector.mcj.message.status.StatusRequestMessage;
 import org.jungletree.connector.mcj.message.status.StatusResponseMessage;
 import org.jungletree.rainforest.connector.ClientConnectorResourceService;
@@ -26,7 +25,7 @@ public class StatusRequestHandler implements MessageHandler<JSession, StatusRequ
     public void handle(JSession session, StatusRequestMessage message) {
         ServerListPingResponseObject responseObject = new ServerListPingResponseObject();
 
-        responseObject.setVersion(SLVersion.create(((JClientConnectorResourceService)resource).getGameVersion()));
+        responseObject.setVersion(SLVersion.create(resource.getGameVersion(), resource.getProtocolVersion()));
 
         responseObject.setPlayers(SLPlayers.create(
                 resource.getMaxPlayers(),

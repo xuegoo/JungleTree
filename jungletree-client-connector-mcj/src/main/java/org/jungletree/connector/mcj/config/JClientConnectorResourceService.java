@@ -2,6 +2,7 @@ package org.jungletree.connector.mcj.config;
 
 import org.jungletree.connector.mcj.SecurityUtils;
 import org.jungletree.rainforest.connector.ClientConnectorResourceService;
+import org.jungletree.rainforest.util.GameVersion;
 
 import javax.inject.Singleton;
 import java.security.KeyPair;
@@ -10,7 +11,7 @@ import java.security.KeyPair;
 public class JClientConnectorResourceService implements ClientConnectorResourceService {
 
     private final int port = 25565;
-    private final GameVersion gameVersion = GameVersion.MC_1_12_2;
+    private final GameVersion gameVersion = GameVersion.MC_1_12_1;
 
     private final KeyPair keyPair = SecurityUtils.generateKeyPair();
 
@@ -23,8 +24,8 @@ public class JClientConnectorResourceService implements ClientConnectorResourceS
         return port;
     }
 
-    public GameVersion getGameVersion() {
-        return gameVersion;
+    public String getGameVersion() {
+        return gameVersion.getVersionName();
     }
 
     @Override
