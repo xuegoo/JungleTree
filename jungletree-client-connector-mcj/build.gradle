@@ -39,8 +39,11 @@ dependencies {
     compile project(':rainforest/client-connector')
     compile project(':rainforest/entity')
     compile project(':rainforest/world')
+    compile project(':rainforest/util')
+
     compile project(':jungletree-messenger')
     compile project(':jungletree-scheduler')
+
     compile project(':flow-network')
 
     compile group: 'io.netty', name: 'netty-all', version: '4.1.13.Final'

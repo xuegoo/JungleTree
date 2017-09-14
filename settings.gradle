@@ -1,4 +1,5 @@
 rootProject.name = 'JungleTree'
+
 include 'rainforest/entity'
 include 'rainforest/client-connector'
 include 'rainforest/logging'
@@ -7,6 +8,8 @@ include 'rainforest/plugin'
 include 'rainforest/scheduler'
 include 'rainforest/storage'
 include 'rainforest/world'
+include 'rainforest/util'
+
 include 'rainforest'
 include 'jungletree-auth'
 include 'jungletree-messenger'
