@@ -1,3 +1,5 @@
+out/
+
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion
 **/dependency-reduced-pom.xml
 *.iml
