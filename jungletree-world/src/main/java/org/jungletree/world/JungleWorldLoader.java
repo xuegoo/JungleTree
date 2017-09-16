@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jungletree.rainforest.scheduler.SchedulerService;
 import org.jungletree.rainforest.storage.StorageService;
+import org.jungletree.rainforest.util.Difficulty;
+import org.jungletree.rainforest.util.GameMode;
 import org.jungletree.rainforest.world.*;
 import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
@@ -64,10 +66,12 @@ public class JungleWorldLoader implements WorldLoader {
     }
 
     private World temporaryCreateWorld() {
-        JungleWorld world = new JungleWorld();
+        World world = new World();
         world.setUniqueId(UUID.randomUUID());
         world.setName("test");
+        world.setGameMode(GameMode.SURVIVAL);
         world.setDimension(Dimension.OVERWORLD);
+        world.setDifficulty(Difficulty.PEACEFUL);
         world.setSeed(ThreadLocalRandom.current().nextLong());
         world.setMaxHeight(256);
         world.setSpawnRadius(16);

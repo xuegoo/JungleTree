@@ -3,18 +3,17 @@ package org.jungletree.world;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import org.jungletree.rainforest.messaging.MessagingService;
+import org.jungletree.rainforest.messaging.message.WorldResponseMessage;
 import org.jungletree.rainforest.world.World;
 import org.jungletree.rainforest.world.WorldLoader;
 import org.jungletree.world.messaging.WorldRequestMessageHandler;
-import org.jungletree.world.messaging.WorldRequestMessage;
+import org.jungletree.rainforest.messaging.message.WorldRequestMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.stream.IntStream;
 
 public class JungleWorldApplication {
-
-    public static final String MESSENGER_NAME = "WORLD_STORAGE";
 
     private static final Logger log = LoggerFactory.getLogger(JungleWorldApplication.class);
 
@@ -37,6 +36,7 @@ public class JungleWorldApplication {
         messaging.start();
         messaging.registerMessage(WorldRequestMessage.class);
         messaging.registerHandler(WorldRequestMessage.class, worldRequestHandler);
+        messaging.registerMessage(WorldResponseMessage.class);
     }
 
     private void initDummyData() {

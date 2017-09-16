@@ -21,7 +21,7 @@ public class JungleMessagingService implements MessagingService {
     private static final String BROKER_HOST = System.getenv("MESSAGE_BROKER_URL") != null ? System.getenv("MESSAGE_BROKER_URL") : "localhost";
     private static final String BROKER_USERNAME = System.getenv("MESSAGE_BROKER_USERNAME") != null ? System.getenv("MESSAGE_BROKER_USERNAME") : "jungletree";
     private static final String BROKER_PASSWORD = System.getenv("MESSAGE_BROKER_PASSWORD") != null ? System.getenv("MESSAGE_BROKER_PASSWORD") : "changeme";
-    private static final long TIMEOUT = Long.parseLong(System.getenv("MESSAGE_TIMEOUT") != null ? System.getenv("MESSAGE_TIMEOUT") : "1000");
+    private static final long TIMEOUT = Long.parseLong(System.getenv("MESSAGE_TIMEOUT") != null ? System.getenv("MESSAGE_TIMEOUT") : "10000");
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -80,8 +80,8 @@ public class JungleMessagingService implements MessagingService {
             }
 
             if (!responseQueues.containsKey(responseQueueName)) {
-                Queue responseQueue = session.createQueue(requestQueueName);
-                this.requestQueues.put(requestQueueName, responseQueue);
+                Queue responseQueue = session.createQueue(responseQueueName);
+                this.responseQueues.put(responseQueueName, responseQueue);
             }
         } catch (JMSException ex) {
             throw new RuntimeException(ex);

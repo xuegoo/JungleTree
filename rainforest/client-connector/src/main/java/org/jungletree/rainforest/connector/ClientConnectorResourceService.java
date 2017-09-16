@@ -17,4 +17,6 @@ public interface ClientConnectorResourceService {
     String getServerDescription();
 
     int getCompressionThreshold();
+
+    boolean isReducedDebugInfo();
 }

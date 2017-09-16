@@ -1,5 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'maven'
+apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -9,16 +9,6 @@ version '0.0.1-SNAPSHOT'
 
 repositories {
     jcenter()
-    mavenCentral()
-    mavenLocal()
-    maven {
-        name "Nexus Releases"
-        url "https://nexus.jungletree.org/repository/maven-releases/"
-    }
-    maven {
-        name "Nexus Snapshots"
-        url "https://nexus.jungletree.org/repository/maven-snapshots/"
-    }
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -27,4 +17,9 @@ if (JavaVersion.current().isJava8Compatible()) {
             options.addStringOption('Xdoclint:none', '-quiet')
         }
     }
+}
+
+dependencies {
+    compile project(':rainforest/world')
+    compile project(':rainforest/util')
 }

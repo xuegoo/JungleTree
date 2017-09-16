@@ -18,6 +18,7 @@ public class JClientConnectorResourceService implements ClientConnectorResourceS
     private final int maxPlayers = 1000;
     private final String serverDescription = "Hello, world.";
     private final int compressionThreshold = 0;
+    private final boolean reducedDebugInfo = false;
 
     @Override
     public int getPort() {
@@ -51,5 +52,10 @@ public class JClientConnectorResourceService implements ClientConnectorResourceS
     @Override
     public int getCompressionThreshold() {
         return compressionThreshold;
+    }
+
+    @Override
+    public boolean isReducedDebugInfo() {
+        return reducedDebugInfo;
     }
 }

@@ -1,13 +1,13 @@
-package org.jungletree.world.messaging;
+package org.jungletree.rainforest.messaging.message;
 
 import org.jungletree.rainforest.messaging.Message;
-import org.jungletree.world.JungleWorldApplication;
 
 import java.util.Objects;
 
 public class WorldRequestMessage implements Message {
 
     private String sender;
+    private String recipient;
     private String worldName;
 
     @Override
@@ -15,13 +15,25 @@ public class WorldRequestMessage implements Message {
         return sender;
     }
 
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
     @Override
     public String getRecipient() {
-        return JungleWorldApplication.MESSENGER_NAME;
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public String getWorldName() {
         return worldName;
+    }
+
+    public void setWorldName(String worldName) {
+        this.worldName = worldName;
     }
 
     @Override
@@ -30,11 +42,12 @@ public class WorldRequestMessage implements Message {
         if (o == null || getClass() != o.getClass()) return false;
         WorldRequestMessage that = (WorldRequestMessage) o;
         return Objects.equals(sender, that.sender) &&
+                Objects.equals(recipient, that.recipient) &&
                 Objects.equals(worldName, that.worldName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sender, worldName);
+        return Objects.hash(sender, recipient, worldName);
     }
 }

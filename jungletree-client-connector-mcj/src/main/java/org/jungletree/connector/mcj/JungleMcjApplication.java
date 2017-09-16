@@ -7,6 +7,8 @@ import org.jungletree.connector.mcj.config.JClientConnectorResourceService;
 import org.jungletree.connector.mcj.protocol.*;
 import org.jungletree.rainforest.connector.ClientConnector;
 import org.jungletree.rainforest.messaging.MessagingService;
+import org.jungletree.rainforest.messaging.message.WorldRequestMessage;
+import org.jungletree.rainforest.messaging.message.WorldResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,8 @@ public class JungleMcjApplication {
 
         log.trace("Starting messaging service");
         messaging.start();
+        messaging.registerMessage(WorldRequestMessage.class);
+        messaging.registerMessage(WorldResponseMessage.class);
 
         log.trace("Initializing protocol");
         initProtocol();

@@ -1,13 +1,13 @@
-package org.jungletree.world.messaging;
+package org.jungletree.rainforest.messaging.message;
 
 import org.jungletree.rainforest.messaging.Message;
-import org.jungletree.world.JungleWorld;
+import org.jungletree.rainforest.world.World;
 
 public class WorldResponseMessage implements Message {
 
     private String sender;
     private String recipient;
-    private JungleWorld world;
+    private World world;
 
     @Override
     public String getSender() {
@@ -27,11 +27,11 @@ public class WorldResponseMessage implements Message {
         this.recipient = recipient;
     }
 
-    public JungleWorld getWorld() {
+    public World getWorld() {
         return world;
     }
 
-    public void setWorld(JungleWorld world) {
+    public void setWorld(World world) {
         this.world = world;
     }
 }

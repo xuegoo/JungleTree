@@ -24,6 +24,7 @@ import org.jungletree.connector.mcj.protocol.LoginProtocol;
 import org.jungletree.connector.mcj.protocol.PlayProtocol;
 import org.jungletree.connector.mcj.protocol.ProtocolType;
 import org.jungletree.rainforest.connector.ClientConnectorResourceService;
+import org.jungletree.rainforest.messaging.MessagingService;
 import org.jungletree.rainforest.util.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ public class JSession extends BasicSession {
     private final Queue<Message> messageQueue = new ArrayDeque<>();
 
     private final ClientConnectorResourceService resource;
+    private final MessagingService messaging;
 
     private ConnectionManager connectionManager;
     private InetSocketAddress address;
@@ -58,9 +60,10 @@ public class JSession extends BasicSession {
     // private BlockPlacementMessage previousPlacement;
     // private int previousPlacementTicks;
 
-    public JSession(Channel channel, ClientConnectorResourceService resource, ConnectionManager connectionManager) {
+    public JSession(Channel channel, ClientConnectorResourceService resource, MessagingService messaging, ConnectionManager connectionManager) {
         super(channel, ProtocolType.HANDSHAKE.getProtocol());
         this.resource = resource;
+        this.messaging = messaging;
         this.connectionManager = connectionManager;
         this.address = super.getAddress();
     }
@@ -181,8 +184,8 @@ public class JSession extends BasicSession {
             throw new IllegalStateException("Player already defined");
         }
 
-        this.player = new JunglePlayer(this, profile);
-        finalizeLogin(profile);
+        this.player = new JunglePlayer(messaging, resource, profile);
+        finalizeLogin(player, profile);
 
         if (!isActive()) {
             onDisconnect();
@@ -192,7 +195,7 @@ public class JSession extends BasicSession {
         log.info("{} [{}] connected, UUID: {}", player.getName(), address, player.getUniqueId());
     }
 
-    private void finalizeLogin(PlayerProfile profile) {
+    private void finalizeLogin(JunglePlayer player, PlayerProfile profile) {
         int threshold = resource.getCompressionThreshold();
         if (threshold > 0) {
             enableCompression(threshold);
@@ -200,6 +203,7 @@ public class JSession extends BasicSession {
 
         send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
         setProtocol(ProtocolType.PLAY);
+        player.join(this);
     }
 
     private void updatePipeline(String key, ChannelHandler handler) {
@@ -209,6 +213,9 @@ public class JSession extends BasicSession {
     @Override
     public void onDisconnect() {
         disconnected = true;
+        if (player != null) {
+            player.quit();
+        }
     }
 
     @Override

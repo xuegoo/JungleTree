@@ -13,13 +13,15 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.jungletree.connector.mcj.pipeline.JChannelInitializer;
-import org.jungletree.rainforest.connector.ClientConnectorResourceService;
 import org.jungletree.rainforest.connector.ClientConnector;
+import org.jungletree.rainforest.connector.ClientConnectorResourceService;
+import org.jungletree.rainforest.messaging.MessagingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.net.InetSocketAddress;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 public class JungleClientConnectorMcj implements ClientConnector, ConnectionManager {
@@ -27,6 +29,7 @@ public class JungleClientConnectorMcj implements ClientConnector, ConnectionMana
     private static final Logger log = LoggerFactory.getLogger(JungleClientConnectorMcj.class);
 
     private final ClientConnectorResourceService resource;
+    private final MessagingService messaging;
     private final CountDownLatch latch;
 
     private final EventLoopGroup boss;
@@ -38,8 +41,9 @@ public class JungleClientConnectorMcj implements ClientConnector, ConnectionMana
     private int port;
 
     @Inject
-    public JungleClientConnectorMcj(JChannelInitializer channelInitializer, CountDownLatch latch, ClientConnectorResourceService resource) {
+    public JungleClientConnectorMcj(JChannelInitializer channelInitializer, CountDownLatch latch, ClientConnectorResourceService resource, MessagingService messaging) {
         this.latch = latch;
+        this.messaging = messaging;
         this.resource = resource;
 
         boolean epoll = Epoll.isAvailable();
@@ -88,9 +92,7 @@ public class JungleClientConnectorMcj implements ClientConnector, ConnectionMana
 
     @Override
     public Session newSession(Channel c) {
-        JSession session = new JSession(c, resource, this);
-
-        return session;
+        return new JSession(c, resource, messaging, this);
     }
 
     @Override

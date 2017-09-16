@@ -6,14 +6,14 @@ public enum Dimension {
     OVERWORLD(0),
     THE_END(1);
 
-    private final int level;
+    private final int ordinal;
 
-    Dimension(int level) {
-        this.level = level;
+    Dimension(int ordinal) {
+        this.ordinal = ordinal;
     }
 
-    public int getLevel() {
-        return level;
+    public int getOrdinal() {
+        return ordinal;
     }
 
     public String getName() {

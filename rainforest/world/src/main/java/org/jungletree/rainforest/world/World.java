@@ -1,28 +1,86 @@
 package org.jungletree.rainforest.world;
 
+import org.jungletree.rainforest.util.Difficulty;
+import org.jungletree.rainforest.util.GameMode;
+
 import java.util.UUID;
 
-public interface World {
+public final class World {
 
-    UUID getUniqueId();
+    private UUID uniqueId;
+    private String name;
+    private long seed;
+    private GameMode gameMode;
+    private Dimension dimension;
+    private Difficulty difficulty;
+    private int maxHeight;
+    private int spawnRadius;
 
-    String getName();
+    public UUID getUniqueId() {
+        return uniqueId;
+    }
 
-    void setName(String name);
+    public void setUniqueId(UUID uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 
-    long getSeed();
+    public int getId() {
+        return uniqueId.toString().hashCode();
+    }
 
-    void setSeed(long seed);
+    public String getName() {
+        return name;
+    }
 
-    Dimension getDimension();
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    void setDimension(Dimension dimension);
+    public long getSeed() {
+        return seed;
+    }
 
-    int getMaxHeight();
+    public void setSeed(long seed) {
+        this.seed = seed;
+    }
 
-    void setMaxHeight(int maxHeight);
+    public GameMode getGameMode() {
+        return gameMode;
+    }
 
-    int getSpawnRadius();
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
 
-    void setSpawnRadius(int spawnRadius);
+    public Dimension getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(Dimension dimension) {
+        this.dimension = dimension;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public int getMaxHeight() {
+        return maxHeight;
+    }
+
+    public void setMaxHeight(int maxHeight) {
+        this.maxHeight = maxHeight;
+    }
+
+    public int getSpawnRadius() {
+        return spawnRadius;
+    }
+
+    public void setSpawnRadius(int spawnRadius) {
+        this.spawnRadius = spawnRadius;
+    }
 }
