@@ -2,11 +2,11 @@ package org.jungletree.connector.mcj.player;
 
 import org.jungletree.connector.mcj.JSession;
 import org.jungletree.connector.mcj.handler.login.model.PlayerProfile;
+import org.jungletree.connector.mcj.jms.WorldManager;
 import org.jungletree.connector.mcj.message.play.game.JoinGameMessage;
 import org.jungletree.rainforest.connector.ClientConnectorResourceService;
 import org.jungletree.rainforest.entity.Player;
 import org.jungletree.rainforest.messaging.MessageHandler;
-import org.jungletree.rainforest.messaging.MessagingService;
 import org.jungletree.rainforest.messaging.message.WorldRequestMessage;
 import org.jungletree.rainforest.messaging.message.WorldResponseMessage;
 import org.jungletree.rainforest.util.Messengers;
@@ -14,8 +14,10 @@ import org.jungletree.rainforest.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.UUID;
 
+import static org.jungletree.connector.mcj.JungleMcjApplication.getInjector;
 import static org.jungletree.rainforest.util.Messengers.CLIENT_CONNECTOR;
 import static org.jungletree.rainforest.util.Messengers.WORLD_STORAGE;
 
@@ -23,9 +25,9 @@ public class JunglePlayer implements Player {
 
     private static final Logger log = LoggerFactory.getLogger(JunglePlayer.class);
 
-    private final MessagingService messaging;
-    private final ClientConnectorResourceService resource;
-    private final PlayerProfile profile;
+    @Inject private ClientConnectorResourceService resource;
+    @Inject private WorldManager worldManager;
+    private PlayerProfile profile;
 
     private World world;
     private JSession session;
@@ -33,9 +35,9 @@ public class JunglePlayer implements Player {
 
     private long joinTime;
 
-    public JunglePlayer(MessagingService messaging, ClientConnectorResourceService resource, PlayerProfile profile) {
-        this.messaging = messaging;
-        this.resource = resource;
+    public JunglePlayer(PlayerProfile profile) {
+        getInjector().injectMembers(this);
+
         this.profile = profile;
     }
 
@@ -53,40 +55,20 @@ public class JunglePlayer implements Player {
         log.trace("Player {}: Session connected", profile.getName());
         this.session = session;
 
-        WorldRequestMessage message = new WorldRequestMessage();
-        message.setWorldName("world");
-        message.setSender(Messengers.ident(CLIENT_CONNECTOR));
-        message.setRecipient(WORLD_STORAGE);
-
-        loadWorld(message);
+        requestWorld();
     }
 
-    private void loadWorld(WorldRequestMessage message) {
-        log.trace("Loading world");
-        this.worldHandler = response -> {
-            // TODO: Bit of a hack to get this thing working, needs refactoring
-            log.trace("Got world response!");
-            if (!response.getRecipient().equals(message.getSender())) {
-                return;
-            }
-
-            log.trace("Configuring world for player {}", profile.getName());
-            JunglePlayer.this.onWorldLoaded(response.getWorld());
-
-            // TODO: Again, a temporary message will stop this from being stupidly complicated
-            if (worldHandler != null) {
-                log.trace("Finishing up world loading...");
-                messaging.unregisterHandler(WorldResponseMessage.class, worldHandler);
-                JunglePlayer.this.worldHandler = null;
-            }
-        };
-        messaging.registerHandler(WorldResponseMessage.class, worldHandler);
-
-        log.trace("Sending world request through RabbitMQ...");
-        messaging.sendMessage(message);
+    private void requestWorld() {
+        log.trace("Requesting world for player {}", profile.getName());
+        WorldRequestMessage worldRequestMessage = new WorldRequestMessage();
+        worldRequestMessage.setWorldName("world");
+        worldRequestMessage.setSender(Messengers.ident(CLIENT_CONNECTOR));
+        worldRequestMessage.setRecipient(WORLD_STORAGE);
+        worldManager.send(this, worldRequestMessage);
     }
 
-    private void onWorldLoaded(World world) {
+    public void onWorldLoad(World world) {
+        log.trace("Sending world info to player {}", profile.getName());
         this.world = world;
         session.send(new JoinGameMessage(
                 world.getId(),

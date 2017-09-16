@@ -12,6 +12,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.CodecException;
 import org.jungletree.connector.mcj.handler.login.model.PlayerProfile;
+import org.jungletree.connector.mcj.jms.WorldManager;
 import org.jungletree.connector.mcj.message.KickMessage;
 import org.jungletree.connector.mcj.message.SetCompressionMessage;
 import org.jungletree.connector.mcj.message.login.LoginSuccessMessage;
@@ -24,15 +25,17 @@ import org.jungletree.connector.mcj.protocol.LoginProtocol;
 import org.jungletree.connector.mcj.protocol.PlayProtocol;
 import org.jungletree.connector.mcj.protocol.ProtocolType;
 import org.jungletree.rainforest.connector.ClientConnectorResourceService;
-import org.jungletree.rainforest.messaging.MessagingService;
 import org.jungletree.rainforest.util.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.SecretKey;
+import javax.inject.Inject;
 import java.net.InetSocketAddress;
 import java.util.ArrayDeque;
 import java.util.Queue;
+
+import static org.jungletree.connector.mcj.JungleMcjApplication.getInjector;
 
 public class JSession extends BasicSession {
 
@@ -40,8 +43,8 @@ public class JSession extends BasicSession {
 
     private final Queue<Message> messageQueue = new ArrayDeque<>();
 
-    private final ClientConnectorResourceService resource;
-    private final MessagingService messaging;
+    @Inject private ClientConnectorResourceService resource;
+    @Inject private WorldManager worldManager;
 
     private ConnectionManager connectionManager;
     private InetSocketAddress address;
@@ -57,13 +60,11 @@ public class JSession extends BasicSession {
 
     private JunglePlayer player;
 
-    // private BlockPlacementMessage previousPlacement;
-    // private int previousPlacementTicks;
-
-    public JSession(Channel channel, ClientConnectorResourceService resource, MessagingService messaging, ConnectionManager connectionManager) {
+    public JSession(Channel channel, ConnectionManager connectionManager) {
         super(channel, ProtocolType.HANDSHAKE.getProtocol());
-        this.resource = resource;
-        this.messaging = messaging;
+
+        getInjector().injectMembers(this);
+
         this.connectionManager = connectionManager;
         this.address = super.getAddress();
     }
@@ -184,7 +185,7 @@ public class JSession extends BasicSession {
             throw new IllegalStateException("Player already defined");
         }
 
-        this.player = new JunglePlayer(messaging, resource, profile);
+        this.player = new JunglePlayer(profile);
         finalizeLogin(player, profile);
 
         if (!isActive()) {

@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.net.InetSocketAddress;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 public class JungleClientConnectorMcj implements ClientConnector, ConnectionManager {
@@ -92,7 +91,7 @@ public class JungleClientConnectorMcj implements ClientConnector, ConnectionMana
 
     @Override
     public Session newSession(Channel c) {
-        return new JSession(c, resource, messaging, this);
+        return new JSession(c, this);
     }
 
     @Override
