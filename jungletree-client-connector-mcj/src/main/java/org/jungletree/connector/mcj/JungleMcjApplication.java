@@ -2,8 +2,10 @@ package org.jungletree.connector.mcj;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import io.netty.channel.epoll.Epoll;
 import org.jungletree.connector.mcj.config.JClientConnectorResourceService;
+import org.jungletree.connector.mcj.jms.WorldManager;
 import org.jungletree.connector.mcj.protocol.*;
 import org.jungletree.rainforest.connector.ClientConnector;
 import org.jungletree.rainforest.messaging.MessagingService;
@@ -19,6 +21,8 @@ public class JungleMcjApplication {
 
     private static final Logger log = LoggerFactory.getLogger(JungleMcjApplication.class);
 
+    private static Injector INJECTOR;
+
     @Inject
     private MessagingService messaging;
 
@@ -31,6 +35,9 @@ public class JungleMcjApplication {
     @Inject
     private CountDownLatch latch;
 
+    @Inject
+    private WorldManager worldManager;
+
     @Inject private HandshakeProtocol handshakeProtocol;
     @Inject private StatusProtocol statusProtocol;
     @Inject private LoginProtocol loginProtocol;
@@ -41,12 +48,14 @@ public class JungleMcjApplication {
         log.info("Starting JungleTree Minecraft Java Edition connector");
 
         log.trace("Injecting dependencies");
-        Guice.createInjector(new JungleMcjGuiceModule()).injectMembers(this);
+        INJECTOR = Guice.createInjector(new JungleMcjGuiceModule());
+        INJECTOR.injectMembers(this);
 
         log.trace("Starting messaging service");
         messaging.start();
         messaging.registerMessage(WorldRequestMessage.class);
         messaging.registerMessage(WorldResponseMessage.class);
+        messaging.registerHandler(WorldResponseMessage.class, worldManager);
 
         log.trace("Initializing protocol");
         initProtocol();
@@ -55,6 +64,10 @@ public class JungleMcjApplication {
         bind();
 
         log.info("Done {}ms", (System.currentTimeMillis() - start));
+    }
+
+    public static Injector getInjector() {
+        return INJECTOR;
     }
 
     private void bind() {
