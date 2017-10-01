@@ -2,7 +2,7 @@ git:
   submodules: true
 language: java
 jdk:
-  - oraclejdk8
+  - oraclejdk9
 notifications:
   email: false
 before_install:
