@@ -1,6 +1,10 @@
+def jungleTreeNexusUsername = hasProperty('jungleTreeNexusUsername') ? jungleTreeNexusUsername : System.getenv('jungleTreeNexusUsername')
+def jungleTreeNexusPassword = hasProperty('jungleTreeNexusPassword') ? jungleTreeNexusPassword : System.getenv('jungleTreeNexusPassword')
+
 allprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
+    apply plugin: 'maven-publish'
 
     group 'org.jungletree'
     version '0.0.1-SNAPSHOT'
@@ -19,11 +23,6 @@ allprojects {
     configurations.all {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
-}
-
-dependencies {
-    compile project(':messenger')
-    compile project(':storage')
 }
 
 subprojects {
@@ -61,6 +60,31 @@ subprojects {
                         '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath,
                 ]
                 classpath = files()
+            }
+        }
+
+        publishing {
+            repositories {
+                maven {
+                    credentials {
+                        username jungleTreeNexusUsername
+                        password jungleTreeNexusPassword
+                    }
+                    if (version.endsWith('-SNAPSHOT')) {
+                        url "https://repo.jungletree.org/repository/jungletree-snapshots"
+                    } else {
+                        url "https://repo.jungletree.org/repository/jungletree-releases"
+                    }
+                }
+            }
+            publications {
+                mavenJava(MavenPublication) {
+                    groupId group
+                    artifactId "${moduleName.substring("rainforest.".length())}"
+                    version version
+
+                    from components.java
+                }
             }
         }
     }
