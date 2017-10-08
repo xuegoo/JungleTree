@@ -13,28 +13,22 @@ import org.redisson.api.RMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
-@Singleton
 public class JungleWorldLoader implements WorldLoader {
 
     private static final Logger log = LoggerFactory.getLogger(JungleWorldLoader.class);
     private static final Gson GSON = new GsonBuilder().create();
 
-    private final StorageService storage;
     private final SchedulerService scheduler;
+    private final StorageService storage;
 
-    @Inject
-    public JungleWorldLoader(StorageService storage, SchedulerService scheduler) {
-        this.storage = storage;
-        this.scheduler = scheduler;
+    public JungleWorldLoader() {
+        this.scheduler = ServiceLoader.load(SchedulerService.class).findFirst().orElseThrow(NoSuchElementException::new);
+        this.storage = ServiceLoader.load(StorageService.class).findFirst().orElseThrow(NoSuchElementException::new);
     }
 
     @Override
@@ -104,7 +98,10 @@ public class JungleWorldLoader implements WorldLoader {
             blocks[y] = new JungleBlock[16][16];
             IntStream.range(0, 16).forEach(x -> {
                 blocks[y][x] = new JungleBlock[16];
-                IntStream.range(0, 16).forEach(z -> blocks[y][x][z] = new JungleBlock(y < 32 ? BlockType.STONE : BlockType.AIR));
+                IntStream.range(0, 16).forEach(z -> {
+                    blocks[y][x][z] = new JungleBlock();
+                    blocks[y][x][z].setType(y < 32 ? BlockType.STONE : BlockType.AIR);
+                });
             });
         });
 

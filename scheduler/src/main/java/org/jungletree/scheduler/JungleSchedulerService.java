@@ -5,11 +5,9 @@ import org.jungletree.rainforest.scheduler.SchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Singleton
 public class JungleSchedulerService implements SchedulerService {
 
     private static final Logger log = LoggerFactory.getLogger(JungleSchedulerService.class);

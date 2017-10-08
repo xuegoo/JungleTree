@@ -1,33 +1,33 @@
 package org.jungletree.world;
 
-import com.google.inject.Guice;
-import com.google.inject.Inject;
+import org.jungletree.rainforest.messages.WorldRequestMessage;
+import org.jungletree.rainforest.messages.WorldResponseMessage;
 import org.jungletree.rainforest.messaging.MessagingService;
-import org.jungletree.rainforest.messaging.message.WorldResponseMessage;
 import org.jungletree.rainforest.world.World;
 import org.jungletree.rainforest.world.WorldLoader;
 import org.jungletree.world.messaging.WorldRequestMessageHandler;
-import org.jungletree.rainforest.messaging.message.WorldRequestMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.NoSuchElementException;
+import java.util.ServiceLoader;
 import java.util.stream.IntStream;
 
 public class JungleWorldApplication {
 
     private static final Logger log = LoggerFactory.getLogger(JungleWorldApplication.class);
 
-    @Inject
-    private WorldLoader worldLoader;
+    private final MessagingService messaging;
 
-    @Inject
-    private MessagingService messaging;
+    private final WorldLoader worldLoader;
+    private final WorldRequestMessageHandler worldRequestHandler;
 
-    @Inject
-    private WorldRequestMessageHandler worldRequestHandler;
 
     private JungleWorldApplication() {
-        Guice.createInjector(new JungleWorldGuiceModule()).injectMembers(this);
+        this.messaging = ServiceLoader.load(MessagingService.class).findFirst().orElseThrow(NoSuchElementException::new);
+        this.worldLoader = ServiceLoader.load(WorldLoader.class).findFirst().orElseThrow(NoSuchElementException::new);
+        this.worldRequestHandler = ServiceLoader.load(WorldRequestMessageHandler.class).findFirst().orElseThrow(NoSuchElementException::new);
+
         registerMessageHandlers();
         initDummyData();
     }

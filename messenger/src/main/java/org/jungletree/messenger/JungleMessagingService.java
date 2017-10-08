@@ -7,7 +7,6 @@ import org.jungletree.rainforest.messaging.Message;
 import org.jungletree.rainforest.messaging.MessageHandler;
 import org.jungletree.rainforest.messaging.MessagingService;
 
-import javax.inject.Singleton;
 import javax.jms.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +14,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Singleton
 public class JungleMessagingService implements MessagingService {
 
     private static final String BROKER_HOST = System.getenv("MESSAGE_BROKER_URL") != null ? System.getenv("MESSAGE_BROKER_URL") : "localhost";
@@ -124,8 +122,12 @@ public class JungleMessagingService implements MessagingService {
     @Override
     public void shutdown() {
         try {
-            session.close();
-            connection.close();
+            if (session != null) {
+                session.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
         } catch (JMSException ex) {
             throw new RuntimeException(ex);
         }

@@ -5,9 +5,6 @@ import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 
-import javax.inject.Singleton;
-
-@Singleton
 public class JungleStorageService implements StorageService {
 
     private static final String REDIS_HOST = System.getenv("REDIS_HOST") != null ? System.getenv("REDIS_HOST") : "localhost";

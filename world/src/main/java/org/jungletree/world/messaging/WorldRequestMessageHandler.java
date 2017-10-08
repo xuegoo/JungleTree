@@ -1,19 +1,19 @@
 package org.jungletree.world.messaging;
 
+import org.jungletree.rainforest.messages.WorldRequestMessage;
+import org.jungletree.rainforest.messages.WorldResponseMessage;
 import org.jungletree.rainforest.messaging.MessageHandler;
 import org.jungletree.rainforest.messaging.MessagingService;
-import org.jungletree.rainforest.messaging.message.WorldRequestMessage;
-import org.jungletree.rainforest.messaging.message.WorldResponseMessage;
 import org.jungletree.rainforest.util.Messengers;
 import org.jungletree.rainforest.world.World;
 import org.jungletree.rainforest.world.WorldService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.ServiceLoader;
 
-@Singleton
 public class WorldRequestMessageHandler implements MessageHandler<WorldRequestMessage> {
 
     private static final Logger log = LoggerFactory.getLogger(WorldRequestMessageHandler.class);
@@ -21,10 +21,35 @@ public class WorldRequestMessageHandler implements MessageHandler<WorldRequestMe
     private final MessagingService messaging;
     private final WorldService worldService;
 
-    @Inject
-    public WorldRequestMessageHandler(MessagingService messaging, WorldService worldService) {
-        this.messaging = messaging;
-        this.worldService = worldService;
+    public WorldRequestMessageHandler() {
+        this.messaging = loadMessagingService();
+        this.worldService = loadWorldService();
+    }
+
+    private MessagingService loadMessagingService() {
+        MessagingService messaging;
+        ServiceLoader<MessagingService> messagingServiceLoader = ServiceLoader.load(MessagingService.class);
+        Optional<MessagingService> messagingServiceOptional = messagingServiceLoader.findFirst();
+
+        if (messagingServiceOptional.isPresent()) {
+            messaging = messagingServiceOptional.get();
+        } else {
+            throw new NoSuchElementException("Messaging service not defined");
+        }
+        return messaging;
+    }
+
+    private WorldService loadWorldService() {
+        WorldService worldService;
+        ServiceLoader<WorldService> messagingServiceLoader = ServiceLoader.load(WorldService.class);
+        Optional<WorldService> worldServiceOptional = messagingServiceLoader.findFirst();
+
+        if (worldServiceOptional.isPresent()) {
+            worldService = worldServiceOptional.get();
+        } else {
+            throw new NoSuchElementException("World service not defined");
+        }
+        return worldService;
     }
 
     @Override

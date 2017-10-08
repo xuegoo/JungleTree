@@ -2,18 +2,16 @@ package org.jungletree.world;
 
 import org.jungletree.rainforest.world.*;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.util.NoSuchElementException;
+import java.util.ServiceLoader;
 import java.util.concurrent.CompletableFuture;
 
-@Singleton
 public class JungleWorldService implements WorldService {
 
     private final WorldLoader worldLoader;
 
-    @Inject
-    public JungleWorldService(WorldLoader worldLoader) {
-        this.worldLoader = worldLoader;
+    public JungleWorldService() {
+        this.worldLoader = ServiceLoader.load(WorldLoader.class).findFirst().orElseThrow(NoSuchElementException::new);
     }
 
     @Override
