@@ -1,30 +1,39 @@
-group 'org.jungletree'
-version '0.0.1-SNAPSHOT'
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
 
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'idea'
+    group 'org.jungletree'
+    version '0.0.1-SNAPSHOT'
+}
 
 sourceCompatibility = 9
 targetCompatibility = 9
 
 repositories {
     jcenter()
-    mavenCentral()
-    mavenLocal()
-}
-
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-        tasks.withType(Javadoc) {
-            options.addStringOption('Xdoclint:none', '-quiet')
-        }
+    maven {
+        name 'jungletree-snapshots'
+        url 'https://repo.jungletree.org/repository/jungletree-snapshots/'
     }
 }
 
-
 dependencies {
-    compile project(':jungletree-auth')
-    compile project(':jungletree-messenger')
-    compile project(':jungletree-storage')
+    compile project(':messenger')
+    compile project(':storage')
+}
+
+subprojects {
+    afterEvaluate {
+
+        targetCompatibility = 9
+        sourceCompatibility = 9
+
+        repositories {
+            jcenter()
+            maven {
+                name 'jungletree-snapshots'
+                url 'https://repo.jungletree.org/repository/jungletree-snapshots/'
+            }
+        }
+    }
 }

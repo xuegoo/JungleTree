@@ -1,4 +1,0 @@
-[submodule "flow-network"]
-    path = flow-network
-    url = ../flow-network.git
-		branch = develop
