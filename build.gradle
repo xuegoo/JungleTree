@@ -4,36 +4,20 @@ allprojects {
 
     group 'org.jungletree'
     version '0.0.1-SNAPSHOT'
-}
 
-sourceCompatibility = 9
-targetCompatibility = 9
+    sourceCompatibility = 9
+    targetCompatibility = 9
 
-repositories {
-    jcenter()
-    maven {
-        name 'jungletree-snapshots'
-        url 'https://repo.jungletree.org/repository/jungletree-snapshots/'
+    repositories {
+        jcenter()
+        maven {
+            name 'jungletree-snapshots'
+            url 'https://repo.jungletree.org/repository/jungletree-snapshots/'
+        }
     }
 }
 
 dependencies {
     compile project(':messenger')
     compile project(':storage')
-}
-
-subprojects {
-    afterEvaluate {
-
-        targetCompatibility = 9
-        sourceCompatibility = 9
-
-        repositories {
-            jcenter()
-            maven {
-                name 'jungletree-snapshots'
-                url 'https://repo.jungletree.org/repository/jungletree-snapshots/'
-            }
-        }
-    }
 }
