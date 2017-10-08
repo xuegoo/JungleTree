@@ -1,6 +1,5 @@
 # JungleTree
-
-[![Build Status](https://travis-ci.org/JungleTree/JungleTree.svg?branch=master)](https://travis-ci.org/JungleTree/JungleTree)
+[![Build Status](https://ci.jungletree.org/job/JungleTree/job/JungleTree/job/master/badge/icon)](https://ci.jungletree.org/blue/organizations/jenkins/JungleTree%2FJungleTree/activity)
 
 JungleTree is an event-driven, modern Minecraft Server. The goal is to produce a server that is designed primarily for server owners who wish to better utilize their hardware. The minimum viable product is currently in development. The software is built from the ground-up, and has been optimized for multi-core environments.
 
