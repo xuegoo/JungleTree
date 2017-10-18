@@ -1,3 +1,7 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
 def jungleTreeNexusUsername = hasProperty('jungleTreeNexusUsername') ? jungleTreeNexusUsername : System.getenv('jungleTreeNexusUsername')
 def jungleTreeNexusPassword = hasProperty('jungleTreeNexusPassword') ? jungleTreeNexusPassword : System.getenv('jungleTreeNexusPassword')
 
