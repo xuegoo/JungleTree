@@ -1,7 +1,6 @@
 module jungletree.world {
     requires rainforest.messaging;
     requires rainforest.world;
-    requires rainforest.messages;
     requires rainforest.util;
     requires rainforest.storage;
     requires rainforest.scheduler;

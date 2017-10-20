@@ -16,7 +16,6 @@ jar {
 
 dependencies {
     compile group: 'org.jungletree.rainforest', name: 'world', version: version
-    compile group: 'org.jungletree.rainforest', name: 'messages', version: version
 
     implementation project(':storage')
     implementation project(':messenger')

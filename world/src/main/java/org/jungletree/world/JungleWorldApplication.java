@@ -1,10 +1,10 @@
 package org.jungletree.world;
 
-import org.jungletree.rainforest.messages.WorldRequestMessage;
-import org.jungletree.rainforest.messages.WorldResponseMessage;
 import org.jungletree.rainforest.messaging.MessagingService;
 import org.jungletree.rainforest.world.World;
 import org.jungletree.rainforest.world.WorldLoader;
+import org.jungletree.rainforest.world.messages.WorldRequestMessage;
+import org.jungletree.rainforest.world.messages.WorldResponseMessage;
 import org.jungletree.world.messaging.WorldRequestMessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
