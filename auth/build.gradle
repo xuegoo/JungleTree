@@ -16,8 +16,14 @@ jar {
 
 dependencies {
     compile group: 'org.jungletree.rainforest', name: 'messages', version: version
+    compile group: 'org.jungletree.rainforest', name: 'messages', version: version
 
+    implementation project(':messenger')
+    implementation project(':scheduler')
+
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
+    compile 'com.auth0:java-jwt:3.2.0'
 
     runtime 'ch.qos.logback:logback-classic:1.2.3',
             'org.slf4j:jcl-over-slf4j:1.7.25',
