@@ -1,5 +1,7 @@
 package org.jungletree.auth;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSVerifier;
@@ -28,6 +30,7 @@ public class JungleAuthApplication implements MessageHandler<JwtAuthRequestMessa
 
     private static final String MOJANG_PUBLIC_KEY = "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE8ELkixyLcwlZryUQcu1TvPOmI2B7vX83ndnWRUaXm74wFfa5f/lwQNTfrLVHa2PmenpGI6JhIMUJaWZrjmMj90NoKNFSNBuKdm8rYiXsfaz3K36x/1U26HpG0ZxK/V1V";
 
+    private static final Gson GSON = new GsonBuilder().create();
     private static final DefaultJWSVerifierFactory VERIFIER_FACTORY = new DefaultJWSVerifierFactory();
 
     private final MessagingService messaging;
@@ -84,9 +87,34 @@ public class JungleAuthApplication implements MessageHandler<JwtAuthRequestMessa
             return;
         }
 
-        response.setStatus(validatePublicKey(jwsTokenOptional.get()));
+        JWSObject jwtToken = jwsTokenOptional.get();
+        response.setStatus(validatePublicKey(jwtToken));
+
+        if (response.getStatus().equals(OK)) {
+            copyJwtPayloadDataToResponse(response, jwtToken);
+        }
+
         messaging.sendMessage(response);
         log.info(response.toString());
+    }
+
+    private void copyJwtPayloadDataToResponse(JwtAuthReponseMessage response, JWSObject token) {
+        String payloadData = token.getPayload().toString();
+        JwtPayload payload = GSON.fromJson(payloadData, JwtPayload.class);
+        response.setCapeData(payload.getCapeData());
+        response.setClientRandomId(payload.getClientRandomId());
+        response.setCurrentInputMode(payload.getCurrentInputMode());
+        response.setDefaultInputMode(payload.getDefaultInputMode());
+        response.setDeviceModel(payload.getDeviceModel());
+        response.setDeviceOS(payload.getDeviceOS());
+        response.setGameVersion(payload.getGameVersion());
+        response.setGuiScale(payload.getGuiScale());
+        response.setLanguageCode(payload.getLanguageCode());
+        response.setServerAddress(payload.getServerAddress());
+        response.setSkinData(payload.getSkinData());
+        response.setSkinGeometryName(payload.getSkinGeometryName());
+        response.setSkinId(payload.getSkinId());
+        response.setUiProfile(payload.getUiProfile());
     }
 
     private boolean validateCertificateChain(JwtAuthReponseMessage response, String... chain) {

@@ -4,6 +4,7 @@ module auth.main {
     requires rainforest.auth;
     requires nimbus.jose.jwt;
     requires rainforest.util;
+    requires gson;
 
     uses org.jungletree.rainforest.messaging.MessagingService;
 }
