@@ -16,6 +16,7 @@ jar {
 
 dependencies {
     compile group: 'org.jungletree.rainforest', name: 'auth', version: version
+    compile group: 'org.jungletree.rainforest', name: 'util', version: version
 
     implementation project(':messenger')
     implementation project(':scheduler')

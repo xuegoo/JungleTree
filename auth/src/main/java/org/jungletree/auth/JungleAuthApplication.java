@@ -8,6 +8,7 @@ import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthRequestMessage;
 import org.jungletree.rainforest.messaging.MessageHandler;
 import org.jungletree.rainforest.messaging.MessagingService;
+import org.jungletree.rainforest.util.Messengers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +66,8 @@ public class JungleAuthApplication implements MessageHandler<JwtAuthRequestMessa
         String token = message.getJwtToken();
 
         JwtAuthReponseMessage response = new JwtAuthReponseMessage();
+        response.setSender(Messengers.AUTHENTICATION);
+        response.setRecipient(message.getSender());
 
         if (!validateCertificateChain(response, chain)) {
             response.setStatus(INVALID_CERTIFICATE_CHAIN);
