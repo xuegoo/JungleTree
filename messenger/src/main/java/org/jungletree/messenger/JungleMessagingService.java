@@ -11,7 +11,6 @@ import javax.jms.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class JungleMessagingService implements MessagingService {
@@ -43,27 +42,19 @@ public class JungleMessagingService implements MessagingService {
     }
 
     @Override
-    public CompletableFuture<Message> sendMessage(Message message) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                // TODO: Cache connections
-                Destination producerDestination = requestQueues.get(message.getClass().getSimpleName() + "Request");
-                Destination consumerDestination = responseQueues.get(message.getClass().getSimpleName() + "Response");
-                MessageProducer producer = session.createProducer(producerDestination);
-                MessageConsumer consumer = session.createConsumer(consumerDestination);
-                producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+    public void sendMessage(Message message) {
+        try {
+            // TODO: Cache connections
+            Destination producerDestination = requestQueues.get(message.getClass().getSimpleName() + "Request");
+            MessageProducer producer = session.createProducer(producerDestination);
+            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-                TextMessage textMessage = session.createTextMessage(GSON.toJson(message));
-                producer.send(textMessage);
-                producer.close();
-
-                TextMessage resultMessage = (TextMessage) consumer.receive(TIMEOUT);
-                consumer.close();
-                return GSON.fromJson(resultMessage.getText(), message.getClass());
-            } catch (JMSException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+            TextMessage textMessage = session.createTextMessage(GSON.toJson(message));
+            producer.send(textMessage);
+            producer.close();
+        } catch (JMSException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
