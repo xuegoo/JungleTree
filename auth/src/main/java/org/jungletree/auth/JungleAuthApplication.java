@@ -68,6 +68,7 @@ public class JungleAuthApplication implements MessageHandler<JwtAuthRequestMessa
         JwtAuthReponseMessage response = new JwtAuthReponseMessage();
         response.setSender(Messengers.AUTHENTICATION);
         response.setRecipient(message.getSender());
+        response.setClientConnectionId(message.getClientConnectionId());
 
         if (!validateCertificateChain(response, chain)) {
             response.setStatus(INVALID_CERTIFICATE_CHAIN);
