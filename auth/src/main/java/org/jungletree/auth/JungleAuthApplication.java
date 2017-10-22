@@ -6,7 +6,6 @@ import org.jungletree.rainforest.auth.messages.GetServerTokenMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthRequestMessage;
 import org.jungletree.rainforest.messaging.MessagingService;
-import org.jungletree.rainforest.util.Messengers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +15,9 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.interfaces.ECPublicKey;
-import java.util.*;
+import java.util.Base64;
+import java.util.NoSuchElementException;
+import java.util.ServiceLoader;
 
 public class JungleAuthApplication {
 
@@ -41,13 +42,6 @@ public class JungleAuthApplication {
 
         registerMessageHandlers();
         log.info("Started! Listening for incoming token validation requests.");
-
-
-        GetServerTokenMessage dummyMessage = new GetServerTokenMessage();
-        dummyMessage.setRecipient(Messengers.AUTHENTICATION);
-        dummyMessage.setSender(Messengers.CLIENT_CONNECTOR);
-
-        serverTokenHandler.handle(dummyMessage);
     }
 
     private void registerMessageHandlers() {
