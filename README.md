@@ -9,7 +9,7 @@ The original project started back in 2011 as a programming challenge, where a si
 Since then, JungleTree has been re-worked into a distributed computing platform. This has been possible by taking
 advantage of modern server technologies, such as Docker and RabbitMQ.
 
-In the long term, the JungleTree project aims to become the standard for all commercial-grade Minecraft organizations, 
+In the long term, the JungleTree project aims to become a standard for all commercial-grade Minecraft organizations, 
 with all source code being freely available.
 
 ## In Development
