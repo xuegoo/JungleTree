@@ -7,4 +7,7 @@ module auth.main {
     requires gson;
 
     uses org.jungletree.rainforest.messaging.MessagingService;
+
+    exports org.jungletree.auth;
+    opens org.jungletree.auth;
 }
