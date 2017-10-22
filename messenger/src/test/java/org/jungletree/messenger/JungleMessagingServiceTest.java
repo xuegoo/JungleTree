@@ -7,9 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
-import javax.jms.Queue;
-import javax.jms.Session;
+import javax.jms.*;
 import java.util.Collection;
 import java.util.Map;
 
@@ -28,6 +28,12 @@ class JungleMessagingServiceTest {
     private Session session;
 
     @Mock
+    private MessageConsumer consumer;
+
+    @Mock
+    private MessageProducer producer;
+
+    @Mock
     private Queue queue;
 
     @BeforeEach
@@ -36,6 +42,8 @@ class JungleMessagingServiceTest {
         subject.setSession(session);
 
         when(session.createQueue(anyString())).thenReturn(queue);
+        when(session.createConsumer(Mockito.any(Destination.class))).thenReturn(consumer);
+        when(session.createProducer(Mockito.any(Destination.class))).thenReturn(producer);
     }
 
     @AfterEach
