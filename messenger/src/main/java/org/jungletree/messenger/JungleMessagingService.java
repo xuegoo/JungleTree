@@ -66,6 +66,7 @@ public class JungleMessagingService implements MessagingService {
 
     @Override
     public <M extends Message> void registerMessage(Class<M> messageClass) {
+        // TODO: Only create a response queue for the direction specified
         String requestQueueName = messageClass.getSimpleName() + "Request";
         String responseQueueName = messageClass.getSimpleName() + "Response";
 
@@ -87,6 +88,8 @@ public class JungleMessagingService implements MessagingService {
 
     @Override
     public <M extends Message> void unregisterMessage(Class<M> messageClass) {
+        requestQueues.remove(messageClass.getSimpleName() + "Request");
+        responseQueues.remove(messageClass.getSimpleName() + "Response");
         handlers.remove(messageClass);
     }
 
@@ -107,7 +110,12 @@ public class JungleMessagingService implements MessagingService {
 
     @Override
     public <M extends Message> void unregisterHandler(Class<M> messageClass, MessageHandler<M> handler) {
-        handlers.get(messageClass).remove(handler);
+        Collection<MessageHandler<? extends Message>> result = handlers.get(messageClass);
+        result.remove(handler);
+
+        if (result.isEmpty()) {
+            handlers.remove(messageClass);
+        }
     }
 
     @Override
@@ -122,6 +130,16 @@ public class JungleMessagingService implements MessagingService {
         } catch (JMSException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    // Visible for testing
+    Map<String, Queue> getRequestQueues() {
+        return requestQueues;
+    }
+
+    // Visible for testing
+    Map<String, Queue> getResponseQueues() {
+        return responseQueues;
     }
 
     // Visible for testing
