@@ -1,11 +1,12 @@
-package org.jungletree.clientconnector.mcb.protocol;
+package org.jungletree.clientconnector.mcb;
 
-import org.jungletree.clientconnector.mcb.CodecRegistration;
+import org.jungletree.clientconnector.mcb.codec.crypto.ServerToClientHandshakeCodec;
 import org.jungletree.clientconnector.mcb.codec.handshake.LoginCodec;
 import org.jungletree.clientconnector.mcb.codec.handshake.PlayStateCodec;
 import org.jungletree.clientconnector.mcb.codec.resourcepack.ResourcePackInfoCodec;
 import org.jungletree.clientconnector.mcb.codec.resourcepack.ResourcePackStackCodec;
 import org.jungletree.clientconnector.mcb.handler.handshake.LoginHandler;
+import org.jungletree.clientconnector.mcb.message.crypto.ServerToClientHandshakeMessage;
 import org.jungletree.clientconnector.mcb.message.handshake.LoginMessage;
 import org.jungletree.clientconnector.mcb.message.handshake.PlayStateMessage;
 import org.jungletree.clientconnector.mcb.message.resourcepack.ResourcePackInfoMessage;
@@ -37,7 +38,7 @@ public class Protocol {
         reg.handler(LoginMessage.class, loginHandler);
 
         reg.codec(0x02, PlayStateMessage.class, PlayStateCodec.class);
-
+        reg.codec(0x03, ServerToClientHandshakeMessage.class, ServerToClientHandshakeCodec.class);
 
         reg.codec(0x06, ResourcePackInfoMessage.class, ResourcePackInfoCodec.class);
         reg.codec(0x07, ResourcePackStackMessage.class, ResourcePackStackCodec.class);

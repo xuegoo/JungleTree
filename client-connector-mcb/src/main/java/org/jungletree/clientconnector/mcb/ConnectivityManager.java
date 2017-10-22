@@ -6,7 +6,6 @@ import io.gomint.jraknet.Socket;
 import org.jungletree.clientconnector.mcb.codec.Codec;
 import org.jungletree.clientconnector.mcb.handler.MessageHandler;
 import org.jungletree.clientconnector.mcb.message.Message;
-import org.jungletree.clientconnector.mcb.protocol.Protocol;
 import org.jungletree.rainforest.scheduler.SchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,7 @@ public class ConnectivityManager implements Runnable {
     private final SchedulerService scheduler;
     private final BedrockServer server;
 
-    private volatile org.jungletree.clientconnector.mcb.protocol.Protocol protocol;
+    private volatile Protocol protocol;
 
     private volatile boolean running = false;
 
@@ -38,7 +37,7 @@ public class ConnectivityManager implements Runnable {
         this.protocol = new Protocol(server.getMessagingService());
     }
 
-    public org.jungletree.clientconnector.mcb.protocol.Protocol getProtocol() {
+    public Protocol getProtocol() {
         return protocol;
     }
 
@@ -61,7 +60,7 @@ public class ConnectivityManager implements Runnable {
         while (running) {
             scheduler.execute(() -> {
                 Map<Socket, ClientConnection> connections = server.getConnections();
-                connections.values().stream()
+                connections.values()
                         .forEach(client -> {
                             EncapsulatedPacket packet = client.getConnection().receive();
                             PacketBuffer buf = new PacketBuffer(packet.getPacketData(), 0);

@@ -1,6 +1,7 @@
 package org.jungletree.clientconnector.mcb;
 
 import io.gomint.jraknet.Connection;
+import org.jungletree.clientconnector.mcb.crypto.ProtocolEncryption;
 import org.jungletree.clientconnector.mcb.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ public class ClientConnection {
     private final ConnectivityManager connectivityManager;
     private final OutboundRequestProcessor outboundProcessor;
     private final Connection connection;
+    private final ProtocolEncryption protocolEncryption;
 
     private long clientRandomId;
     private String deviceModel;
@@ -39,6 +41,7 @@ public class ClientConnection {
         this.connectivityManager = server.getConnectivityManager();
         this.outboundProcessor = new OutboundRequestProcessor(connectivityManager, this);
         this.connection = connection;
+        this.protocolEncryption = new ProtocolEncryption();
     }
 
     public BedrockServer getServer() {
@@ -47,6 +50,10 @@ public class ClientConnection {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    public ProtocolEncryption getProtocolEncryption() {
+        return protocolEncryption;
     }
 
     public void send(Message message) {

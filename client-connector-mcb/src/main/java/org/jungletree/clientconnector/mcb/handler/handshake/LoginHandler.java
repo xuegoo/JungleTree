@@ -2,6 +2,7 @@ package org.jungletree.clientconnector.mcb.handler.handshake;
 
 import org.jungletree.clientconnector.mcb.ClientConnection;
 import org.jungletree.clientconnector.mcb.PlayState;
+import org.jungletree.clientconnector.mcb.crypto.ProtocolEncryption;
 import org.jungletree.clientconnector.mcb.handler.MessageHandler;
 import org.jungletree.clientconnector.mcb.message.handshake.LoginMessage;
 import org.jungletree.clientconnector.mcb.message.handshake.PlayStateMessage;
@@ -11,6 +12,7 @@ import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage.AuthenticationStatus;
 import org.jungletree.rainforest.auth.messages.JwtAuthRequestMessage;
 import org.jungletree.rainforest.messaging.MessagingService;
+import org.jungletree.rainforest.util.Crypto;
 import org.jungletree.rainforest.util.Messengers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,29 +65,38 @@ public class LoginHandler implements MessageHandler<LoginMessage>, org.jungletre
 
         if (status.equals(AuthenticationStatus.OK)) {
             updateProfileInfo(client, message);
-
-            PlayStateMessage playStateMessage = new PlayStateMessage();
-            playStateMessage.setPlayState(PlayState.LOGIN_SUCCESS);
-
-            client.send(playStateMessage);
-
-
-            ResourcePackInfoMessage resourcePackInfoMessage = new ResourcePackInfoMessage();
-            resourcePackInfoMessage.setMustAccept(false);
-            resourcePackInfoMessage.setBehaviorPackInfo(Collections.emptyList());
-            resourcePackInfoMessage.setResourcePackInfo(Collections.emptyList());
-
-            ResourcePackStackMessage resourcePackStackMessage = new ResourcePackStackMessage();
-            resourcePackStackMessage.setMustAccept(false);
-            resourcePackStackMessage.setBehaviorPackIdVersions(Collections.emptyList());
-            resourcePackStackMessage.setResourcePackIdVersions(Collections.emptyList());
-
-            client.send(resourcePackInfoMessage);
-            client.send(resourcePackStackMessage);
+            enableProtocolEncryption(client, message.getClientPublicKey());
+            sendResourcePackInfo(client);
         } else {
             log.info("Disconnecting: {}", status.toString());
             client.getConnection().disconnect(status.toString());
         }
+    }
+
+    private void enableProtocolEncryption(ClientConnection client, String clientPublicKey) {
+        ProtocolEncryption encryption = client.getProtocolEncryption();
+        encryption.setClientPublicKey(Crypto.getECX509PublicKey(clientPublicKey));
+    }
+
+    private void sendResourcePackInfo(ClientConnection client) {
+        PlayStateMessage playStateMessage = new PlayStateMessage();
+        playStateMessage.setPlayState(PlayState.LOGIN_SUCCESS);
+
+        client.send(playStateMessage);
+
+
+        ResourcePackInfoMessage resourcePackInfoMessage = new ResourcePackInfoMessage();
+        resourcePackInfoMessage.setMustAccept(false);
+        resourcePackInfoMessage.setBehaviorPackInfo(Collections.emptyList());
+        resourcePackInfoMessage.setResourcePackInfo(Collections.emptyList());
+
+        ResourcePackStackMessage resourcePackStackMessage = new ResourcePackStackMessage();
+        resourcePackStackMessage.setMustAccept(false);
+        resourcePackStackMessage.setBehaviorPackIdVersions(Collections.emptyList());
+        resourcePackStackMessage.setResourcePackIdVersions(Collections.emptyList());
+
+        client.send(resourcePackInfoMessage);
+        client.send(resourcePackStackMessage);
     }
 
     private void updateProfileInfo(ClientConnection client, JwtAuthReponseMessage message) {
