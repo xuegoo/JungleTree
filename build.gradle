@@ -150,7 +150,7 @@ subprojects {
             publications {
                 mavenJava(MavenPublication) {
                     groupId group
-                    artifactId "${moduleName.substring("jungletree.".length())}"
+                    artifactId "${moduleName.substring("jungletree.".length()).replace("\\.", "-")}"
                     version version
 
                     from components.java
