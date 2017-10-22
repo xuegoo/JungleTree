@@ -8,9 +8,8 @@ import org.jungletree.rainforest.messaging.MessageHandler;
 import org.jungletree.rainforest.messaging.MessagingService;
 
 import javax.jms.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import javax.jms.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class JungleMessagingService implements MessagingService {
@@ -25,16 +24,23 @@ public class JungleMessagingService implements MessagingService {
     private Connection connection;
     private Session session;
 
-    private final Map<String, Queue> requestQueues = new ConcurrentHashMap<>();
-    private final Map<String, Queue> responseQueues = new ConcurrentHashMap<>();
-    private final Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> handlers = new ConcurrentHashMap<>();
+    private final Map<String, Queue> requestQueues;
+    private final Map<String, Queue> responseQueues;
+    private final Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> handlers;
 
     public JungleMessagingService() {
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+        this.requestQueues = new ConcurrentHashMap<>();
+        this.responseQueues = new ConcurrentHashMap<>();
+        this.handlers = new ConcurrentHashMap<>();
     }
 
     public Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> getHandlers() {
         return handlers;
+    }
+
+    @Override
+    public void listenForJvmShutdown() {
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     }
 
     @Override
@@ -84,26 +90,19 @@ public class JungleMessagingService implements MessagingService {
         handlers.remove(messageClass);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <M extends Message> void registerHandler(Class<M> messageClass, MessageHandler<M> handler) {
-        Queue queue = requestQueues.get(messageClass.getSimpleName() + "Request");
-        try {
-            MessageConsumer consumer = session.createConsumer(queue);
-            consumer.setMessageListener(message -> {
-                if (message instanceof TextMessage) {
-                    TextMessage textMessage = (TextMessage)message;
-                    try {
-                        M result = GSON.fromJson(textMessage.getText(), messageClass);
-                        handler.handle(result);
-                    } catch (JMSException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-            });
-        } catch (JMSException ex) {
-            throw new RuntimeException(ex);
+        Collection<MessageHandler<? extends Message>> messageHandlers;
+
+        if (handlers.containsKey(messageClass)) {
+            messageHandlers = handlers.get(messageClass);
+        } else {
+            createMessageConsumerForMessage(messageClass);
+            messageHandlers = Collections.synchronizedSet(new HashSet<>());
         }
-        handlers.get(messageClass).add(handler);
+        messageHandlers.add(handler);
+        handlers.put(messageClass, messageHandlers);
     }
 
     @Override
@@ -125,6 +124,11 @@ public class JungleMessagingService implements MessagingService {
         }
     }
 
+    // Visible for testing
+    void setSession(Session session) {
+        this.session = session;
+    }
+
     private void initJms() {
         try {
             RMQConnectionFactory factory = new RMQConnectionFactory();
@@ -135,6 +139,28 @@ public class JungleMessagingService implements MessagingService {
             this.connection = factory.createConnection();
             this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             connection.start();
+        } catch (JMSException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private <M extends Message> void createMessageConsumerForMessage(Class<M> messageClass) {
+        Queue queue = requestQueues.get(messageClass.getSimpleName() + "Request");
+        try {
+            MessageConsumer consumer = session.createConsumer(queue);
+            consumer.setMessageListener(message -> {
+                if (message instanceof TextMessage) {
+                    TextMessage textMessage = (TextMessage)message;
+                    try {
+                        M result = GSON.fromJson(textMessage.getText(), messageClass);
+
+                        // Send to all handlers of this message
+                        handlers.get(messageClass).forEach(h -> ((MessageHandler<M>) h).handle(result));
+                    } catch (JMSException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
         } catch (JMSException ex) {
             throw new RuntimeException(ex);
         }
