@@ -73,7 +73,7 @@ would have been possible.
 * GoMint for [jRakNet](https://github.com/JungleTree/jRakNet/blob/master/LICENSE.txt), and their server implementation
 used as a reference for the Bedrock networking protocol.
 
-* Niclas Olofsson for [MiNet](https://github.com/NiclasOlofsson/MiNET), also used as reference for the Bedrock
+* Niclas Olofsson for [MiNET](https://github.com/NiclasOlofsson/MiNET), also used as reference for the Bedrock
 networking protocol.
 
 * [Glowstone](https://github.com/GlowstoneMC/Glowstone) for a reference in Java Edition.
