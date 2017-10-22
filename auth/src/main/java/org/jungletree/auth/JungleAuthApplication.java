@@ -37,6 +37,7 @@ public class JungleAuthApplication implements MessageHandler<JwtAuthRequestMessa
 
     private JungleAuthApplication() {
         this.messaging = ServiceLoader.load(MessagingService.class).findFirst().orElseThrow(NoSuchElementException::new);
+        messaging.listenForJvmShutdown();
 
         registerMessageHandlers();
         log.info("Started! Listening for incoming token validation requests.");
