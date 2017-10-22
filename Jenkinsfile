@@ -11,6 +11,11 @@ node {
   sh './gradlew build -x test'
 }
 
+stage 'test'
+node {
+  sh './gradlew test'
+}
+
 stage 'deploy'
 node {
   sh './gradlew publish -x test'

@@ -32,6 +32,7 @@ public class JungleMessagingService implements MessagingService {
     public JungleMessagingService() {
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     }
+
     public Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> getHandlers() {
         return handlers;
     }

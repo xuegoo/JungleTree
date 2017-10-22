@@ -59,9 +59,11 @@ public class JungleAuthApplication implements MessageHandler<JwtAuthRequestMessa
         messaging.start();
         messaging.registerMessage(JwtAuthRequestMessage.class);
         messaging.registerHandler(JwtAuthRequestMessage.class, this);
+
         messaging.registerMessage(JwtAuthReponseMessage.class);
     }
 
+    // TODO: Validate skin data
     @Override
     public void handle(JwtAuthRequestMessage message) {
         log.trace("Inbound JWT validation request: {}", message.toString());
