@@ -68,7 +68,7 @@ JungleTree is MIT. See LICENSE for more details.
 * The wonderful contributors over at [wiki.vg](http://wiki.vg/Main_Page). Without their reverse engineering, none of this
 would have been possible.
 
-* yawkat for his work in reverse engineering [his own protocol documentation](https://confluence.yawk.at/display/PEPROTOCOL/) for the Bedrock platform
+* yawkat for [his own reverse engineered protocol documentation](https://confluence.yawk.at/display/PEPROTOCOL/) targeting the Bedrock platform
 
 * GoMint for [jRakNet](https://github.com/JungleTree/jRakNet/blob/master/LICENSE.txt), and their server implementation
 used as a reference for the Bedrock networking protocol.
