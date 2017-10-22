@@ -1,0 +1,33 @@
+apply plugin: 'application'
+
+ext.moduleName = "jungletree.clientconnector.mcb"
+mainClassName = 'org.jungletree.clientconnector.mcb.Main'
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+    from {
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+dependencies {
+    compile 'org.jungletree.rainforest:auth:0.0.1-SNAPSHOT'
+    compile 'org.jungletree.rainforest:util:0.0.1-SNAPSHOT'
+
+    compile 'org.jungletree:scheduler:0.0.1-SNAPSHOT'
+    compile 'org.jungletree:messenger:0.0.1-SNAPSHOT'
+
+    compile 'org.jungletree:libnbt:1.0.1-SNAPSHOT'
+    compile 'org.jungletree:jraknet:1.0.0-SNAPSHOT'
+
+    compile 'io.netty:netty-all:4.1.16.Final'
+    compile 'com.google.code.gson:gson:2.8.2'
+
+    runtime 'ch.qos.logback:logback-classic:1.2.3',
+            'org.slf4j:jcl-over-slf4j:1.7.25',
+            'org.slf4j:log4j-over-slf4j:1.7.25'
+}

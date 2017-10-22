@@ -5,3 +5,5 @@ include 'storage'
 include 'scheduler'
 include 'world'
 include 'auth'
+include 'client-connector-mcb'
+

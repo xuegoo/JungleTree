@@ -45,6 +45,11 @@ allprojects {
         }
     }
 
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
     junitPlatform {
         // platformVersion '1.0.1'
         filters {
@@ -145,10 +150,11 @@ subprojects {
             publications {
                 mavenJava(MavenPublication) {
                     groupId group
-                    artifactId "${moduleName.substring("rainforest.".length())}"
+                    artifactId "${moduleName.substring("jungletree.".length())}"
                     version version
 
                     from components.java
+                    artifact sourcesJar
                 }
             }
         }
