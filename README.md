@@ -57,7 +57,7 @@ gradlew.bat clean build
 
 # Continuous Integration
 
-The project can be found on the [JungleTree CI server](https://ci.jungletree.org/blue/organizations/jenkins/JungleTree%2FRainforest/activity)
+The project can be found on the [JungleTree CI server](https://ci.jungletree.org/blue/organizations/jenkins/JungleTree%2FJungleTree/activity)
 
 # License
 
