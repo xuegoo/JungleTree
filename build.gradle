@@ -15,6 +15,9 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
+sourceCompatibility = JavaVersion.VERSION_1_9
+targetCompatibility = JavaVersion.VERSION_1_9
+
 def jungleTreeNexusUsername = hasProperty('jungleTreeNexusUsername') ? jungleTreeNexusUsername : System.getenv('jungleTreeNexusUsername')
 def jungleTreeNexusPassword = hasProperty('jungleTreeNexusPassword') ? jungleTreeNexusPassword : System.getenv('jungleTreeNexusPassword')
 
@@ -27,14 +30,12 @@ allprojects {
     group 'org.jungletree'
     version '0.0.1-SNAPSHOT'
 
-    sourceCompatibility = 9
-    targetCompatibility = 9
+    sourceCompatibility = JavaVersion.VERSION_1_9
+    targetCompatibility = JavaVersion.VERSION_1_9
 
-    ext.junit4Version        = '4.12'
-    ext.junitVintageVersion  = '4.12.1'
     ext.junitPlatformVersion = '1.0.1'
-    ext.junitJupiterVersion  = '5.0.1'
-    ext.log4jVersion         = '2.9.0'
+    ext.junitJupiterVersion = '5.0.1'
+    ext.log4jVersion = '2.9.0'
 
     repositories {
         jcenter()
@@ -60,23 +61,28 @@ allprojects {
     }
 
     dependencies {
-        // JUnit Jupiter API and TestEngine implementation
-        testCompile("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+
+        // Needed as compile since we're building a JUnit Jupiter extension here
+        compile('org.mockito:mockito-core:2.+')
+        compile("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
+
+        // Needed for @RunWith(JUnitPlatform.class) in the IDE
+        testCompile("org.junit.platform:junit-platform-runner:${junitPlatformVersion}")
+
         testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}")
 
-        // If you also want to support JUnit 3 and JUnit 4 tests
-        testCompile("junit:junit:${junit4Version}")
-        testRuntime("org.junit.vintage:junit-vintage-engine:${junitVintageVersion}")
+        // Only needed to run tests in an IDE that bundles an older version
+        testRuntime("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
 
         // To avoid compiler warnings about @API annotations in JUnit code
+        compileOnly('org.apiguardian:apiguardian-api:1.0.0')
         testCompileOnly('org.apiguardian:apiguardian-api:1.0.0')
 
-        // To use Log4J's LogManager
         testRuntime("org.apache.logging.log4j:log4j-core:${log4jVersion}")
         testRuntime("org.apache.logging.log4j:log4j-jul:${log4jVersion}")
 
-        // Only needed to run tests in an (IntelliJ) IDE(A) that bundles an older version
-        testRuntime("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
+        testCompile('org.mockito:mockito-core:2.+')
     }
 
     configurations.all {
