@@ -83,7 +83,6 @@ public class JungleMessagingService implements MessagingService {
         } catch (JMSException ex) {
             throw new RuntimeException(ex);
         }
-        handlers.put(messageClass, new ArrayList<>());
     }
 
     @Override
