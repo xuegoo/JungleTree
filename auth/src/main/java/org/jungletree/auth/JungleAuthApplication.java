@@ -14,13 +14,13 @@ public class JungleAuthApplication {
     private static final Logger log = LoggerFactory.getLogger(JungleAuthApplication.class);
 
     private final MessagingService messaging;
-    private final JwtAuthHandler authHandler;
+    private final JwtAuthRequestHandler authHandler;
 
     private JungleAuthApplication() {
         this.messaging = ServiceLoader.load(MessagingService.class).findFirst().orElseThrow(NoSuchElementException::new);
         messaging.listenForJvmShutdown();
 
-        this.authHandler = new JwtAuthHandler(messaging);
+        this.authHandler = new JwtAuthRequestHandler(messaging);
 
         registerMessageHandlers();
         log.info("Started! Listening for incoming token validation requests.");

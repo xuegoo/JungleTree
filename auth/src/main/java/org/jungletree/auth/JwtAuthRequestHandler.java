@@ -28,9 +28,9 @@ import java.util.Optional;
 import static org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage.*;
 import static org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage.AuthenticationStatus.*;
 
-public class JwtAuthHandler implements MessageHandler<JwtAuthRequestMessage> {
+public class JwtAuthRequestHandler implements MessageHandler<JwtAuthRequestMessage> {
 
-    private static final Logger log = LoggerFactory.getLogger(JwtAuthHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthRequestHandler.class);
 
     private static final String MOJANG_PUBLIC_KEY = "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE8ELkixyLcwlZryUQcu1TvPOmI2B7vX83ndnWRUaXm74wFfa5f/lwQNTfrLVHa2PmenpGI6JhIMUJaWZrjmMj90NoKNFSNBuKdm8rYiXsfaz3K36x/1U26HpG0ZxK/V1V";
 
@@ -39,7 +39,7 @@ public class JwtAuthHandler implements MessageHandler<JwtAuthRequestMessage> {
 
     private final MessagingService messaging;
 
-    public JwtAuthHandler(MessagingService messaging) {
+    public JwtAuthRequestHandler(MessagingService messaging) {
         this.messaging = messaging;
     }
 
@@ -83,6 +83,7 @@ public class JwtAuthHandler implements MessageHandler<JwtAuthRequestMessage> {
     private void copyJwtPayloadDataToResponse(JwtAuthReponseMessage response, JWSObject token) {
         String payloadData = token.getPayload().toString();
         JwtPayload payload = GSON.fromJson(payloadData, JwtPayload.class);
+        response.setClientPublicKey(token.getHeader().getX509CertURL().toString());
         response.setCapeData(payload.getCapeData());
         response.setClientRandomId(payload.getClientRandomId());
         response.setCurrentInputMode(payload.getCurrentInputMode());
