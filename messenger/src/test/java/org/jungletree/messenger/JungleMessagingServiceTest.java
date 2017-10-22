@@ -73,6 +73,7 @@ class JungleMessagingServiceTest {
         // Given
         Map<String, Queue> requestQueues;
         Map<String, Queue> responseQueues;
+        Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> handlers;
 
         // When
         subject.registerMessage(DummyMessage.class);
@@ -80,6 +81,7 @@ class JungleMessagingServiceTest {
         // Then
         requestQueues = subject.getRequestQueues();
         responseQueues = subject.getResponseQueues();
+        handlers = subject.getHandlers();
 
         assertNotNull(requestQueues);
         assertFalse(requestQueues.isEmpty());
@@ -90,6 +92,8 @@ class JungleMessagingServiceTest {
         assertFalse(responseQueues.isEmpty());
         assertTrue(responseQueues.containsKey("DummyMessageResponse"));
         assertNotNull(responseQueues.get("DummyMessageResponse"));
+
+        assertTrue(handlers.isEmpty());
     }
 
     @Test
