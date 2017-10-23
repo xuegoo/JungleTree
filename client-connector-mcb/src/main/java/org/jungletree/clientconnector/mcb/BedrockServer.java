@@ -4,6 +4,7 @@ import io.gomint.jraknet.ServerSocket;
 import io.gomint.jraknet.Socket;
 import io.gomint.jraknet.SocketEvent;
 import io.gomint.jraknet.SocketEventHandler;
+import org.jungletree.rainforest.auth.messages.GetServerTokenMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthRequestMessage;
 import org.jungletree.rainforest.messaging.MessagingService;
@@ -48,6 +49,7 @@ public class BedrockServer {
         messaging.start();
         messaging.registerMessage(JwtAuthRequestMessage.class);
         messaging.registerMessage(JwtAuthReponseMessage.class);
+        messaging.registerMessage(GetServerTokenMessage.class);
 
         this.connectivityManager = new ConnectivityManager(this);
     }

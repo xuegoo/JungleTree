@@ -11,6 +11,7 @@ import org.jungletree.clientconnector.mcb.message.handshake.LoginMessage;
 import org.jungletree.clientconnector.mcb.message.handshake.PlayStateMessage;
 import org.jungletree.clientconnector.mcb.message.resourcepack.ResourcePackInfoMessage;
 import org.jungletree.clientconnector.mcb.message.resourcepack.ResourcePackStackMessage;
+import org.jungletree.clientconnector.mcb.messaging.JwtValidationHandler;
 import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage;
 import org.jungletree.rainforest.messaging.MessagingService;
 
@@ -32,7 +33,6 @@ public class Protocol {
         CodecRegistration reg = new CodecRegistration();
 
         LoginHandler loginHandler = new LoginHandler(messaging);
-        messaging.registerHandler(JwtAuthReponseMessage.class, loginHandler);
 
         reg.codec(0x01, LoginMessage.class, LoginCodec.class);
         reg.handler(LoginMessage.class, loginHandler);

@@ -8,6 +8,8 @@ import org.jungletree.clientconnector.mcb.message.handshake.LoginMessage;
 import org.jungletree.clientconnector.mcb.message.handshake.PlayStateMessage;
 import org.jungletree.clientconnector.mcb.message.resourcepack.ResourcePackInfoMessage;
 import org.jungletree.clientconnector.mcb.message.resourcepack.ResourcePackStackMessage;
+import org.jungletree.clientconnector.mcb.messaging.GetServerTokenHandler;
+import org.jungletree.clientconnector.mcb.messaging.JwtValidationHandler;
 import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage.AuthenticationStatus;
 import org.jungletree.rainforest.auth.messages.JwtAuthRequestMessage;
@@ -22,17 +24,17 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class LoginHandler implements MessageHandler<LoginMessage>, org.jungletree.rainforest.messaging.MessageHandler<JwtAuthReponseMessage> {
+public class LoginHandler implements MessageHandler<LoginMessage> {
 
     private static final Logger log = LoggerFactory.getLogger(LoginHandler.class);
 
-    // Request ID, ClientConnection
-    private Map<UUID, ClientConnection> pendingResponses = new ConcurrentHashMap<>();
-
     private final MessagingService messaging;
+
+    private final JwtValidationHandler validationHandler;
 
     public LoginHandler(MessagingService messaging) {
         this.messaging = messaging;
+        this.validationHandler = new JwtValidationHandler(messaging);
     }
 
     @Override
@@ -51,66 +53,6 @@ public class LoginHandler implements MessageHandler<LoginMessage>, org.jungletre
         validationRequest.setJwtToken(token);
         messaging.sendMessage(validationRequest);
 
-        pendingResponses.put(requestId, client);
-    }
-
-    @Override
-    public void handle(JwtAuthReponseMessage message) {
-        if (!message.getRecipient().equals(Messengers.CLIENT_CONNECTOR)) {
-            return;
-        }
-
-        ClientConnection client = pendingResponses.remove(message.getLoginRequestId());
-        AuthenticationStatus status = message.getStatus();
-
-        if (status.equals(AuthenticationStatus.OK)) {
-            updateProfileInfo(client, message);
-            enableProtocolEncryption(client, message.getClientPublicKey());
-            sendResourcePackInfo(client);
-        } else {
-            log.info("Disconnecting: {}", status.toString());
-            client.getConnection().disconnect(status.toString());
-        }
-    }
-
-    private void enableProtocolEncryption(ClientConnection client, String clientPublicKey) {
-        ProtocolEncryption encryption = client.getProtocolEncryption();
-        encryption.setClientPublicKey(Crypto.getECX509PublicKey(clientPublicKey));
-    }
-
-    private void sendResourcePackInfo(ClientConnection client) {
-        PlayStateMessage playStateMessage = new PlayStateMessage();
-        playStateMessage.setPlayState(PlayState.LOGIN_SUCCESS);
-
-        client.send(playStateMessage);
-
-
-        ResourcePackInfoMessage resourcePackInfoMessage = new ResourcePackInfoMessage();
-        resourcePackInfoMessage.setMustAccept(false);
-        resourcePackInfoMessage.setBehaviorPackInfo(Collections.emptyList());
-        resourcePackInfoMessage.setResourcePackInfo(Collections.emptyList());
-
-        ResourcePackStackMessage resourcePackStackMessage = new ResourcePackStackMessage();
-        resourcePackStackMessage.setMustAccept(false);
-        resourcePackStackMessage.setBehaviorPackIdVersions(Collections.emptyList());
-        resourcePackStackMessage.setResourcePackIdVersions(Collections.emptyList());
-
-        client.send(resourcePackInfoMessage);
-        client.send(resourcePackStackMessage);
-    }
-
-    private void updateProfileInfo(ClientConnection client, JwtAuthReponseMessage message) {
-        client.setClientRandomId(message.getClientRandomId());
-        client.setDeviceModel(message.getDeviceModel());
-        client.setDeviceOS(message.getDeviceOS());
-        client.setGameVersion(message.getGameVersion());
-        client.setLanguageCode(message.getLanguageCode());
-        client.setCurrentInputMode(message.getCurrentInputMode());
-        client.setDefaultInputMode(message.getDefaultInputMode());
-        client.setGuiScale(message.getGuiScale());
-        client.setSkinId(message.getSkinId());
-        client.setSkinData(message.getSkinData());
-        client.setSkinGeometryName(message.getSkinGeometryName());
-        client.setUiProfile(message.getUiProfile());
+        validationHandler.getPendingResponses().put(requestId, client);
     }
 }

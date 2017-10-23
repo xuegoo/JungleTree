@@ -54,6 +54,7 @@ public class GetServerTokenHandler implements MessageHandler<GetServerTokenMessa
         GetServerTokenMessage response = new GetServerTokenMessage();
         response.setSender(Messengers.AUTHENTICATION);
         response.setRecipient(message.getSender());
+        response.setLoginRequestId(message.getLoginRequestId());
         response.setServerToken(serverToken.serialize());
 
         log.info(GSON.toJson(response));
