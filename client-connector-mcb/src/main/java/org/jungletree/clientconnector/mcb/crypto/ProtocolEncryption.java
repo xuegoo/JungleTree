@@ -21,4 +21,8 @@ public class ProtocolEncryption {
     public void setClientPublicKey(ECPublicKey clientPublicKey) {
         this.clientPublicKey = clientPublicKey;
     }
+
+    public byte[] decryptInput(byte[] input) {
+        return null;
+    }
 }

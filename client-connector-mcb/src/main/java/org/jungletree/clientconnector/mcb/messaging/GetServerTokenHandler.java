@@ -43,6 +43,7 @@ public class GetServerTokenHandler implements MessageHandler<GetServerTokenMessa
 
         ServerToClientHandshakeMessage handshake = new ServerToClientHandshakeMessage();
         handshake.setServerToken(serverToken);
+        client.setEncryptionEnabled(true);
         client.send(handshake);
     }
 }

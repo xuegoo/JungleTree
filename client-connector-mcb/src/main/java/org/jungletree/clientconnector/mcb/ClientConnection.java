@@ -18,6 +18,8 @@ public class ClientConnection {
     private final Connection connection;
     private final ProtocolEncryption protocolEncryption;
 
+    private volatile boolean encryptionEnabled;
+
     private long clientRandomId;
     private String deviceModel;
     private int deviceOS;
@@ -54,6 +56,14 @@ public class ClientConnection {
 
     public ProtocolEncryption getProtocolEncryption() {
         return protocolEncryption;
+    }
+
+    public boolean isEncryptionEnabled() {
+        return encryptionEnabled;
+    }
+
+    public void setEncryptionEnabled(boolean encryptionEnabled) {
+        this.encryptionEnabled = encryptionEnabled;
     }
 
     public void send(Message message) {

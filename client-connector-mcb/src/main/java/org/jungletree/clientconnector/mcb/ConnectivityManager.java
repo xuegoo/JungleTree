@@ -68,6 +68,8 @@ public class ConnectivityManager implements Runnable {
                             byte id = buf.readByte();
                             if (id == PACKET_BATCH) {
                                 handleBatchPacket(client, buf);
+                            } else if (id == 0x04) {
+                                handleMessage(client, buf, id);
                             } else {
                                 handleSocketData(client, buf);
                             }
@@ -83,6 +85,14 @@ public class ConnectivityManager implements Runnable {
     private void handleBatchPacket(ClientConnection client, PacketBuffer buf) {
         byte[] input = new byte[buf.getRemaining()];
         System.arraycopy(buf.getBuffer(), buf.getPosition(), input, 0, input.length);
+
+        if (client.isEncryptionEnabled()) {
+            input = client.getProtocolEncryption().decryptInput(input);
+            if (input == null) {
+                client.getConnection().disconnect("Protocol encryption: invalid checksum");
+                return;
+            }
+        }
 
         InflaterInputStream inflater = new InflaterInputStream(new ByteArrayInputStream(input));
         ByteArrayOutputStream out = new ByteArrayOutputStream(buf.getRemaining());
@@ -132,6 +142,17 @@ public class ConnectivityManager implements Runnable {
         Message message = codec.decode(buf);
         message.setSenderSubClientId(senderSubClientId);
         message.setTargetSubClientId(targetSubClientId);
+
+        MessageHandler handler = codecRegistration.getHandler(messageClass);
+        handler.handle(client, message);
+    }
+
+    private void handleMessage(ClientConnection client, PacketBuffer buf, byte id) {
+        log.info("Read packet ID 0x{}", Integer.toHexString(id));
+        CodecRegistration codecRegistration = protocol.getCodecRegistration();
+        Class<Message> messageClass = codecRegistration.getMessageClass(id);
+        Codec codec = protocol.getCodecRegistration().getCodec(messageClass);
+        Message message = codec.decode(buf);
 
         MessageHandler handler = codecRegistration.getHandler(messageClass);
         handler.handle(client, message);
