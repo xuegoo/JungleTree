@@ -30,7 +30,7 @@ public class JungleAuthApplication {
     private final JWSHeader serverTokenHeader;
 
     private JungleAuthApplication() {
-        Security.addProvider(BouncyCastleProviderSingleton.getInstance());
+        Security.addProvider(new BouncyCastleProvider());
 
         this.messaging = ServiceLoader.load(MessagingService.class).findFirst().orElseThrow(NoSuchElementException::new);
         messaging.listenForJvmShutdown();

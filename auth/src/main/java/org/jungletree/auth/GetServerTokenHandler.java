@@ -43,7 +43,8 @@ public class GetServerTokenHandler implements MessageHandler<GetServerTokenMessa
             return;
         }
 
-        JWSObject serverToken = new JWSObject(serverTokenHeader, new Payload(generateSaltJson()));
+        String salt = generateSalt();
+        JWSObject serverToken = new JWSObject(serverTokenHeader, new Payload(createSaltJson(salt)));
         try {
             serverToken.sign(new ECDSASigner((ECPrivateKey) serverKeyPair.getPrivate()));
         } catch (JOSEException ex) {
@@ -55,6 +56,7 @@ public class GetServerTokenHandler implements MessageHandler<GetServerTokenMessa
         response.setSender(Messengers.AUTHENTICATION);
         response.setRecipient(message.getSender());
         response.setLoginRequestId(message.getLoginRequestId());
+        response.setClientSalt(salt);
         response.setServerToken(serverToken.serialize());
 
         log.info(GSON.toJson(response));
@@ -62,9 +64,9 @@ public class GetServerTokenHandler implements MessageHandler<GetServerTokenMessa
         messaging.sendMessage(response);
     }
 
-    private String generateSaltJson() {
+    private String createSaltJson(String salt) {
         JsonObject claims = new JsonObject();
-        claims.addProperty("salt", generateSalt());
+        claims.addProperty("salt", salt);
         return GSON.toJson(claims);
     }
 
