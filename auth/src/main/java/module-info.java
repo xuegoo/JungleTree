@@ -5,6 +5,7 @@ module auth.main {
     requires nimbus.jose.jwt;
     requires rainforest.util;
     requires gson;
+    requires bcprov.jdk15on;
 
     uses org.jungletree.rainforest.messaging.MessagingService;
 

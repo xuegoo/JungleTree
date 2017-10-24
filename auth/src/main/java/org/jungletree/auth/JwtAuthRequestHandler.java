@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -106,8 +107,8 @@ public class JwtAuthRequestHandler implements MessageHandler<JwtAuthRequestMessa
 
     private static ECPublicKey getECX509PublicKey(String base64Key) {
         try {
-            return (ECPublicKey) KeyFactory.getInstance("EC").generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(base64Key)));
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException ex) {
+            return (ECPublicKey) KeyFactory.getInstance("EC", "BC").generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(base64Key)));
+        } catch (InvalidKeySpecException | NoSuchProviderException | NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
         }
     }

@@ -2,6 +2,8 @@ package org.jungletree.auth;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.bc.BouncyCastleProviderSingleton;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jungletree.rainforest.auth.messages.GetServerTokenMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthRequestMessage;
@@ -10,10 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.security.*;
 import java.security.interfaces.ECPublicKey;
 import java.util.Base64;
 import java.util.NoSuchElementException;
@@ -31,6 +30,8 @@ public class JungleAuthApplication {
     private final JWSHeader serverTokenHeader;
 
     private JungleAuthApplication() {
+        Security.addProvider(BouncyCastleProviderSingleton.getInstance());
+
         this.messaging = ServiceLoader.load(MessagingService.class).findFirst().orElseThrow(NoSuchElementException::new);
         messaging.listenForJvmShutdown();
 
