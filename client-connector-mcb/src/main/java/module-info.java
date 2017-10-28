@@ -17,7 +17,6 @@ module jungletree.clientconnector.mcb {
 
     exports org.jungletree.clientconnector.mcb;
     exports org.jungletree.clientconnector.mcb.packet;
-    exports org.jungletree.clientconnector.mcb.messaging;
     exports org.jungletree.clientconnector.mcb.codec;
     exports org.jungletree.clientconnector.mcb.codec.handshake;
     exports org.jungletree.clientconnector.mcb.crypto;
