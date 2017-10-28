@@ -8,10 +8,8 @@ import io.gomint.jraknet.SocketEvent;
 import io.gomint.jraknet.SocketEventHandler;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jungletree.clientconnector.mcb.crypto.ClientSaltTokenFactory;
-import org.jungletree.rainforest.auth.messages.GetServerTokenMessage;
-import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage;
-import org.jungletree.rainforest.auth.messages.JwtAuthRequestMessage;
-import org.jungletree.rainforest.messaging.MessagingService;
+import org.jungletree.rainforest.messaging.Messenger;
+import org.jungletree.rainforest.messaging.MessengerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +17,10 @@ import java.net.SocketException;
 import java.net.URI;
 import java.security.*;
 import java.security.interfaces.ECPublicKey;
-import java.util.*;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BedrockServer {
@@ -45,7 +46,7 @@ public class BedrockServer {
 
     private ServerSocket server;
 
-    private final MessagingService messaging;
+    private final Messenger messenger;
 
     private final KeyPair serverKeyPair;
     private final ClientSaltTokenFactory clientSaltTokenFactory;
@@ -53,11 +54,8 @@ public class BedrockServer {
     public BedrockServer() {
         Security.addProvider(new BouncyCastleProvider());
 
-        this.messaging = ServiceLoader.load(MessagingService.class).findFirst().orElseThrow(NoSuchElementException::new);
-        messaging.start();
-        messaging.registerMessage(JwtAuthRequestMessage.class);
-        messaging.registerMessage(JwtAuthReponseMessage.class);
-        messaging.registerMessage(GetServerTokenMessage.class);
+        this.messenger = MessengerService.getInstance().getMessenger();
+        messenger.start();
 
         log.info("Generating server key pair");
         this.serverKeyPair = generateKeyPair();
@@ -76,10 +74,6 @@ public class BedrockServer {
 
     public void registerSocketEventHandler(SocketEvent.Type type, SocketEventHandler handler) {
         handlers.put(type, handler);
-    }
-
-    public MessagingService getMessagingService() {
-        return messaging;
     }
 
     public ConnectivityManager getConnectivityManager() {

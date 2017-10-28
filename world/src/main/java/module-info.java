@@ -14,7 +14,7 @@ module jungletree.world {
     requires redisson;
 
     uses org.jungletree.rainforest.scheduler.SchedulerService;
-    uses org.jungletree.rainforest.messaging.MessagingService;
+    uses org.jungletree.rainforest.messaging.Messenger;
     uses org.jungletree.rainforest.storage.StorageService;
 
     provides org.jungletree.rainforest.world.Chunk with org.jungletree.world.JungleChunk;

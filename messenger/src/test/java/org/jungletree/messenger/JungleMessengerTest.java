@@ -20,9 +20,9 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class JungleMessagingServiceTest {
+class JungleMessengerTest {
 
-    private JungleMessagingService subject;
+    private JungleMessenger subject;
 
     @Mock
     private Session session;
@@ -38,7 +38,7 @@ class JungleMessagingServiceTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        this.subject = new JungleMessagingService();
+        this.subject = new JungleMessenger();
         subject.setSession(session);
 
         when(session.createQueue(anyString())).thenReturn(queue);

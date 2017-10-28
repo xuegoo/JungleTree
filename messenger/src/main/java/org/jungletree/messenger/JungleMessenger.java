@@ -5,14 +5,16 @@ import com.google.gson.GsonBuilder;
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import org.jungletree.rainforest.messaging.Message;
 import org.jungletree.rainforest.messaging.MessageHandler;
-import org.jungletree.rainforest.messaging.MessagingService;
+import org.jungletree.rainforest.messaging.Messenger;
 
 import javax.jms.*;
-import javax.jms.Queue;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class JungleMessagingService implements MessagingService {
+public class JungleMessenger implements Messenger {
 
     private static final String BROKER_HOST = System.getenv("MESSAGE_BROKER_URL") != null ? System.getenv("MESSAGE_BROKER_URL") : "localhost";
     private static final String BROKER_USERNAME = System.getenv("MESSAGE_BROKER_USERNAME") != null ? System.getenv("MESSAGE_BROKER_USERNAME") : "jungletree";
@@ -28,7 +30,7 @@ public class JungleMessagingService implements MessagingService {
     private final Map<String, Queue> responseQueues;
     private final Map<Class<? extends Message>, Collection<MessageHandler<? extends Message>>> handlers;
 
-    public JungleMessagingService() {
+    public JungleMessenger() {
         this.requestQueues = new ConcurrentHashMap<>();
         this.responseQueues = new ConcurrentHashMap<>();
         this.handlers = new ConcurrentHashMap<>();

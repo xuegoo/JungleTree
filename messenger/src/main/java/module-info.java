@@ -1,3 +1,5 @@
+import org.jungletree.messenger.JungleMessenger;
+
 module jungletree.messenger {
     requires rainforest.messaging;
 
@@ -9,5 +11,5 @@ module jungletree.messenger {
     requires jms;
     requires java.sql;
 
-    provides org.jungletree.rainforest.messaging.MessagingService with org.jungletree.messenger.JungleMessagingService;
+    provides org.jungletree.rainforest.messaging.Messenger with JungleMessenger;
 }

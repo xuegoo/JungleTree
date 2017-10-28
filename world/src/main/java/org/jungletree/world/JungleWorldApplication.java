@@ -1,6 +1,7 @@
 package org.jungletree.world;
 
-import org.jungletree.rainforest.messaging.MessagingService;
+import org.jungletree.rainforest.messaging.Messenger;
+import org.jungletree.rainforest.messaging.MessengerService;
 import org.jungletree.rainforest.world.World;
 import org.jungletree.rainforest.world.WorldLoader;
 import org.jungletree.rainforest.world.messages.WorldRequestMessage;
@@ -17,14 +18,14 @@ public class JungleWorldApplication {
 
     private static final Logger log = LoggerFactory.getLogger(JungleWorldApplication.class);
 
-    private final MessagingService messaging;
+    private final Messenger messaging;
 
     private final WorldLoader worldLoader;
     private final WorldRequestMessageHandler worldRequestHandler;
 
 
     private JungleWorldApplication() {
-        this.messaging = ServiceLoader.load(MessagingService.class).findFirst().orElseThrow(NoSuchElementException::new);
+        this.messaging = MessengerService.getInstance().getMessenger();
         this.worldLoader = ServiceLoader.load(WorldLoader.class).findFirst().orElseThrow(NoSuchElementException::new);
         this.worldRequestHandler = ServiceLoader.load(WorldRequestMessageHandler.class).findFirst().orElseThrow(NoSuchElementException::new);
 

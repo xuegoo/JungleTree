@@ -1,7 +1,8 @@
 package org.jungletree.world.messaging;
 
 import org.jungletree.rainforest.messaging.MessageHandler;
-import org.jungletree.rainforest.messaging.MessagingService;
+import org.jungletree.rainforest.messaging.Messenger;
+import org.jungletree.rainforest.messaging.MessengerService;
 import org.jungletree.rainforest.util.Messengers;
 import org.jungletree.rainforest.world.World;
 import org.jungletree.rainforest.world.WorldService;
@@ -18,25 +19,12 @@ public class WorldRequestMessageHandler implements MessageHandler<WorldRequestMe
 
     private static final Logger log = LoggerFactory.getLogger(WorldRequestMessageHandler.class);
 
-    private final MessagingService messaging;
+    private final Messenger messaging;
     private final WorldService worldService;
 
     public WorldRequestMessageHandler() {
-        this.messaging = loadMessagingService();
+        this.messaging = MessengerService.getInstance().getMessenger();
         this.worldService = loadWorldService();
-    }
-
-    private MessagingService loadMessagingService() {
-        MessagingService messaging;
-        ServiceLoader<MessagingService> messagingServiceLoader = ServiceLoader.load(MessagingService.class);
-        Optional<MessagingService> messagingServiceOptional = messagingServiceLoader.findFirst();
-
-        if (messagingServiceOptional.isPresent()) {
-            messaging = messagingServiceOptional.get();
-        } else {
-            throw new NoSuchElementException("Messaging service not defined");
-        }
-        return messaging;
     }
 
     private WorldService loadWorldService() {

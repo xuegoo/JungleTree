@@ -26,5 +26,5 @@ module jungletree.clientconnector.mcb {
     exports org.jungletree.clientconnector.mcb.handler.handshake;
 
     uses org.jungletree.rainforest.scheduler.Scheduler;
-    uses org.jungletree.rainforest.messaging.MessagingService;
+    uses org.jungletree.rainforest.messaging.Messenger;
 }
