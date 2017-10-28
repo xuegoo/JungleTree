@@ -24,7 +24,7 @@ public class ClientConnectorBedrockApplication {
         bedrockServer.setPort(19132);
         bedrockServer.setMotd("§2JungleTree Demo§r");
         bedrockServer.setProtocolVersion(137);
-        bedrockServer.setProtocolVersionName("1.2.5.0");
+        bedrockServer.setProtocolVersionName("1.2.5.12");
         bedrockServer.setOnlinePlayers(1336);
         bedrockServer.setMaxPlayers(1337);
 

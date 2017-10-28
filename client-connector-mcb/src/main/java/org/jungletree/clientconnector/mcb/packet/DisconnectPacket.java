@@ -4,11 +4,20 @@ import java.util.Objects;
 
 public class DisconnectPacket extends SubClientPacket {
 
+    private boolean hideScreen;
     private String reason;
 
     @Override
     public byte getId() {
         return 0x05;
+    }
+
+    public boolean isHideScreen() {
+        return hideScreen;
+    }
+
+    public void setHideScreen(boolean hideScreen) {
+        this.hideScreen = hideScreen;
     }
 
     public String getReason() {
@@ -24,19 +33,21 @@ public class DisconnectPacket extends SubClientPacket {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        DisconnectPacket that = (DisconnectPacket) o;
-        return Objects.equals(reason, that.reason);
+        DisconnectPacket packet = (DisconnectPacket) o;
+        return hideScreen == packet.hideScreen &&
+                Objects.equals(reason, packet.reason);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), reason);
+        return Objects.hash(super.hashCode(), hideScreen, reason);
     }
 
     @Override
     public String toString() {
         return "DisconnectPacket{" +
-                "reason='" + reason + '\'' +
+                "hideScreen=" + hideScreen +
+                ", reason='" + reason + '\'' +
                 "} " + super.toString();
     }
 }

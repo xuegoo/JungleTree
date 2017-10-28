@@ -7,14 +7,21 @@ import org.jungletree.clientconnector.mcb.packet.Packet;
 public class DisconnectPacketCodec implements Codec<DisconnectPacket> {
 
     @Override
-    public void encode(Packet packet, PacketBuffer buf) {
-        buf.writeString(((DisconnectPacket) packet).getReason());
+    public void encode(Packet msg, PacketBuffer buf) {
+        DisconnectPacket packet = (DisconnectPacket) msg;
+        buf.writeBoolean(packet.isHideScreen());
+        if (!packet.isHideScreen()) {
+            buf.writeString(packet.getReason());
+        }
     }
 
     @Override
     public DisconnectPacket decode(PacketBuffer buf) {
         DisconnectPacket packet = new DisconnectPacket();
-        packet.setReason(buf.readString());
+        packet.setHideScreen(buf.readBoolean());
+        if (!packet.isHideScreen()) {
+            packet.setReason(buf.readString());
+        }
         return packet;
     }
 }

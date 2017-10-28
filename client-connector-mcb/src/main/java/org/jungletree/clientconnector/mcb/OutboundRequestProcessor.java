@@ -42,7 +42,18 @@ public class OutboundRequestProcessor {
     }
 
     private void start() {
-        executorService.scheduleAtFixedRate(this::flush, UPDATE_FREQUENCY_MILLIS, UPDATE_FREQUENCY_MILLIS, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(this::poll, UPDATE_FREQUENCY_MILLIS, UPDATE_FREQUENCY_MILLIS, TimeUnit.MILLISECONDS);
+    }
+
+    private void poll() {
+        if (packetQueue.isEmpty()) {
+            return;
+        }
+
+        Packet[] packets = pollMessages();
+        if (packets.length > 0) {
+            writePackets(packets);
+        }
     }
 
     public void flush() {
@@ -50,7 +61,14 @@ public class OutboundRequestProcessor {
             return;
         }
 
-        Packet[] packets = pollMessages();
+        Packet[] packets = packetQueue.toArray(new Packet[packetQueue.size()]);
+        for (Packet packet : packets) {
+            packetQueue.remove(packet);
+        }
+        writePackets(packets);
+    }
+
+    private void writePackets(Packet[] packets) {
         for (Packet packet : packets) {
             packetQueue.remove(packet);
         }
