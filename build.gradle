@@ -21,6 +21,10 @@ targetCompatibility = JavaVersion.VERSION_1_9
 def jungleTreeNexusUsername = hasProperty('jungleTreeNexusUsername') ? jungleTreeNexusUsername : System.getenv('jungleTreeNexusUsername')
 def jungleTreeNexusPassword = hasProperty('jungleTreeNexusPassword') ? jungleTreeNexusPassword : System.getenv('jungleTreeNexusPassword')
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 allprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
