@@ -1,6 +1,6 @@
 package org.jungletree.clientconnector.mcb;
 
-import org.jungletree.clientconnector.mcb.message.Message;
+import org.jungletree.clientconnector.mcb.packet.Packet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,14 +21,11 @@ public class OutboundRequestProcessor {
     // TODO: Figure out optimum, make that the default in a future default configuration
     private static final int MAX_PACKETS_PER_BATCH = 32;
 
+    private final BatchedMessageWriter writer;
     private final ClientConnection client;
     private final ScheduledExecutorService executorService;
-    private final BatchedMessageWriter writer;
 
-    private volatile boolean switchingProtocols = false;
-    private volatile boolean flushing = false;
-
-    private Queue<Message> messageQueue = new ConcurrentLinkedQueue<>();
+    private Queue<Packet> packetQueue = new ConcurrentLinkedQueue<>();
 
     public OutboundRequestProcessor(ConnectivityManager connectivityManager, ClientConnection client) {
         this.client = client;
@@ -39,35 +36,27 @@ public class OutboundRequestProcessor {
         start();
     }
 
-    public void setSwitchingProtocols(boolean switchingProtocols) {
-        this.switchingProtocols = switchingProtocols;
-    }
-
-    public void batch(Message message) {
-        log.info("Queued {}", message.toString());
-        messageQueue.add(message);
+    public void batch(Packet packet) {
+        log.info("Queued {}", packet.toString());
+        packetQueue.add(packet);
     }
 
     private void start() {
         executorService.scheduleAtFixedRate(() -> {
-            if (switchingProtocols || flushing) {
+            if (packetQueue.isEmpty()) {
                 return;
             }
 
-            if (messageQueue.isEmpty()) {
+            Packet[] packets = pollMessages();
+            for (Packet packet : packets) {
+                packetQueue.remove(packet);
+            }
+
+            if (packets.length == 0) {
                 return;
             }
 
-            Message[] messages = pollMessages();
-            for (Message message : messages) {
-                messageQueue.remove(message);
-            }
-
-            if (messages.length == 0) {
-                return;
-            }
-
-            writer.writeMessages(messages);
+            writer.writeMessages(packets);
             byte[] batch = writer.getBatch();
             writer.reset();
 
@@ -83,11 +72,11 @@ public class OutboundRequestProcessor {
         }
     }
 
-    private Message[] pollMessages() {
-        int count = messageQueue.size() >= MAX_PACKETS_PER_BATCH ? MAX_PACKETS_PER_BATCH : messageQueue.size();
-        Message[] result = new Message[count];
+    private Packet[] pollMessages() {
+        int count = packetQueue.size() >= MAX_PACKETS_PER_BATCH ? MAX_PACKETS_PER_BATCH : packetQueue.size();
+        Packet[] result = new Packet[count];
         for (int i=0; i<result.length; i++) {
-            result[i] = messageQueue.poll();
+            result[i] = packetQueue.poll();
         }
         return result;
     }

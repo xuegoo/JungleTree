@@ -4,7 +4,7 @@ import io.gomint.jraknet.PacketBuffer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import org.jungletree.clientconnector.mcb.codec.Codec;
-import org.jungletree.clientconnector.mcb.message.Message;
+import org.jungletree.clientconnector.mcb.packet.Packet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,21 +28,21 @@ public class BatchedMessageWriter {
         this.deflater = new Deflater();
     }
 
-    public void writeMessages(Message... messages) {
-        for (Message message : messages) {
-            log.info("Writing out: {}", message);
-            writeMessage(message);
+    public void writeMessages(Packet... packets) {
+        for (Packet packet : packets) {
+            log.info("Writing out: {}", packet);
+            writeMessage(packet);
         }
     }
 
-    private void writeMessage(Message message) {
+    private void writeMessage(Packet packet) {
         PacketBuffer buf = new PacketBuffer(64);
-        buf.writeByte(message.getId());
-        buf.writeByte(message.getSenderSubClientId());
-        buf.writeByte(message.getTargetSubClientId());
+        buf.writeByte(packet.getId());
+        buf.writeByte(packet.getSenderSubClientId());
+        buf.writeByte(packet.getTargetSubClientId());
 
-        Codec<? extends Message> codec = connectivityManager.getProtocol().getCodecRegistration().getCodec(message.getClass());
-        codec.encode(message, buf);
+        Codec<? extends Packet> codec = connectivityManager.getCodecRegistration().getCodec(packet.getClass());
+        codec.encode(packet, buf);
 
         writeVarInt(buf.getPosition());
 

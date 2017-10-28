@@ -1,9 +1,9 @@
 package org.jungletree.clientconnector.mcb.handler;
 
 import org.jungletree.clientconnector.mcb.ClientConnection;
-import org.jungletree.clientconnector.mcb.message.Message;
+import org.jungletree.clientconnector.mcb.packet.Packet;
 
-public interface MessageHandler<T extends Message> {
+public interface PacketHandler<T extends Packet> {
 
     void handle(ClientConnection client, T message);
 }

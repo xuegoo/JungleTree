@@ -6,33 +6,33 @@ import io.gomint.jraknet.PacketBuffer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import org.jungletree.clientconnector.mcb.codec.Codec;
-import org.jungletree.clientconnector.mcb.message.Message;
-import org.jungletree.clientconnector.mcb.message.handshake.ConnectionInfo;
-import org.jungletree.clientconnector.mcb.message.handshake.ConnectionInfo.Chains;
-import org.jungletree.clientconnector.mcb.message.handshake.LoginMessage;
+import org.jungletree.clientconnector.mcb.packet.Packet;
+import org.jungletree.clientconnector.mcb.packet.handshake.ConnectionInfo;
+import org.jungletree.clientconnector.mcb.packet.handshake.ConnectionInfo.Chains;
+import org.jungletree.clientconnector.mcb.packet.handshake.LoginPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 
 @SuppressWarnings("Duplicates")
-public class LoginCodec implements Codec<LoginMessage> {
+public class LoginCodec implements Codec<LoginPacket> {
 
     private static final Logger log = LoggerFactory.getLogger(LoginCodec.class);
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @Override
-    public void encode(Message msg, PacketBuffer buf) {
-        LoginMessage message = (LoginMessage) msg;
+    public void encode(Packet msg, PacketBuffer buf) {
+        LoginPacket message = (LoginPacket) msg;
 
         // TODO: Encoding
         buf.writeInt(message.getClientNetworkVersion());
     }
 
     @Override
-    public LoginMessage decode(PacketBuffer buf) {
-        LoginMessage message = new LoginMessage();
+    public LoginPacket decode(PacketBuffer buf) {
+        LoginPacket message = new LoginPacket();
         message.setClientNetworkVersion(buf.readInt());
 
         ByteBuf body = asByteBuf(getBody(buf));

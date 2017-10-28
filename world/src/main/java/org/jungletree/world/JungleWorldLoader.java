@@ -2,6 +2,7 @@ package org.jungletree.world;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.jungletree.rainforest.scheduler.Scheduler;
 import org.jungletree.rainforest.scheduler.SchedulerService;
 import org.jungletree.rainforest.storage.StorageService;
 import org.jungletree.rainforest.util.Difficulty;
@@ -23,11 +24,11 @@ public class JungleWorldLoader implements WorldLoader {
     private static final Logger log = LoggerFactory.getLogger(JungleWorldLoader.class);
     private static final Gson GSON = new GsonBuilder().create();
 
-    private final SchedulerService scheduler;
+    private final Scheduler scheduler;
     private final StorageService storage;
 
     public JungleWorldLoader() {
-        this.scheduler = ServiceLoader.load(SchedulerService.class).findFirst().orElseThrow(NoSuchElementException::new);
+        this.scheduler = SchedulerService.getInstance().getScheduler();
         this.storage = ServiceLoader.load(StorageService.class).findFirst().orElseThrow(NoSuchElementException::new);
     }
 

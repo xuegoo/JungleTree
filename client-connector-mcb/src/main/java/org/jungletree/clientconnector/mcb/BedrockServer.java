@@ -82,6 +82,13 @@ public class BedrockServer {
         this.connections.remove(socket);
     }
 
+    public void disconnectClient(ClientConnection connection, String reason) {
+        connection.getConnection().disconnect(reason);
+        this.connections.entrySet().stream()
+                .filter(e -> e.getValue().equals(connection))
+                .forEach(e -> connections.remove(e.getKey()));
+    }
+
     public UUID getServerUuid() {
         return serverUuid;
     }

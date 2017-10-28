@@ -2,9 +2,9 @@ package org.jungletree.clientconnector.mcb.messaging;
 
 import org.jungletree.clientconnector.mcb.ClientConnection;
 import org.jungletree.clientconnector.mcb.PlayState;
-import org.jungletree.clientconnector.mcb.message.handshake.PlayStateMessage;
-import org.jungletree.clientconnector.mcb.message.resourcepack.ResourcePackInfoMessage;
-import org.jungletree.clientconnector.mcb.message.resourcepack.ResourcePackStackMessage;
+import org.jungletree.clientconnector.mcb.packet.handshake.PlayStatePacket;
+import org.jungletree.clientconnector.mcb.packet.resourcepack.ResourcePackInfoPacket;
+import org.jungletree.clientconnector.mcb.packet.resourcepack.ResourcePackStackPacket;
 import org.jungletree.rainforest.auth.messages.GetServerTokenMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage;
 import org.jungletree.rainforest.messaging.MessageHandler;
@@ -72,18 +72,18 @@ public class JwtValidationHandler implements MessageHandler<JwtAuthReponseMessag
     }
 
     private void sendResourcePackInfo(ClientConnection client) {
-        PlayStateMessage playStateMessage = new PlayStateMessage();
+        PlayStatePacket playStateMessage = new PlayStatePacket();
         playStateMessage.setPlayState(PlayState.LOGIN_SUCCESS);
 
         client.send(playStateMessage);
 
 
-        ResourcePackInfoMessage resourcePackInfoMessage = new ResourcePackInfoMessage();
+        ResourcePackInfoPacket resourcePackInfoMessage = new ResourcePackInfoPacket();
         resourcePackInfoMessage.setMustAccept(false);
         resourcePackInfoMessage.setBehaviorPackInfo(Collections.emptyList());
         resourcePackInfoMessage.setResourcePackInfo(Collections.emptyList());
 
-        ResourcePackStackMessage resourcePackStackMessage = new ResourcePackStackMessage();
+        ResourcePackStackPacket resourcePackStackMessage = new ResourcePackStackPacket();
         resourcePackStackMessage.setMustAccept(false);
         resourcePackStackMessage.setBehaviorPackIdVersions(Collections.emptyList());
         resourcePackStackMessage.setResourcePackIdVersions(Collections.emptyList());

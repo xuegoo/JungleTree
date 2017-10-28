@@ -9,7 +9,7 @@ module jungletree.world {
     requires jungletree.scheduler;
     requires jungletree.storage;
 
-    requires slf4j.api;
+    requires org.slf4j;
     requires gson;
     requires redisson;
 

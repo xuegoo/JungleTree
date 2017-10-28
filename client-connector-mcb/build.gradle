@@ -1,7 +1,7 @@
 apply plugin: 'application'
 
 ext.moduleName = "jungletree.clientconnector.mcb"
-mainClassName = 'org.jungletree.clientconnector.mcb.Main'
+mainClassName = 'org.jungletree.clientconnector.mcb.ClientConnectorBedrockApplication'
 
 jar {
     manifest {
@@ -24,11 +24,18 @@ dependencies {
     compile 'org.jungletree:libnbt:1.0.1-SNAPSHOT'
     compile 'org.jungletree:jraknet:1.0.0-SNAPSHOT'
 
-    compile 'io.netty:netty-all:4.1.16.Final'
-    compile 'com.google.code.gson:gson:2.8.2'
+    // Named Binary Tag
+    compile 'org.jungletree:libnbt:1.0.1-SNAPSHOT'
+
+    // Authentication
+    compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '5.1'
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.58'
 
-    runtime 'ch.qos.logback:logback-classic:1.2.3',
-            'org.slf4j:jcl-over-slf4j:1.7.25',
-            'org.slf4j:log4j-over-slf4j:1.7.25'
+    // Networking
+    compile 'io.netty:netty-all:4.1.16.Final'
+
+    // Utility
+    compile 'com.google.code.gson:gson:2.8.2'
+
+    runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.8.0-beta0'
 }

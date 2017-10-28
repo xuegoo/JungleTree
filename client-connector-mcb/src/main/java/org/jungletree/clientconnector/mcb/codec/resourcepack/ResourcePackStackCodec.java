@@ -2,17 +2,17 @@ package org.jungletree.clientconnector.mcb.codec.resourcepack;
 
 import io.gomint.jraknet.PacketBuffer;
 import org.jungletree.clientconnector.mcb.codec.Codec;
-import org.jungletree.clientconnector.mcb.message.Message;
-import org.jungletree.clientconnector.mcb.message.resourcepack.ResourcePackStackMessage;
+import org.jungletree.clientconnector.mcb.packet.Packet;
+import org.jungletree.clientconnector.mcb.packet.resourcepack.ResourcePackStackPacket;
 import org.jungletree.clientconnector.mcb.resourcepack.ResourcePackIdVersion;
 
 import java.util.List;
 
-public class ResourcePackStackCodec implements Codec<ResourcePackStackMessage> {
+public class ResourcePackStackCodec implements Codec<ResourcePackStackPacket> {
 
     @Override
-    public void encode(Message msg, PacketBuffer buf) {
-        ResourcePackStackMessage message = (ResourcePackStackMessage) msg;
+    public void encode(Packet msg, PacketBuffer buf) {
+        ResourcePackStackPacket message = (ResourcePackStackPacket) msg;
 
         buf.writeBoolean(message.isMustAccept());
 
@@ -30,8 +30,8 @@ public class ResourcePackStackCodec implements Codec<ResourcePackStackMessage> {
     }
 
     @Override
-    public ResourcePackStackMessage decode(PacketBuffer buf) {
-        ResourcePackStackMessage message = new ResourcePackStackMessage();
+    public ResourcePackStackPacket decode(PacketBuffer buf) {
+        ResourcePackStackPacket message = new ResourcePackStackPacket();
 
         // TODO: Decode
 

@@ -2,7 +2,7 @@ package org.jungletree.clientconnector.mcb;
 
 import io.gomint.jraknet.Connection;
 import org.jungletree.clientconnector.mcb.crypto.ProtocolEncryption;
-import org.jungletree.clientconnector.mcb.message.Message;
+import org.jungletree.clientconnector.mcb.packet.Packet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,8 +66,8 @@ public class ClientConnection {
         this.encryptionEnabled = encryptionEnabled;
     }
 
-    public void send(Message message) {
-        this.outboundProcessor.batch(message);
+    public void send(Packet packet) {
+        this.outboundProcessor.batch(packet);
     }
 
     public long getClientRandomId() {

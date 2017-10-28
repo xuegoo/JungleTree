@@ -1,7 +1,7 @@
 package org.jungletree.clientconnector.mcb.messaging;
 
 import org.jungletree.clientconnector.mcb.ClientConnection;
-import org.jungletree.clientconnector.mcb.message.crypto.ServerToClientHandshakeMessage;
+import org.jungletree.clientconnector.mcb.packet.crypto.ServerToClientHandshakePacket;
 import org.jungletree.rainforest.auth.messages.GetServerTokenMessage;
 import org.jungletree.rainforest.messaging.MessageHandler;
 import org.jungletree.rainforest.messaging.MessagingService;
@@ -41,7 +41,7 @@ public class GetServerTokenHandler implements MessageHandler<GetServerTokenMessa
         ClientConnection client = pendingResponses.remove(message.getLoginRequestId());
         String serverToken = message.getServerToken();
 
-        ServerToClientHandshakeMessage handshake = new ServerToClientHandshakeMessage();
+        ServerToClientHandshakePacket handshake = new ServerToClientHandshakePacket();
         handshake.setServerToken(serverToken);
         client.setEncryptionEnabled(true);
         client.send(handshake);

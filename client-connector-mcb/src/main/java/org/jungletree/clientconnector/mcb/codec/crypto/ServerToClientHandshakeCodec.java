@@ -2,20 +2,20 @@ package org.jungletree.clientconnector.mcb.codec.crypto;
 
 import io.gomint.jraknet.PacketBuffer;
 import org.jungletree.clientconnector.mcb.codec.Codec;
-import org.jungletree.clientconnector.mcb.message.Message;
-import org.jungletree.clientconnector.mcb.message.crypto.ServerToClientHandshakeMessage;
+import org.jungletree.clientconnector.mcb.packet.Packet;
+import org.jungletree.clientconnector.mcb.packet.crypto.ServerToClientHandshakePacket;
 
-public class ServerToClientHandshakeCodec implements Codec<ServerToClientHandshakeMessage> {
+public class ServerToClientHandshakeCodec implements Codec<ServerToClientHandshakePacket> {
 
     @Override
-    public void encode(Message msg, PacketBuffer buf) {
-        ServerToClientHandshakeMessage message = (ServerToClientHandshakeMessage) msg;
+    public void encode(Packet msg, PacketBuffer buf) {
+        ServerToClientHandshakePacket message = (ServerToClientHandshakePacket) msg;
         buf.writeString(message.getServerToken());
     }
 
     @Override
-    public ServerToClientHandshakeMessage decode(PacketBuffer buf) {
-        ServerToClientHandshakeMessage message = new ServerToClientHandshakeMessage();
+    public ServerToClientHandshakePacket decode(PacketBuffer buf) {
+        ServerToClientHandshakePacket message = new ServerToClientHandshakePacket();
         message.setServerToken(buf.readString());
         return message;
     }

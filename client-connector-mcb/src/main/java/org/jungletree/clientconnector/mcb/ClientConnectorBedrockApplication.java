@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
 
-public class Main {
+public class ClientConnectorBedrockApplication {
 
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
+    private static final Logger log = LoggerFactory.getLogger(ClientConnectorBedrockApplication.class);
 
     private final BedrockServer bedrockServer;
 
-    private Main() {
+    private ClientConnectorBedrockApplication() {
         this.bedrockServer = ServiceLoader.load(BedrockServer.class).findFirst().orElseThrow(NoSuchElementException::new);
         init();
     }
@@ -42,6 +42,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        new Main();
+        new ClientConnectorBedrockApplication();
     }
 }
