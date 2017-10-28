@@ -1,5 +1,3 @@
-import org.jungletree.clientconnector.mcb.BedrockServer;
-
 module jungletree.clientconnector.mcb {
     requires rainforest.scheduler;
 
@@ -25,9 +23,6 @@ module jungletree.clientconnector.mcb {
     exports org.jungletree.clientconnector.mcb.packet.handshake;
     exports org.jungletree.clientconnector.mcb.handler.handshake;
 
-    provides BedrockServer with BedrockServer;
-    uses BedrockServer;
-
-    uses org.jungletree.rainforest.scheduler.SchedulerService;
+    uses org.jungletree.rainforest.scheduler.Scheduler;
     uses org.jungletree.rainforest.messaging.MessagingService;
 }

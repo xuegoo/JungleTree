@@ -7,9 +7,6 @@ import org.jungletree.clientconnector.mcb.handler.UnconnectedPingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.NoSuchElementException;
-import java.util.ServiceLoader;
-
 public class ClientConnectorBedrockApplication {
 
     private static final Logger log = LoggerFactory.getLogger(ClientConnectorBedrockApplication.class);
@@ -17,7 +14,7 @@ public class ClientConnectorBedrockApplication {
     private final BedrockServer bedrockServer;
 
     private ClientConnectorBedrockApplication() {
-        this.bedrockServer = ServiceLoader.load(BedrockServer.class).findFirst().orElseThrow(NoSuchElementException::new);
+        this.bedrockServer = new BedrockServer();
         init();
     }
 

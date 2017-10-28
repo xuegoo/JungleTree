@@ -18,8 +18,8 @@ dependencies {
     compile 'org.jungletree.rainforest:auth:0.0.1-SNAPSHOT'
     compile 'org.jungletree.rainforest:util:0.0.1-SNAPSHOT'
 
-    compile 'org.jungletree:scheduler:0.0.1-SNAPSHOT'
-    compile 'org.jungletree:messenger:0.0.1-SNAPSHOT'
+    compile project(':scheduler')
+    compile project(':messenger')
 
     compile 'org.jungletree:libnbt:1.0.1-SNAPSHOT'
     compile 'org.jungletree:jraknet:1.0.0-SNAPSHOT'
