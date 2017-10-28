@@ -37,5 +37,6 @@ dependencies {
     // Utility
     compile 'com.google.code.gson:gson:2.8.2'
 
-    runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.8.0-beta0'
+    // Logging
+    runtimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: '1.8.0-beta0'
 }
