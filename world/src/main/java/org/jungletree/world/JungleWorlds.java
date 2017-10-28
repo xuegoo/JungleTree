@@ -6,11 +6,11 @@ import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
 import java.util.concurrent.CompletableFuture;
 
-public class JungleWorldService implements WorldService {
+public class JungleWorlds implements Worlds {
 
     private final WorldLoader worldLoader;
 
-    public JungleWorldService() {
+    public JungleWorlds() {
         this.worldLoader = ServiceLoader.load(WorldLoader.class).findFirst().orElseThrow(NoSuchElementException::new);
     }
 

@@ -1,3 +1,5 @@
+import org.jungletree.world.JungleWorlds;
+
 module jungletree.world {
     requires rainforest.messaging;
     requires rainforest.world;
@@ -20,7 +22,7 @@ module jungletree.world {
     provides org.jungletree.rainforest.world.Chunk with org.jungletree.world.JungleChunk;
     provides org.jungletree.rainforest.world.Block with org.jungletree.world.JungleBlock;
 
-    provides org.jungletree.rainforest.world.WorldService with org.jungletree.world.JungleWorldService;
+    provides org.jungletree.rainforest.world.Worlds with JungleWorlds;
     uses org.jungletree.rainforest.world.WorldService;
 
     provides org.jungletree.rainforest.world.WorldLoader with org.jungletree.world.JungleWorldLoader;
