@@ -4,12 +4,12 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.factories.DefaultJWSVerifierFactory;
-import org.jungletree.clientconnector.mcb.ClientConnection;
 import org.jungletree.clientconnector.mcb.exception.NotAuthorizedException;
 import org.jungletree.clientconnector.mcb.packet.handshake.ConnectionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -30,7 +30,7 @@ public class AuthValidator {
 
     private static final DefaultJWSVerifierFactory VERIFIER_FACTORY = new DefaultJWSVerifierFactory();
 
-    public void validate(ClientConnection client, ConnectionInfo connectionInfo) throws NotAuthorizedException {
+    public ECPublicKey validate(ConnectionInfo connectionInfo) throws NotAuthorizedException {
         log.info("Validation: {}", connectionInfo.toString());
         String[] chain = connectionInfo.getTokenChain().getChain();
         String token = connectionInfo.getClientDataToken();
@@ -45,9 +45,12 @@ public class AuthValidator {
         }
 
         JWSObject jwtToken = jwsTokenOptional.get();
-        if (!validatePublicKey(jwtToken)) {
+        ECPublicKey key = getECX509PublicKey(jwtToken.getHeader().getX509CertURL().toString());
+        if (!validatePublicKey(jwtToken, key)) {
             throw new NotAuthorizedException("Invalid public key");
         }
+
+        return key;
     }
 
     private static ECPublicKey getMojangPublicKey() {
@@ -104,10 +107,10 @@ public class AuthValidator {
         }
     }
 
-    private boolean validatePublicKey(JWSObject jwsToken) {
+    private boolean validatePublicKey(JWSObject jwsToken, Key key) {
         JWSVerifier verifier;
         try {
-            verifier = VERIFIER_FACTORY.createJWSVerifier(jwsToken.getHeader(), getECX509PublicKey(jwsToken.getHeader().getX509CertURL().toString()));
+            verifier = VERIFIER_FACTORY.createJWSVerifier(jwsToken.getHeader(), key);
         } catch (JOSEException ex) {
             return false;
         }

@@ -1,9 +1,9 @@
-package org.jungletree.clientconnector.mcb.codec.crypto;
+package org.jungletree.clientconnector.mcb.codec.handshake;
 
 import io.gomint.jraknet.PacketBuffer;
 import org.jungletree.clientconnector.mcb.codec.Codec;
 import org.jungletree.clientconnector.mcb.packet.Packet;
-import org.jungletree.clientconnector.mcb.packet.crypto.ClientToServerHandshakePacket;
+import org.jungletree.clientconnector.mcb.packet.handshake.ClientToServerHandshakePacket;
 
 public class ClientToServerHandshakeCodec implements Codec<ClientToServerHandshakePacket> {
 

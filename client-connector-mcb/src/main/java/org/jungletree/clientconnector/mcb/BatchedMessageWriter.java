@@ -41,7 +41,7 @@ public class BatchedMessageWriter {
         buf.writeByte(packet.getSenderSubClientId());
         buf.writeByte(packet.getTargetSubClientId());
 
-        Codec<? extends Packet> codec = connectivityManager.getCodecRegistration().getCodec(packet.getClass());
+        Codec<? extends Packet> codec = connectivityManager.getReg().getCodec(packet.getClass());
         codec.encode(packet, buf);
 
         writeVarInt(buf.getPosition());

@@ -4,11 +4,24 @@ import io.gomint.jraknet.EncapsulatedPacket;
 import io.gomint.jraknet.PacketBuffer;
 import io.gomint.jraknet.Socket;
 import org.jungletree.clientconnector.mcb.codec.Codec;
+import org.jungletree.clientconnector.mcb.codec.DisconnectPacketCodec;
+import org.jungletree.clientconnector.mcb.codec.handshake.ClientToServerHandshakeCodec;
+import org.jungletree.clientconnector.mcb.codec.handshake.ServerToClientHandshakeCodec;
 import org.jungletree.clientconnector.mcb.codec.handshake.LoginCodec;
+import org.jungletree.clientconnector.mcb.codec.handshake.PlayStateCodec;
+import org.jungletree.clientconnector.mcb.codec.resourcepack.ResourcePackInfoCodec;
+import org.jungletree.clientconnector.mcb.codec.resourcepack.ResourcePackStackCodec;
 import org.jungletree.clientconnector.mcb.handler.PacketHandler;
+import org.jungletree.clientconnector.mcb.handler.handshake.ClientToServerHandshakeHandler;
 import org.jungletree.clientconnector.mcb.handler.handshake.LoginHandler;
+import org.jungletree.clientconnector.mcb.packet.DisconnectPacket;
 import org.jungletree.clientconnector.mcb.packet.Packet;
+import org.jungletree.clientconnector.mcb.packet.handshake.ClientToServerHandshakePacket;
+import org.jungletree.clientconnector.mcb.packet.handshake.ServerToClientHandshakePacket;
 import org.jungletree.clientconnector.mcb.packet.handshake.LoginPacket;
+import org.jungletree.clientconnector.mcb.packet.handshake.PlayStatePacket;
+import org.jungletree.clientconnector.mcb.packet.resourcepack.ResourcePackInfoPacket;
+import org.jungletree.clientconnector.mcb.packet.resourcepack.ResourcePackStackPacket;
 import org.jungletree.rainforest.scheduler.Scheduler;
 import org.jungletree.rainforest.scheduler.SchedulerService;
 import org.slf4j.Logger;
@@ -31,20 +44,20 @@ public class ConnectivityManager implements Runnable {
     private final Scheduler scheduler;
 
     private final BedrockServer server;
-    private final CodecRegistration codecRegistration;
+    private final CodecRegistration reg;
 
     private ScheduledFuture task;
 
     public ConnectivityManager(BedrockServer server) {
         this.scheduler = SchedulerService.getInstance().getScheduler();
         this.server = server;
-        this.codecRegistration = new CodecRegistration();
+        this.reg = new CodecRegistration();
 
         registerCodecs();
     }
 
-    public CodecRegistration getCodecRegistration() {
-        return codecRegistration;
+    public CodecRegistration getReg() {
+        return reg;
     }
 
     public void start() {
@@ -85,21 +98,36 @@ public class ConnectivityManager implements Runnable {
     }
 
     private void registerCodecs() {
-        codecRegistration.codec(0x01, LoginPacket.class, LoginCodec.class);
-        codecRegistration.handler(LoginPacket.class, new LoginHandler(server));
+        reg.codec(0x01, LoginPacket.class, LoginCodec.class);
+
+        reg.codec(0x02, PlayStatePacket.class, PlayStateCodec.class);
+
+        reg.codec(0x03, ServerToClientHandshakePacket.class, ServerToClientHandshakeCodec.class);
+        reg.codec(0x04, ClientToServerHandshakePacket.class, ClientToServerHandshakeCodec.class);
+        reg.handler(ClientToServerHandshakePacket.class, new ClientToServerHandshakeHandler());
+
+        reg.codec(0x05, DisconnectPacket.class, DisconnectPacketCodec.class);
+
+        reg.codec(0x06, ResourcePackInfoPacket.class, ResourcePackInfoCodec.class);
+        reg.codec(0x07, ResourcePackStackPacket.class, ResourcePackStackCodec.class);
+
+        reg.handler(LoginPacket.class, new LoginHandler(server));
     }
 
     private void handleBatchPacket(ClientConnection client, PacketBuffer buf) {
         byte[] input = new byte[buf.getRemaining()];
         System.arraycopy(buf.getBuffer(), buf.getPosition(), input, 0, input.length);
 
-        /*if (client.isEncryptionEnabled()) {
-            input = client.getProtocolEncryption().decryptInput(input);
-            if (input == null) {
-                client.getConnection().disconnect("Protocol encryption: invalid checksum");
-                return;
+        if (client.isEncryptionEnabled()) {
+            byte[] decrypted = client.getProtocolEncryption().decryptInputFromClient(input);
+            if (decrypted == null) {
+                log.warn("Checksum wrong");
+                //client.getConnection().disconnect("Protocol encryption: invalid checksum");
+                //return;
+            } else {
+                input = decrypted;
             }
-        }*/
+        }
 
         byte[] payload = deflate(buf, input);
 
@@ -145,24 +173,24 @@ public class ConnectivityManager implements Runnable {
         byte senderSubClientId = buf.readByte();
         byte targetSubClientId = buf.readByte();
 
-        Class<Packet> messageClass = codecRegistration.getMessageClass(id);
-        Codec codec = codecRegistration.getCodec(messageClass);
+        Class<Packet> messageClass = reg.getMessageClass(id);
+        Codec codec = reg.getCodec(messageClass);
         Packet packet = codec.decode(buf);
         packet.setSenderSubClientId(senderSubClientId);
         packet.setTargetSubClientId(targetSubClientId);
 
-        PacketHandler handler = codecRegistration.getHandler(messageClass);
+        PacketHandler handler = reg.getHandler(messageClass);
         handler.handle(client, packet);
     }
 
     @SuppressWarnings("unchecked")
     private void handleMessage(ClientConnection client, PacketBuffer buf, byte id) {
         log.info("Read packet ID 0x{}", Integer.toHexString(id));
-        Class<Packet> messageClass = codecRegistration.getMessageClass(id);
-        Codec codec = codecRegistration.getCodec(messageClass);
+        Class<Packet> messageClass = reg.getMessageClass(id);
+        Codec codec = reg.getCodec(messageClass);
         Packet packet = codec.decode(buf);
 
-        PacketHandler handler = codecRegistration.getHandler(messageClass);
+        PacketHandler handler = reg.getHandler(messageClass);
         handler.handle(client, packet);
     }
 }

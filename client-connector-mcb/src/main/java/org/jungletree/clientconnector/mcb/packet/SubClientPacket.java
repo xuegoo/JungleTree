@@ -1,19 +1,11 @@
-package org.jungletree.clientconnector.mcb.packet.crypto;
-
-import org.jungletree.clientconnector.mcb.packet.Packet;
+package org.jungletree.clientconnector.mcb.packet;
 
 import java.util.Objects;
 
-public class ServerToClientHandshakePacket implements Packet {
+public abstract class SubClientPacket implements Packet {
 
     private byte senderSubClientId;
     private byte targetSubClientId;
-    private String serverToken;
-
-    @Override
-    public byte getId() {
-        return 0x03;
-    }
 
     @Override
     public byte getSenderSubClientId() {
@@ -35,35 +27,25 @@ public class ServerToClientHandshakePacket implements Packet {
         this.targetSubClientId = targetSubClientId;
     }
 
-    public String getServerToken() {
-        return serverToken;
-    }
-
-    public void setServerToken(String serverToken) {
-        this.serverToken = serverToken;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ServerToClientHandshakePacket that = (ServerToClientHandshakePacket) o;
+        SubClientPacket that = (SubClientPacket) o;
         return senderSubClientId == that.senderSubClientId &&
-                targetSubClientId == that.targetSubClientId &&
-                Objects.equals(serverToken, that.serverToken);
+                targetSubClientId == that.targetSubClientId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(senderSubClientId, targetSubClientId, serverToken);
+        return Objects.hash(senderSubClientId, targetSubClientId);
     }
 
     @Override
     public String toString() {
-        return "ServerToClientHandshakePacket{" +
+        return "SubClientPacket{" +
                 "senderSubClientId=" + senderSubClientId +
                 ", targetSubClientId=" + targetSubClientId +
-                ", serverToken='" + serverToken + '\'' +
                 '}';
     }
 }

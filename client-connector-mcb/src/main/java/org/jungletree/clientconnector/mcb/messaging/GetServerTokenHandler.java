@@ -1,7 +1,7 @@
 package org.jungletree.clientconnector.mcb.messaging;
 
 import org.jungletree.clientconnector.mcb.ClientConnection;
-import org.jungletree.clientconnector.mcb.packet.crypto.ServerToClientHandshakePacket;
+import org.jungletree.clientconnector.mcb.packet.handshake.ServerToClientHandshakePacket;
 import org.jungletree.rainforest.auth.messages.GetServerTokenMessage;
 import org.jungletree.rainforest.messaging.MessageHandler;
 import org.jungletree.rainforest.messaging.MessagingService;

@@ -1,9 +1,13 @@
 package org.jungletree.clientconnector.mcb;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
 import io.gomint.jraknet.ServerSocket;
 import io.gomint.jraknet.Socket;
 import io.gomint.jraknet.SocketEvent;
 import io.gomint.jraknet.SocketEventHandler;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jungletree.clientconnector.mcb.crypto.ClientSaltTokenFactory;
 import org.jungletree.rainforest.auth.messages.GetServerTokenMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthReponseMessage;
 import org.jungletree.rainforest.auth.messages.JwtAuthRequestMessage;
@@ -12,14 +16,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.SocketException;
+import java.net.URI;
+import java.security.*;
+import java.security.interfaces.ECPublicKey;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BedrockServer {
 
     private static final Logger log = LoggerFactory.getLogger(BedrockServer.class);
-
-    private static BedrockServer INSTANCE;
 
     private final Map<SocketEvent.Type, SocketEventHandler> handlers = new ConcurrentHashMap<>();
 
@@ -42,8 +47,11 @@ public class BedrockServer {
 
     private final MessagingService messaging;
 
+    private final KeyPair serverKeyPair;
+    private final ClientSaltTokenFactory clientSaltTokenFactory;
+
     public BedrockServer() {
-        INSTANCE = this;
+        Security.addProvider(new BouncyCastleProvider());
 
         this.messaging = ServiceLoader.load(MessagingService.class).findFirst().orElseThrow(NoSuchElementException::new);
         messaging.start();
@@ -51,11 +59,19 @@ public class BedrockServer {
         messaging.registerMessage(JwtAuthReponseMessage.class);
         messaging.registerMessage(GetServerTokenMessage.class);
 
+        log.info("Generating server key pair");
+        this.serverKeyPair = generateKeyPair();
+        this.clientSaltTokenFactory = new ClientSaltTokenFactory(serverKeyPair, createServerTokenHeader((ECPublicKey) serverKeyPair.getPublic()));
+
         this.connectivityManager = new ConnectivityManager(this);
     }
 
-    public static BedrockServer getServer() {
-        return INSTANCE;
+    public KeyPair getServerKeyPair() {
+        return serverKeyPair;
+    }
+
+    public ClientSaltTokenFactory getClientSaltTokenFactory() {
+        return clientSaltTokenFactory;
     }
 
     public void registerSocketEventHandler(SocketEvent.Type type, SocketEventHandler handler) {
@@ -166,5 +182,48 @@ public class BedrockServer {
         } catch (SocketException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private KeyPair generateKeyPair()  {
+        try {
+            // Java public key default is X509, and private key defaults to PKCS#8
+            KeyPairGenerator generator = KeyPairGenerator.getInstance("EC", "BC");
+            generator.initialize(384, new SecureRandom());
+            return generator.generateKeyPair();
+        } catch (NoSuchProviderException | NoSuchAlgorithmException ex) {
+            log.error("Could not generate server key pair!", ex);
+
+            // TODO: Wrap RuntimeException for easier debugging
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private JWSHeader createServerTokenHeader(ECPublicKey serverPublicKey) {
+        if (!serverPublicKey.getFormat().equals("X.509")) {
+            throw new RuntimeException(String.format(
+                    "Server public key is not in X.509 format! Got %s instead",
+                    serverPublicKey.getFormat()
+            ));
+        }
+
+        return new JWSHeader(
+                JWSAlgorithm.ES384,
+                null,
+                null,
+                null,
+                null,
+                null,
+                URI.create(getServerPublicKeyBase64(serverPublicKey)),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    private String getServerPublicKeyBase64(ECPublicKey serverPublicKey) {
+        return Base64.getEncoder().encodeToString(serverPublicKey.getEncoded());
     }
 }

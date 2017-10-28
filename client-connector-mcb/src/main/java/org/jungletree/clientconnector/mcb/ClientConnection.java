@@ -43,7 +43,11 @@ public class ClientConnection {
         this.connectivityManager = server.getConnectivityManager();
         this.outboundProcessor = new OutboundRequestProcessor(connectivityManager, this);
         this.connection = connection;
-        this.protocolEncryption = new ProtocolEncryption();
+        this.protocolEncryption = new ProtocolEncryption(server.getServerKeyPair());
+    }
+
+    public void flush() {
+        outboundProcessor.flush();
     }
 
     public BedrockServer getServer() {

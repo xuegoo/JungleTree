@@ -42,28 +42,34 @@ public class OutboundRequestProcessor {
     }
 
     private void start() {
-        executorService.scheduleAtFixedRate(() -> {
-            if (packetQueue.isEmpty()) {
-                return;
-            }
+        executorService.scheduleAtFixedRate(this::flush, UPDATE_FREQUENCY_MILLIS, UPDATE_FREQUENCY_MILLIS, TimeUnit.MILLISECONDS);
+    }
 
-            Packet[] packets = pollMessages();
-            for (Packet packet : packets) {
-                packetQueue.remove(packet);
-            }
+    public void flush() {
+        if (packetQueue.isEmpty()) {
+            return;
+        }
 
-            if (packets.length == 0) {
-                return;
-            }
+        Packet[] packets = pollMessages();
+        for (Packet packet : packets) {
+            packetQueue.remove(packet);
+        }
 
-            writer.writeMessages(packets);
-            byte[] batch = writer.getBatch();
-            writer.reset();
+        if (packets.length == 0) {
+            return;
+        }
 
-            log.info("Sending batch packet");
-            client.getConnection().send(batch);
+        writer.writeMessages(packets);
+        byte[] batch = writer.getBatch();
+        writer.reset();
 
-        }, UPDATE_FREQUENCY_MILLIS, UPDATE_FREQUENCY_MILLIS, TimeUnit.MILLISECONDS);
+        if (client.isEncryptionEnabled()) {
+            batch = client.getProtocolEncryption().encryptInputForClient(batch);
+            log.info("Sending data as encrypted");
+        }
+
+        log.info("Sending batch packet");
+        client.getConnection().send(batch);
     }
 
     private synchronized void stop() {
